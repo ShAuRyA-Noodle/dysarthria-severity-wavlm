@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\caption{Severity prediction performance on TORGO. LOSO = Leave-One-Speaker-Out
+across 8 dysarthric speakers. $\rho$ = Spearman rank correlation. Best results \textbf{bolded}.}
+\label{tab:main_results}
+\begin{tabular}{lcccc}
+\toprule
+Method & RMSE$\downarrow$ & $\rho_\text{global}\uparrow$ & $\rho_\text{LOSO}\uparrow$ & Within-1$\uparrow$ \\
+\midrule
+MFCC + SVR & 0.802 & \textbf{0.787} & 0.056 & \textbf{87.5\%} \\
+WavLM Pool + Ridge & 0.795 & $-$0.795 & $-$0.056 & 75.0\% \\
+\midrule
+ATD-L\textit{k} + Ridge (ours) & 0.721 & 0.756 & 0.282 & \textbf{87.5\%} \\
+ATD-All + Ridge (ours) & \textbf{0.671} & 0.756 & \textbf{0.394} & \textbf{87.5\%} \\
+\bottomrule
+\end{tabular}
+\end{table}

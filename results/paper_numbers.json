@@ -1,0 +1,71 @@
+{
+  "dataset": {
+    "total_speakers": 15,
+    "dysarthric_speakers": 8,
+    "control_speakers": 7,
+    "severe_speakers": 5,
+    "mild_mod_speakers": 3,
+    "total_utterances": 8218,
+    "valid_atd_utterances": 7826,
+    "total_reference_words": 794,
+    "total_reference_trajectories": 7146,
+    "total_hours": 7.1
+  },
+  "atd_validation": {
+    "speaker_spearman_rho": 0.756,
+    "speaker_spearman_p": 0.0011,
+    "utterance_spearman_rho": 0.524,
+    "cohens_d_mild_severe": 0.586,
+    "cohens_d_control_severe": 1.488,
+    "control_mean_atd": 69.8,
+    "mild_mean_atd": 85.7,
+    "severe_mean_atd": 97.2,
+    "monotonic_ordering": true
+  },
+  "layer_analysis": {
+    "best_layer": 1,
+    "best_layer_rho": 0.775,
+    "layer9_rho": 0.756,
+    "all_layers_significant": true,
+    "n_layers_tested": 9
+  },
+  "main_results": {
+    "atd_l9_rmse": 0.721,
+    "atd_all_rmse": 0.671,
+    "mfcc_rmse": 0.802,
+    "ssl_pool_rmse": 0.795,
+    "atd_l9_loso_rho": 0.282,
+    "atd_all_loso_rho": 0.394,
+    "mfcc_loso_rho": 0.056,
+    "ssl_pool_loso_rho": -0.056,
+    "atd_l9_global_rho": 0.756,
+    "atd_all_global_rho": 0.756,
+    "mfcc_global_rho": 0.787,
+    "rmse_improvement_pct": 16.3,
+    "loso_rho_improvement_x": 7.0
+  },
+  "loso": {
+    "total_speakers_tested": 8,
+    "correctly_ranked": 7,
+    "rank_accuracy_pct": 87.5
+  },
+  "ablations": {
+    "full_atd_l1_rho": 0.775,
+    "full_atd_l9_rho": 0.756,
+    "no_dtw_rho": 0.471,
+    "no_pca_rho": 0.802,
+    "mean_pool_rho": 0.471,
+    "mfcc_trajectory_rho": 0.849,
+    "dtw_contribution": 0.285
+  },
+  "confound": {
+    "atd_duration_pearson_r": 0.105,
+    "is_rate_confounded": false
+  },
+  "anomalies": {
+    "F04_mean_atd": 72.9,
+    "F04_severity": 2,
+    "M05_mean_atd": 98.0,
+    "M05_severity": 1
+  }
+}

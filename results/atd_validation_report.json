@@ -1,0 +1,7 @@
+{
+  "speaker_spearman": 0.7560864148142503,
+  "p_value": 0.0011089540064018154,
+  "passed": true,
+  "utterance_spearman": 0.5242203639307736,
+  "utterance_p": 0.0
+}

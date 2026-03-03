@@ -1,0 +1,9 @@
+held_out_speaker,severity,mean_atd,atd_rank,severity_rank,correct_rank
+F01,2,111.015,8,6.0,True
+F03,1,83.7447,3,2.0,True
+F04,2,72.9039,1,6.0,False
+M01,2,101.8365,6,6.0,True
+M02,2,102.8088,7,6.0,True
+M03,1,75.3402,2,2.0,True
+M04,2,97.3914,4,6.0,True
+M05,1,97.9625,5,2.0,True

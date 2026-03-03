@@ -1,0 +1,5 @@
+method,rmse_loso,spearman_global,spearman_loso,within_1_loso,mae,pearson_r
+MFCC + SVR,0.8019,0.7869,0.0563,0.875,0.6904,0.2744
+WavLM Pool + Ridge,0.7954,-0.7947,-0.0563,0.75,0.6999,0.1251
+ATD-L9 + Ridge,0.7205,0.7561,0.2817,0.875,0.539,0.3254
+ATD-All + Ridge,0.6709,0.7561,0.3944,0.875,0.444,0.3338

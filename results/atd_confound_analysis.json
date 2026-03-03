@@ -1,0 +1,9 @@
+{
+  "atd_duration_pearson_r": 0.1047,
+  "atd_duration_pearson_p": 0.0,
+  "atd_duration_spearman_rho": -0.0722,
+  "atd_duration_spearman_p": 0.0,
+  "n_utterances": 7826,
+  "is_confounded": false,
+  "verdict": "ATD is NOT a proxy for speaking rate"
+}

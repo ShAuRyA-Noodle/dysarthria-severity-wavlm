@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\caption{Ablation study. Each row removes or modifies one component of ATD.
+$\rho_\text{global}$ uses all 15 speakers; $\rho_\text{LOSO}$ uses only 8 dysarthric speakers.}
+\label{tab:ablations}
+\begin{tabular}{lccc}
+\toprule
+Variant & $\rho_\text{global}$ & $\rho_\text{LOSO}$ & Notes \\
+\midrule
+Full ATD -- Layer 1 & 0.775 & 0.394 & Best layer by Spearman \\
+Full ATD -- Layer 9 & 0.756 & 0.394 & Mid-network articulatory layer \\
+No DTW -- Mean L2 & 0.471 & 0.394 & Mean embed distance, no trajectory \\
+No PCA -- 1024d DTW & 0.802 & 0.394 & Full dim DTW, sampled 200/spk \\
+Mean-pool distance & 0.471 & 0.394 & No trajectory, pool then L2 \\
+MFCC trajectory DTW & \textbf{0.849} & 0.282 & Same framework, MFCC not SSL \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,38 @@
+# ===== Data (large files, not tracked) =====
+data/raw/
+data/embeddings/
+data/processed/audio_16khz/
+data/processed/references/
+F/
+M/
+FC/
+MC/
+
+# ===== Python cache =====
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ===== Binary/large outputs =====
+*.npy
+*.h5
+*.hdf5
+*.pkl
+
+# ===== Environment =====
+.env
+*.env
+
+# ===== Logs =====
+results/logs/
+
+# ===== OS =====
+Thumbs.db
+.DS_Store
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
