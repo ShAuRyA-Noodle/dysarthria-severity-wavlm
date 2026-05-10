@@ -60,6 +60,7 @@ def main() -> None:
 
     index: dict[str, dict] = {}
     started = time.time()
+    n_resampled = 0
     for _, row in tqdm(df.iterrows(), total=len(df), desc="extract ipvs"):
         wav_path = Path(row["filepath_processed"])
         try:
@@ -71,9 +72,12 @@ def main() -> None:
             wave = wave.mean(axis=1)
         wave = wave.astype(np.float32)
         if sr != TARGET_SAMPLE_RATE:
-            # Skip resampling here — assume IPVS already 16 kHz; if not, log + skip.
-            logger.debug("skip non-16k file %s (%d Hz)", wav_path, sr)
-            continue
+            # IPVS has ~160 files at 44.1 kHz mixed in with 16 kHz. Resample
+            # on the fly via librosa (high-quality polyphase resampling).
+            import librosa  # local import; only needed on resample path
+            wave = librosa.resample(wave, orig_sr=sr, target_sr=TARGET_SAMPLE_RATE)
+            sr = TARGET_SAMPLE_RATE
+            n_resampled += 1
 
         feats = extractor.extract_all_layers(wave, sr, target_layers=layers)
         stacked = np.stack([feats[L] for L in layers], axis=0)
@@ -95,8 +99,8 @@ def main() -> None:
     index_path = PROJECT_ROOT / "data" / "embeddings" / f"ssl_index_ipvs_{args.model}.json"
     with open(index_path, "w", encoding="utf-8") as f:
         json.dump(index, f, indent=2)
-    logger.info("done. n=%d elapsed=%.1f min  index=%s",
-                len(index), (time.time() - started) / 60, index_path)
+    logger.info("done. n=%d resampled=%d elapsed=%.1f min  index=%s",
+                len(index), n_resampled, (time.time() - started) / 60, index_path)
 
 
 if __name__ == "__main__":
