@@ -1,0 +1,12 @@
+{
+  "corpus": "ipvs",
+  "task_subset": "sustained_vowel_a",
+  "layer": 1,
+  "model": "xlsr_300m",
+  "n_utterances_with_atd": 99,
+  "n_speakers": 46,
+  "n_controls": 22,
+  "n_dysarthric": 24,
+  "rho_binary": 0.3212510468732028,
+  "p_binary": 0.029485517465648647
+}

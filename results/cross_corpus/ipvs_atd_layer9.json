@@ -4,9 +4,9 @@
   "layer": 9,
   "model": "xlsr_300m",
   "n_utterances_with_atd": 757,
-  "n_speakers": 41,
+  "n_speakers": 61,
   "n_controls": 37,
-  "n_dysarthric": 4,
-  "rho_binary": -0.11810112805505478,
-  "p_binary": 0.46209011133069555
+  "n_dysarthric": 24,
+  "rho_binary": -0.20584315306010606,
+  "p_binary": 0.11149206534897295
 }

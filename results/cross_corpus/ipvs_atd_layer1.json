@@ -1,0 +1,12 @@
+{
+  "corpus": "ipvs",
+  "task_subset": null,
+  "layer": 1,
+  "model": "xlsr_300m",
+  "n_utterances_with_atd": 757,
+  "n_speakers": 61,
+  "n_controls": 37,
+  "n_dysarthric": 24,
+  "rho_binary": 0.2782694476553286,
+  "p_binary": 0.029894955471947038
+}
