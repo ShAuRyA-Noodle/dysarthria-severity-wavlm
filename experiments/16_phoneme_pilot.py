@@ -25,7 +25,6 @@ import sys
 import time
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 
@@ -85,6 +84,10 @@ def main() -> None:
     n_aligned = 0
     n_no_textgrid = 0
     n_no_ref = 0
+    n_no_index = 0
+    n_no_npy = 0
+    n_exc = 0
+    first_exc: Exception | None = None
     iter_meta = metadata.itertuples(index=False)
     if args.limit > 0:
         iter_meta = list(iter_meta)[: args.limit]
@@ -105,9 +108,11 @@ def main() -> None:
             continue
         entry = ssl_index.get(utt_id)
         if entry is None or entry.get("wavlm_large") is None:
+            n_no_index += 1
             continue
         npy_path = PROJECT_ROOT / entry["wavlm_large"]
         if not npy_path.exists():
+            n_no_npy += 1
             continue
         try:
             per_phone = per_phoneme_atd(
@@ -118,7 +123,10 @@ def main() -> None:
                 layer_position=layer_position,
             )
         except Exception as exc:  # noqa: BLE001
-            logger.debug("per-phoneme failed on %s: %s", utt_id, exc)
+            n_exc += 1
+            if first_exc is None:
+                first_exc = exc
+                logger.error("first per_phoneme_atd exception on %s: %r", utt_id, exc)
             continue
         sev = TORGO_SEVERITY[spk]
         is_control = sev == 0
@@ -137,14 +145,21 @@ def main() -> None:
         if n_aligned % 500 == 0:
             logger.info("aligned %d utts; rows so far %d", n_aligned, len(rows))
 
-    logger.info("done. n_aligned=%d  rows=%d  no_textgrid=%d  no_ref=%d  elapsed=%.1f min",
-                n_aligned, len(rows), n_no_textgrid, n_no_ref, (time.time() - started) / 60)
+    logger.info(
+        "done. n_aligned=%d  rows=%d  no_textgrid=%d  no_ref=%d  no_index=%d  no_npy=%d  exc=%d  elapsed=%.1f min",
+        n_aligned, len(rows), n_no_textgrid, n_no_ref, n_no_index, n_no_npy, n_exc,
+        (time.time() - started) / 60,
+    )
 
     df = pd.DataFrame(rows)
     out_csv = PROJECT_ROOT / args.out
     out_csv.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(out_csv, index=False)
     logger.info("wrote %s rows=%d", out_csv, len(df))
+
+    if df.empty:
+        logger.warning("no rows generated; skipping norms + summary")
+        return
 
     # Z-norm fit on controls only.
     norms = fit_norms_from_dataframe(df, is_control_field="is_control")
