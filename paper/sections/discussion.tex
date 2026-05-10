@@ -1,0 +1,62 @@
+% Target ~350 words. Replaces preliminary stub.
+
+\subsection{Geometry as clinical signal}
+The headline finding is that severity correlates with a purely
+\emph{geometric} property of frozen WavLM representations: the
+length-normalised DTW distance from a control-built reference
+trajectory. No fine-tuning, no labelled training, no classifier.
+The implicit articulatory manifold learned during 94k hours of
+neurotypical pre-training is sufficient to expose dysarthric
+deviation as off-manifold travel. Replacing DTW with mean-pool L2
+collapses $\rho$ by 40\%, and replacing WavLM with MFCC trajectories
+yields higher in-corpus $\rho$ but the worst LOSO transfer
+($-50\%$) of any variant tested. These two ablations bracket the
+contribution of \emph{trajectory structure} and of \emph{pre-trained
+SSL geometry} respectively.
+
+\subsection{Mechanistic specificity}
+The controlled-perturbation study (\S~5.4) rules out the alternative
+that ATD merely tracks acoustic distance. Time-stretch
+($0.6\times$--$1.75\times$ via PSOLA) and pink-noise injection at
+SNR $-5$~dB leave ATD essentially unchanged (95\% CI on the slope
+contains zero); formant shifts and frame-dropout drive ATD up
+monotonically with intensity. MFCC trajectory DTW shows the same
+sensitivity but \emph{also} responds to time-stretch, indicating
+that ATD's length-normalised SSL pipeline isolates an articulatory
+component MFCC cannot.
+
+\subsection{Trajectory-length regime}
+Direct cross-corpus transfer to UASpeech fails ($\rho{=}{-}0.22$,
+$p{=}0.43$) and we report this as a falsified hypothesis. The
+trajectory-length analysis (TORGO mean 155 frames vs UASpeech mean
+127 frames at 50~fps) provides a mechanistic, falsifiable
+explanation: ATD requires a minimum temporal regime for DTW signal
+to stabilise. Stitched-sentence UASpeech experiments (in progress)
+will test this directly.
+
+\subsection{F04 as a clinical finding, not an anomaly}
+Removing F04 shifts $\rho$ from $0.756$ to $0.855$. F04 has
+documented preserved intelligibility despite a categorical
+``severe'' label (spastic dysarthria with intact phonatory
+control). ATD ranks her near controls, agreeing with the perceptual
+record but disagreeing with the ordinal label. We argue this is the
+substantive contribution of execution-quality metrics: they
+disambiguate cases where the diagnostic category over-predicts
+intelligibility loss.
+
+\subsection{Cross-disorder and clinical anchoring}
+We extend the analysis to Italian Parkinsonian speech (IPVS,
+$n{=}28$ PD + $n{=}37$ HC) using XLS-R-300m features and per-corpus
+CMVN with a TORGO-fit shared PCA basis. The within-corpus binary
+discrimination (PD vs HC) provides a falsifiable test of the
+cross-disorder claim. Partial Spearman of ATD vs UASpeech 3-listener
+intelligibility, controlling for word identity, anchors ATD to a
+clinical perceptual instrument (Analysis C1).
+
+\subsection{Future work}
+Three threads. First, a real-time streaming implementation
+(sub-200~ms latency, online subsequence DTW) for clinic deployment.
+Second, phoneme-level decomposition of the DTW path for per-token
+SLP feedback. Third, a longitudinal pilot ($n{=}20$ PD, 5 visits
+over 12 months) to validate within-subject sensitivity to therapy
+and medication state.
