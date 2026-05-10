@@ -1,4 +1,16 @@
-# PC-GITA Email — ready to send
+# PC-GITA contact — six routes (try in this order)
+
+**Primary attempt failed?** Use the next route. Lead time stays 1–3 weeks
+either way.
+
+| Order | Route | URL / address |
+|------:|-------|----------------|
+| 1 | UdeA email (primary) | `rafael.orozco@udea.edu.co` |
+| 2 | **GITA web form** (recommended fallback) | https://gita.udea.edu.co/contact |
+| 3 | FAU email (Germany affiliation) | `rafael.orozco@i5.informatik.uni-erlangen.de` |
+| 4 | LinkedIn DM | https://www.linkedin.com/in/juan-rafael-orozco-arroyave-5aab4572/ |
+| 5 | ResearchGate "Contact" on lab page | https://www.researchgate.net/lab/GITA-research-group-Lab-University-of-Antioquia-Medellin-Colombia-Juan-Rafael-Orozco |
+| 6 | Lab phone (Medellín, UTC−5) | +57 4 219 8523 |
 
 **TO:** `rafael.orozco@udea.edu.co`
 **CC:** `rafael.orozco@i5.informatik.uni-erlangen.de`
