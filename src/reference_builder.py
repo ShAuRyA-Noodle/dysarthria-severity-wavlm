@@ -323,8 +323,14 @@ def build_all_references(
                 if ref_data is None:
                     continue
 
-                # Sanitize word for filename (replace special chars)
-                safe_word = word.replace("/", "_").replace("\\", "_").replace(" ", "_")
+                # Sanitize word for filename. TORGO contains long-sentence "words"
+                # like `Did you eat yet?` whose punctuation (?, ", ', ., ,) is
+                # forbidden in Windows filenames. Replace any non-[A-Za-z0-9_-]
+                # with `_` and truncate to 80 chars to stay under MAX_PATH limits.
+                import re as _re
+                safe_word = _re.sub(r"[^A-Za-z0-9_\-]+", "_", word).strip("_")[:80]
+                if not safe_word:
+                    safe_word = f"word_{abs(hash(word)) % 10**8:08d}"
                 pkl_filename = f"{safe_word}_layer{layer}.pkl"
                 pkl_path = out_path / pkl_filename
 
@@ -332,9 +338,13 @@ def build_all_references(
                     pickle.dump(ref_data, f)
 
                 rel_path = str(pkl_path.relative_to(project_root)).replace("\\", "/")
+                # Manifest keys keep the original word verbatim so downstream
+                # code can look up by `f"{word}_{layer}"` regardless of
+                # filesystem-safe rewriting above.
                 key = f"{word}_{layer}"
                 manifest["word_layer_ref"][key] = {
                     "path": rel_path,
+                    "safe_filename": pkl_filename,
                     "n_control_speakers": ref_data["n_control_speakers"],
                     "n_control_utterances": ref_data["n_control_utterances"],
                     "reference_length": ref_data["reference_length"],
