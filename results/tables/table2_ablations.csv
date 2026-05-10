@@ -4,4 +4,4 @@ Full ATD — Layer 9,0.7561,0.3944,82.6699,15,8,Mid-network articulatory layer
 No DTW — Mean L2,0.4706,0.3944,40.4485,15,8,"Mean embed distance, no trajectory"
 No PCA — 1024d DTW,0.8024,-0.0563,22819.213,15,8,"Full dim DTW, sampled 200/spk"
 Mean-pool distance,0.4706,0.3944,40.4485,15,8,"No trajectory, pool then L2"
-MFCC trajectory DTW,0.0,,N/A,0,0,"Same framework, MFCC not SSL"
+MFCC trajectory DTW,0.8487,0.2817,11570.1601,15,8,"Same framework, MFCC not SSL"
