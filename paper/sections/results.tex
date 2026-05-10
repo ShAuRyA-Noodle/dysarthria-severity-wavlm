@@ -38,20 +38,38 @@ otherwise-identical pipeline --- attains the highest global $\rho$
 trajectories overfit speaker-specific spectral idiosyncrasies while SSL
 features generalise better to unseen speakers.
 
-\subsection{Causal-perturbation specificity}
-The pre-registered perturbation experiment (\S~3.4 of supplementary,
-locked predictions in Appendix~B) confirms that ATD responds specifically
-to articulatory distortion. Formant shift (LPC resynthesis with
-$\alpha \in [0.85, 1.15]$) and partial muting (Bernoulli 50\,ms-window
-dropout up to 30\%) drive ATD up monotonically with intensity
-($\beta_\mathrm{form} = +X.XX$ per $\sigma$, 95\%~CI $[X.XX, X.XX]$;
-$\beta_\mathrm{mute} = +X.XX$). In contrast, time-stretch
-($0.6\times$--$1.75\times$ via PSOLA) leaves ATD essentially unchanged
-($\beta_\mathrm{rate}$ CI contains 0), and pink-noise injection at
-$-5$~dB SNR raises ATD by less than 10\% of the control--severe gap. The
-same model run on MFCC trajectory DTW does \emph{not} show this pattern:
-MFCC's $\beta_\mathrm{rate}$ is significantly positive, falsifying an
-"ATD = generic acoustic distance" interpretation.
+\subsection{Causal-perturbation sensitivity profile}
+We applied five DSP perturbations (time-stretch, pink noise, formant
+shift, partial muting, reverberation) to 175 TORGO control utterances
+covering nine words shared by all speakers. Per-family Spearman
+correlation between intensity (centred at the no-perturbation baseline)
+and $\Delta$ATD against a leave-one-control-out reference:
+
+\begin{tabular}{lrr}
+\toprule
+Family & $\rho$ & mean $\Delta$ATD \\
+\midrule
+pink-noise       & $+0.766$ & $19.3$ \\
+reverberation    & $+0.673$ & $9.1$  \\
+partial muting   & $+0.402$ & $15.9$ \\
+time-stretch     & $+0.244$ & $3.2$  \\
+formant shift    & $+0.170$ & $2.7$  \\
+\bottomrule
+\end{tabular}
+
+The pre-registered predictions (Appendix~B) are \emph{partially
+falsified}. Formant shift and partial muting drive ATD up as predicted,
+but pink-noise and reverberation drive it up more strongly than either:
+WavLM's denoising pre-training does not yield noise-invariance for the
+trajectory metric, and channel response is not innocuous. Time-stretch
+is also non-zero, indicating that length normalisation does not fully
+absorb rate. We therefore reframe Track C as a \emph{sensitivity
+profile} rather than a specificity proof: ATD is broadly sensitive to
+multiple acoustic dimensions of speech quality, with the smallest
+response on formant-shift in the alpha range tested. A wider
+formant-shift sweep, and a parallel MFCC-trajectory comparison
+(forthcoming), are required before the specificity claim can be
+defended.
 
 \subsection{Phoneme-level localisation}
 Figure~\ref{fig:phonemes} shows the per-phoneme z-scored deviation for
@@ -68,3 +86,45 @@ ATD is not a proxy for speaking rate: per-utterance ATD vs.\ duration
 yields Pearson $r = 0.105$ ($p = X.XX$, $n = 7,826$). The control--severe
 duration ratio is $0.83\times$ in TORGO; if ATD tracked rate, the sign
 would invert.
+
+\subsection{Cross-disorder, cross-language generalisation on IPVS}
+We extend the analysis to the Italian Parkinson's Voice and Speech
+corpus (IPVS, $n{=}24$ Parkinson's disease + $n{=}37$ healthy controls)
+using XLS-R-300m features as the multilingual SSL backbone. Layer~9
+within-corpus discrimination is null ($\rho{=}{-}0.21$, $p{=}0.11$),
+but the acoustic-near \emph{Layer~1} recovers a significant binary
+PD-versus-HC signal ($\rho{=}+0.28$, $p{=}0.030$, Cohen's $d{=}0.52$).
+
+Restricting to sustained-vowel tasks (the canonical Parkinsonian-speech
+biomarker), the per-vowel Spearman correlations are all
+\emph{significant after Benjamini--Hochberg FDR correction} at
+$q = 0.05$:
+
+\begin{tabular}{lccc}
+\toprule
+Vowel & $\rho$ & 95\% bootstrap CI & $p_\mathrm{BH}$ \\
+\midrule
+/a/ & $0.32$ & $[0.04,\,0.57]$ & $0.029$ \\
+/e/ & $0.36$ & $[0.08,\,0.62]$ & $0.021$ \\
+/i/ & $0.38$ & $[0.11,\,0.63]$ & $0.021$ \\
+/o/ & $0.39$ & $[0.10,\,0.64]$ & $0.021$ \\
+/u/ & $0.35$ & $[0.06,\,0.61]$ & $0.021$ \\
+\bottomrule
+\end{tabular}
+
+Mean Cohen's $d{=}0.55$ across the five vowels (range $0.42$ to $0.68$).
+All 5 95\% bootstrap CIs exclude zero. /i/ and /o/ additionally survive
+Bonferroni correction at $\alpha = 0.05$. The articulatory manifold
+learned by a multilingual SSL model from neurotypical Italian speech
+transfers \emph{at Layer~1 only} to discriminate Parkinsonian dysarthria
+from healthy controls on sustained vowels --- but \emph{not} at Layer~9.
+We interpret this as evidence that Layer~1 encodes language-universal
+articulator features while deeper layers carry English-phonemic
+content that is poorly aligned with Italian.
+
+A direct zero-shot transfer (TORGO-fit shared PCA basis applied to
+IPVS via per-corpus CMVN, speaker centroid distance to the TORGO
+healthy prototype) is positive but underpowered: $\rho{=}0.18$,
+$p{=}0.17$, $n{=}61$. Within-corpus IPVS reference building
+outperforms zero-shot, consistent with channel + language mismatch
+not being fully absorbed by mean-variance normalisation alone.
