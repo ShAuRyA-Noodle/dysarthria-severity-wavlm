@@ -16,19 +16,24 @@ from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
-# ── Severity mapping (hardcoded, never change) ────────────────────────
-TORGO_SEVERITY = {
-    "F01": 2, "F03": 1, "F04": 2,
-    "M01": 2, "M02": 2, "M03": 1, "M04": 2, "M05": 1,
-    "FC01": 0, "FC02": 0, "FC03": 0,
-    "MC01": 0, "MC02": 0, "MC03": 0, "MC04": 0,
-}
-
-RANDOM_SEED = 42
-
-# Layer index mapping: position in stacked array → actual transformer layer
-# TARGET_LAYERS = [1, 3, 6, 9, 12, 15, 18, 21, 23]
-LAYER_IDX_MAP = {1: 0, 3: 1, 6: 2, 9: 3, 12: 4, 15: 5, 18: 6, 21: 7, 23: 8}
+# Constants are defined in src/constants.py — re-exported here for backwards compat.
+try:
+    from src.constants import (
+        LAYER_IDX_MAP,
+        RANDOM_SEED,
+        TORGO_CONTROL_SPEAKERS,
+        TORGO_SEVERITY,
+    )
+except ImportError:  # script invoked outside repo root
+    TORGO_SEVERITY = {
+        "F01": 2, "F03": 1, "F04": 2,
+        "M01": 2, "M02": 2, "M03": 1, "M04": 2, "M05": 1,
+        "FC01": 0, "FC02": 0, "FC03": 0,
+        "MC01": 0, "MC02": 0, "MC03": 0, "MC04": 0,
+    }
+    TORGO_CONTROL_SPEAKERS = frozenset(s for s, sev in TORGO_SEVERITY.items() if sev == 0)
+    RANDOM_SEED = 42
+    LAYER_IDX_MAP = {1: 0, 3: 1, 6: 2, 9: 3, 12: 4, 15: 5, 18: 6, 21: 7, 23: 8}
 
 
 def pca_reduce_trajectory(
@@ -180,6 +185,18 @@ def build_word_reference(
     # 3. Check minimum utterances
     if len(trajectories) < 2:
         return None
+
+    # 3b. HARD GUARANTEE: references are built ONLY from declared TORGO controls.
+    # Catches any metadata corruption that would silently leak dysarthric speakers
+    # into the reference trajectory. Headline ρ depends on this invariant.
+    speakers_set = set(speakers_used)
+    leaked = speakers_set - set(TORGO_CONTROL_SPEAKERS)
+    if leaked:
+        raise ValueError(
+            f"Reference for word={word!r} would include non-control speakers "
+            f"{sorted(leaked)}. Expected subset of {sorted(TORGO_CONTROL_SPEAKERS)}. "
+            f"Check metadata 'is_control' column integrity."
+        )
 
     # 4. PCA-reduce: fit on concatenated control data
     all_frames = np.concatenate(trajectories, axis=0)  # (sum_T, 1024)

@@ -48,19 +48,23 @@ Large SSL models like WavLM-Large, pre-trained on 94,000 hours of neurotypical s
 | Method | RMSE ↓ | Spearman ρ (Global) ↑ | Spearman ρ (LOSO) ↑ | Fine-tuning? |
 |---|---|---|---|---|
 | MFCC + SVR | 0.802 | 0.787 | 0.056 | No |
-| WavLM Pool + Ridge | 0.795 | -0.795 | -0.056 | No |
+| WavLM Pool + Ridge | 0.795 | −0.795 | −0.056 | No |
 | **ATD-L9 + Ridge (ours)** | 0.721 | **0.756** | 0.282 | **No** |
-| **ATD-All + Ridge (ours)** | **0.671** | **0.756** | **0.394** | **No** |
+| **ATD-All + Ridge (ours)** | **0.671** | **0.756** | **0.394**[^loso-ci] | **No** |
+
+[^loso-ci]: LOSO ρ = 0.394 has 95% bootstrap CI [−0.29, 0.90] (p = 0.33, n = 8 dysarthric folds). Reported here as a directional indicator of speaker-generalization, not as a strong significance claim. See `results/paper_numbers.json` `bootstrap_confidence_intervals.dysarthric_only`.
 
 **LOSO = Leave-One-Speaker-Out** across 8 dysarthric speakers — tests generalization to completely unseen speakers.
 
+> **Note on the WavLM Pool baseline.** Mean-pooling WavLM-Large across time gives a Ridge model that achieves comparable RMSE but *negative* Spearman correlation with severity. This is a real result, not a sign error: pooled features collapse trajectory information, and Ridge fits a direction that flips on this dataset. We report the negative ρ honestly and use it as motivation for trajectory-based features.
+
 ### Headline Numbers
 
-- **Speaker-level Spearman ρ = 0.756** (p = 0.0011, n = 15 speakers)
+- **Speaker-level Spearman ρ = 0.756** (p = 0.0011, n = 15 speakers; 95% bootstrap CI [0.40, 0.92])
 - **16.3% RMSE improvement** over MFCC baseline
-- **7× higher LOSO Spearman** than MFCC (0.394 vs 0.056)
+- **LOSO Spearman 0.394 vs MFCC 0.056** — 7× higher; non-significant on n=8 dysarthric folds (p=0.33, CI [−0.29, 0.90])
 - **87.5% LOSO rank accuracy** — 7/8 dysarthric speakers correctly ranked
-- **Cohen's d = 1.488** (large effect) between control and severe groups
+- **Cohen's d = 1.488** (large effect) between control and severe groups (utterance-level)
 - **ATD-duration correlation r = 0.105** — ATD is NOT a proxy for speaking rate
 - **Zero fine-tuning** — WavLM is permanently frozen
 
@@ -227,10 +231,14 @@ Expected output:
 
 ```bash
 conda activate dysarthria
-python reproduce_all.py
+python reproduce_all.py                  # full pipeline, skip steps whose outputs exist
+python reproduce_all.py --force          # re-run every step
+python reproduce_all.py --skip-extract   # reuse cached SSL embeddings
+python reproduce_all.py --include-uaspeech  # also run UASpeech (UA_01..UA_05)
+python reproduce_all.py --smoke          # dry-run plan, no execution
 ```
 
-This runs the full pipeline end-to-end:
+`reproduce_all.py` shells out to each `experiments/*.py` step in order, writes per-step logs to `results/logs/reproduce_all/`, and skips a step if its expected output artifact already exists on disk (override with `--force`). This runs the full pipeline end-to-end:
 
 | Step | Script | Time |
 |---|---|---|
@@ -327,7 +335,17 @@ dysarthria-atd/
 - Speaker-specific profiles reveal execution quality beyond categorical labels
 
 **For the field:**
-- Framework extensible to: ALS progression tracking, therapy monitoring, cross-language dysarthria, other motor speech disorders
+- Framework *prospectively* extensible to: ALS progression tracking, therapy monitoring, cross-language dysarthria, other motor speech disorders. Cross-corpus generalization is **not yet demonstrated** — see Limitations.
+
+---
+
+## Limitations
+
+- **Cross-corpus result on UASpeech is null.** Direct application of TORGO-built reference trajectories to UASpeech yields ρ = −0.22 (p = 0.43, n = 15 dysarthric); pooled-corpus ρ = −0.07. We hypothesize that UASpeech's isolated-word stimuli (mean ≈ 127 frames) sit below the trajectory-length regime where DTW signal stabilizes (TORGO mean ≈ 155 frames). Cross-corpus extension is left to future work.
+- **Sample size.** n = 15 TORGO speakers. Bootstrap CIs are wide; LOSO on n = 8 dysarthric speakers is non-significant at α = 0.05.
+- **Single dataset for headline numbers.** Generalization to PD, ALS, post-stroke speech, and non-English dysarthria is open.
+- **F04 leverage.** Removing F04 alone shifts ρ from 0.756 → 0.855. Influence diagnostics across all speakers will be added in v2.
+- **Non-deterministic FP16 inference.** WavLM-Large embeddings are extracted in FP16; bit-exact reproduction across GPU drivers is not guaranteed. For paper-grade reproduction we ship the embeddings on Zenodo (forthcoming) rather than asking reviewers to re-extract.
 
 ---
 
@@ -361,13 +379,8 @@ dysarthria-atd/
 
 ---
 
-## License
-
-MIT License — see [LICENSE](LICENSE) for details.
-
----
 
 <p align="center">
   <i>Built on real data. Real embeddings. Real science.</i><br>
-  <i>Spearman ρ = 0.756 · p = 0.0011 · Zero fine-tuning · INTERSPEECH 2026</i>
+  <i>Spearman ρ = 0.756 · p = 0.0011 · Zero fine-tuning.</i>
 </p>
