@@ -6,7 +6,6 @@ import pickle
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 from src.phoneme.per_phoneme_atd import manner_class
@@ -43,8 +42,12 @@ def fit_norms_from_dataframe(
 ) -> PhonemeNorms:
     """Build PhonemeNorms from a DataFrame produced by per_phoneme_atd loops.
 
-    Expected columns: phone, atd, is_control.
+    Expected columns: phone, atd, is_control. Returns an empty PhonemeNorms
+    if the DataFrame is empty or lacks the required columns.
     """
+    required = {"phone", "atd", is_control_field}
+    if per_phoneme_df.empty or not required.issubset(per_phoneme_df.columns):
+        return PhonemeNorms()
     ctrl = per_phoneme_df[per_phoneme_df[is_control_field].astype(bool)]
     by_phone: dict[str, tuple[float, float, int]] = {}
     for phone, sub in ctrl.groupby("phone"):
