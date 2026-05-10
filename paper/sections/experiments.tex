@@ -1,0 +1,47 @@
+% Target ~350 words.
+
+\subsection{Datasets}
+\textbf{TORGO}~\cite{Rudzicz2012TORGO}: 15 native-Canadian-English
+speakers (8 dysarthric, 7 controls) with 7{,}826 headset-mic utterances
+across 794 unique prompts. Severity labels are from the
+TORGO documentation: 5 severe (level 2), 3 mild--moderate (level 1), 7
+controls (level 0). All audio resampled to 16~kHz and normalised to
+$-20$~dBFS.
+\textbf{UASpeech}~\cite{Kim2008UASpeech}: 15 dysarthric speakers across
+isolated words, with three-listener orthographic intelligibility ratings
+($r$).
+
+\subsection{Models and features}
+The headline metric uses microsoft/wavlm-large in evaluation mode, FP16
+precision, with all parameters frozen and \texttt{output\_hidden\_states=True}.
+For 9-layer extraction, GPU memory is the binding constraint at FP16 ($\sim$3~GB
+per utterance peak). Pre-extracted embeddings are stored as
+\texttt{(n\_layers, T\_frames, 1024)} \texttt{.npy} arrays under
+\texttt{data/embeddings/wavlm\_large/<speaker>/}.
+
+\subsection{Baselines}
+\textbf{MFCC + SVR}: 13-coefficient MFCC + delta + delta-delta, mean-pooled
+per utterance, fed to a Support Vector Regressor on severity. \textbf{WavLM
+Pool + Ridge}: WavLM layer-9 mean-pooled embedding into Ridge regression.
+\textbf{MFCC trajectory DTW}: same DTW pipeline as ATD but with MFCCs
+replacing SSL features, included as the most informative ablation.
+
+\subsection{Evaluation protocol}
+Speaker-level Spearman $\rho(\overline{\mathrm{ATD}}, \mathrm{severity})$
+is the primary endpoint, with $p$-values from \texttt{scipy.stats.spearmanr}
+and 10{,}000-sample bootstrap 95\%~CIs. RMSE is reported on speaker-level
+mean predictions versus categorical severity. Leave-One-Speaker-Out
+(LOSO) is computed only over dysarthric speakers (controls cannot be
+held out as they are reference builders); we report mean LOSO $\rho$ and
+rank accuracy ("higher-ATD speaker is more severe than 7/8 hold-outs").
+For supervised baselines (MFCC+SVR, WavLM Pool+Ridge) the LOSO
+loop refits the regression head on the remaining speakers; ATD is fold-free.
+
+\subsection{Confound and sensitivity analyses}
+We check that ATD is not a proxy for speaking rate by reporting the
+Pearson correlation between ATD and per-utterance duration.
+Per-speaker leverage is reported via leave-one-out on each of the 15
+speakers and via Cook's-distance-style sensitivity in
+the supplementary. We additionally pre-register a controlled-perturbation
+study on the seven control speakers (\S~5.4 and Appendix~B) that
+falsifies an acoustic-distance-only interpretation.

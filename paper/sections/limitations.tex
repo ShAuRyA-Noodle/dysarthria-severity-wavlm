@@ -1,0 +1,28 @@
+% Target ~100 words.
+
+\paragraph{Sample size and statistical power.}
+$n = 15$ TORGO speakers (8 dysarthric) yields wide bootstrap CIs and
+non-significant LOSO at $\alpha = 0.05$ within the dysarthric subset
+alone. We report this transparently throughout.
+
+\paragraph{Single-corpus headline.}
+The 0.756 figure is on TORGO only. Cross-corpus generalisation to
+UASpeech is reported as a falsified hypothesis (the trajectory-length
+analysis offers a mechanistic explanation pre-registered for follow-up);
+extension to PD (PC-GITA, IPVS) and Italian dysarthria (EasyCall) is
+prospective.
+
+\paragraph{F04 leverage.}
+Removing one influential speaker shifts $\rho$ from 0.756 to 0.855. We
+report the leave-one-out distribution across all 15 speakers in the
+supplementary.
+
+\paragraph{Reproducibility caveats.}
+WavLM-Large is extracted in FP16 with cudnn determinism; bit-exact
+reproduction across GPU drivers is not guaranteed. We release pre-
+extracted embeddings on Zenodo to obviate re-extraction.
+
+\paragraph{Ethics.}
+TORGO and UASpeech are research-only releases; we do not redistribute
+audio. Speaker-level ATD scores are not personally identifying but should
+not be linked to clinical records without IRB.

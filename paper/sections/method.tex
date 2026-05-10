@@ -1,0 +1,72 @@
+% Target ~600 words.
+
+\subsection{Notation and pipeline overview}
+Let $\mathbf{x}_u \in \mathbb{R}^{T_u}$ denote the 16~kHz waveform of an
+utterance $u$ of word $w$ by speaker $s$. Let $f^{(\ell)}: \mathbb{R}^{T_u}
+\to \mathbb{R}^{F_u \times d}$ be the frozen WavLM-Large feature extractor
+returning the $\ell$-th transformer-layer hidden states with $d = 1024$
+channels and $F_u \approx 50 \cdot T_u / \mathrm{sr}$ frames at 50~fps. We
+compute the per-utterance ATD against a per-word control reference
+trajectory in a 64-dimensional PCA subspace shared with the reference.
+
+\subsection{Reference trajectory construction}
+For each word $w$ in the lexicon, we collect every utterance of $w$
+produced by any of the seven TORGO control speakers. We extract layer-$\ell$
+embeddings $\{\mathbf{E}^{(\ell)}_{u_i}\}_i$ and concatenate to fit a
+single PCA model $\mathbf{P}_w$ to 64 dimensions. We then project each
+control trajectory to the 64-D subspace, select the median-length
+trajectory as a template $\mathbf{R}_w^{0}$, DTW-align all other control
+trajectories to the template, and take the frame-wise mean to obtain the
+reference $\mathbf{R}_w \in \mathbb{R}^{T_w \times 64}$. The PCA model
+$\mathbf{P}_w$ is stored alongside $\mathbf{R}_w$ so that test utterances
+are projected into the \emph{same} coordinate space as the reference. The
+reference-builder enforces a hard invariant that no dysarthric utterance
+ever contributes to a reference (\texttt{src/reference\_builder.py}, line 196).
+
+\subsection{ATD computation}
+For a test utterance $u$ of word $w$ at layer $\ell$, we project frames
+into the reference's PCA subspace via $\mathbf{Z}_u = \mathbf{P}_w(
+\mathbf{E}^{(\ell)}_u )$ and compute
+\begin{equation}
+\mathrm{ATD}(u, w, \ell) =
+   \frac{ \mathrm{DTW}\!\left( \mathbf{Z}_u,\, \mathbf{R}_w \right) }
+        { \max\!\left( T_u,\, T_w \right) },
+\label{eq:atd}
+\end{equation}
+where $\mathrm{DTW}(\cdot,\cdot)$ is the FastDTW alignment cost with
+Sakoe--Chiba band radius 30 (near-exact on the trajectory lengths
+encountered) and Euclidean local cost. Length-normalisation by the longer
+of the two trajectories ensures that ATD measures geometric \emph{quality}
+rather than speaking \emph{rate}; we verify this empirically in
+Section~5.4.
+
+\subsection{Speaker-level aggregation}
+Speaker $s$'s ATD score is the unweighted mean across all utterances
+$u \in \mathcal{U}_s$:
+\(\overline{\mathrm{ATD}}_s = |\mathcal{U}_s|^{-1} \sum_{u} \mathrm{ATD}(u, w_u, \ell)\).
+The headline correlation $\rho(\overline{\mathrm{ATD}}, \mathrm{severity})$
+is computed over the 15 TORGO speakers; the LOSO variant restricts to the
+8 dysarthric speakers, since controls (with severity 0) are by construction
+the reference builders and cannot be held out.
+
+\subsection{Layer selection and design choices}
+We sample 9 transformer layers $\ell \in \{1, 3, 6, 9, 12, 15, 18, 21, 23\}$
+to balance representational diversity against extraction cost. For each
+layer we compute Equation~\ref{eq:atd}; we report Bonferroni- and
+Benjamini--Hochberg-corrected $p$-values across the layer family. The
+PCA-64 reduction is empirically lossless against PCA-1024 within rounding
+($\Delta\rho < 0.05$) and yields a 16$\times$ DTW speedup. The
+median-length-template choice for the reference barycentre is robust to
+ties (selecting the first-encountered minimum is deterministic given a
+fixed metadata ordering and \texttt{RANDOM\_SEED = 42}).
+
+\subsection{Phoneme-level decomposition}
+For each utterance we additionally produce per-phoneme ATD by slicing the
+DTW path by Montreal-Forced-Aligner-derived phoneme boundaries and
+aggregating the path's cost contributions over each phoneme's frame range,
+length-normalised by the phoneme's local span. The decomposition is
+exact: $\sum_p D(p) = \mathrm{DTW}(\mathbf{Z}_u, \mathbf{R}_w)$, providing
+a principled attribution of utterance-level deviation to articulators.
+This enables clinically actionable output --- e.g., "deviation
+concentrated on voiceless stops $\{$/p/, /t/, /k/$\}$" --- without
+modifying the headline metric.

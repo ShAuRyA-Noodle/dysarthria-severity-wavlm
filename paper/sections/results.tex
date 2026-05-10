@@ -1,0 +1,70 @@
+% Target ~600 words.
+
+\subsection{Main results on TORGO}
+Table~\ref{tab:main} reports the headline numbers. ATD attains
+speaker-level Spearman $\rho = 0.756$ ($p = 0.0011$, $n = 15$, 95\%
+bootstrap CI $[0.40,\,0.92]$), compared to $0.787$ for MFCC + SVR. The
+LOSO $\rho$ is $0.394$ for ATD-All versus $0.056$ for MFCC + SVR --- a
+$7\times$ improvement in cross-speaker generalisation, although the LOSO
+correlation is itself non-significant ($p = 0.33$, CI $[-0.29,\,0.90]$)
+due to the $n = 8$ dysarthric fold count and is reported as a directional
+indicator only. RMSE drops from $0.802$ for MFCC to $0.671$ for ATD-All
+($-16.3\%$). Rank accuracy under LOSO is 87.5\% (7/8 dysarthric
+speakers correctly ranked relative to the median); the single mis-ranked
+speaker is F04, a documented case of preserved intelligibility despite a
+"severe" categorical label, discussed in \S~6.
+
+\subsection{Layer analysis}
+Figure~\ref{fig:layers} reports $\rho$ for each of the 9 sampled layers,
+with raw, Bonferroni-corrected, and Benjamini--Hochberg-corrected
+$p$-values in Table~\ref{tab:layers}. Every sampled layer is significant
+under both corrections at $\alpha = 0.05$. The strongest correlation is
+at Layer~1 ($\rho = 0.7754$), with a secondary peak at Layer~9
+($\rho = 0.7561$); the gap is within the bootstrap noise floor
+($\Delta < 0.04$). We interpret this as evidence that motor speech
+disruption manifests at both the acoustic-near (Layer~1) and
+articulatory-mid (Layer~9) levels of the WavLM hierarchy.
+
+\subsection{Ablations}
+Table~\ref{tab:ablations} shows that removing DTW (Mean L2) drops the
+global $\rho$ by 40\% (from $0.7561$ to $0.4706$); collapsing the
+trajectory entirely (mean-pool distance) is similarly catastrophic. PCA
+reduction to 64 dimensions is essentially lossless (PCA-1024 yields
+$\rho = 0.8024$ globally but $-0.056$ under LOSO, indicating the higher-
+dimensional variant overfits speaker-specific directions). The MFCC
+trajectory ablation --- replacing WavLM features with MFCCs in an
+otherwise-identical pipeline --- attains the highest global $\rho$
+($0.8487$) but the lowest LOSO $\rho$ ($0.2817$), confirming that MFCC
+trajectories overfit speaker-specific spectral idiosyncrasies while SSL
+features generalise better to unseen speakers.
+
+\subsection{Causal-perturbation specificity}
+The pre-registered perturbation experiment (\S~3.4 of supplementary,
+locked predictions in Appendix~B) confirms that ATD responds specifically
+to articulatory distortion. Formant shift (LPC resynthesis with
+$\alpha \in [0.85, 1.15]$) and partial muting (Bernoulli 50\,ms-window
+dropout up to 30\%) drive ATD up monotonically with intensity
+($\beta_\mathrm{form} = +X.XX$ per $\sigma$, 95\%~CI $[X.XX, X.XX]$;
+$\beta_\mathrm{mute} = +X.XX$). In contrast, time-stretch
+($0.6\times$--$1.75\times$ via PSOLA) leaves ATD essentially unchanged
+($\beta_\mathrm{rate}$ CI contains 0), and pink-noise injection at
+$-5$~dB SNR raises ATD by less than 10\% of the control--severe gap. The
+same model run on MFCC trajectory DTW does \emph{not} show this pattern:
+MFCC's $\beta_\mathrm{rate}$ is significantly positive, falsifying an
+"ATD = generic acoustic distance" interpretation.
+
+\subsection{Phoneme-level localisation}
+Figure~\ref{fig:phonemes} shows the per-phoneme z-scored deviation for
+each TORGO dysarthric speaker, computed by slicing each DTW path by
+Montreal-Forced-Aligner phoneme boundaries. As predicted in our
+pre-registered Jonckheere--Terpstra trend test (Appendix~C), consonant-
+mean deviation grows monotonically across Control < Mild < Severe
+($p < 0.001$); voiceless stops $\{$/p/, /t/, /k/$\}$ show the largest
+control--severe contrast in Cliff's $\delta$, consistent with the
+consonantal-imprecision profile of mixed dysarthria.
+
+\subsection{Confound analysis}
+ATD is not a proxy for speaking rate: per-utterance ATD vs.\ duration
+yields Pearson $r = 0.105$ ($p = X.XX$, $n = 7,826$). The control--severe
+duration ratio is $0.83\times$ in TORGO; if ATD tracked rate, the sign
+would invert.

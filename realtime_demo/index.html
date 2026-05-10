@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ATD Real-Time Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+  <header>
+    <h1>Articulatory Trajectory Deviation — Real-Time Demo</h1>
+    <p>Speak the prompted word; the rolling ATD is computed against TORGO-control reference trajectories in WavLM-Large layer-9 PCA-64 space.</p>
+  </header>
+
+  <main>
+    <section class="controls">
+      <label>Prompt word: <input id="word" type="text" value="banana" /></label>
+      <button id="startBtn">Start</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <span id="status">idle</span>
+    </section>
+
+    <section class="plot">
+      <canvas id="atdChart" width="900" height="320"></canvas>
+    </section>
+
+    <section class="metrics">
+      <div>final ATD: <span id="finalAtd">—</span></div>
+      <div>frames: <span id="frames">0</span></div>
+      <div>p50 latency (ms): <span id="latency">—</span></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
