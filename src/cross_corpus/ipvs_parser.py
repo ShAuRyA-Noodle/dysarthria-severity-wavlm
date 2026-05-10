@@ -32,19 +32,31 @@ GROUP_PATTERNS = {
     "Control": "HC_Old",  # ambiguous fallback if "Healthy" missing
 }
 
-# IPVS task codes inferred from the file-stem prefix conventions documented
-# in Dimauro et al. 2017 / Suppa et al. 2022. Refine after manual audit.
+# IPVS task codes derived from empirical inspection of the HuggingFace
+# mirror (Dimauro 2019). Stem starts with 2-3 letters + intensity digit.
+# Vowels: VA/VE/VI/VO/VU at intensity 1 or 2.
+# PR: read passage. FB: fixed phrase. B*/D*: DDK / disyllable variants.
 TASK_PREFIX_TO_TASK = {
-    "B1": "sustained_vowel_a",
-    "B2": "sustained_vowel_e",
-    "B3": "sustained_vowel_i",
-    "B4": "sustained_vowel_o",
-    "B5": "sustained_vowel_u",
-    "VS": "vowel_sequence",
-    "PR": "read_passage",
-    "FR": "read_phrase",
-    "DDK": "ddk_pataka",
-    "WD": "isolated_word",
+    "VA1": "sustained_vowel_a", "VA2": "sustained_vowel_a",
+    "VE1": "sustained_vowel_e", "VE2": "sustained_vowel_e",
+    "VI1": "sustained_vowel_i", "VI2": "sustained_vowel_i",
+    "VO1": "sustained_vowel_o", "VO2": "sustained_vowel_o",
+    "VU1": "sustained_vowel_u", "VU2": "sustained_vowel_u",
+    "PR1": "read_passage", "PR2": "read_passage",
+    "FB1": "read_phrase",  "FB2": "read_phrase",
+    # DDK syllable buckets (B = bilabial, D = alveolar; suffix = vowel context).
+    "B1A": "ddk_baba", "B1E": "ddk_baba", "B1I": "ddk_baba",
+    "B1O": "ddk_baba", "B1U": "ddk_baba", "B1L": "ddk_baba", "B1G": "ddk_baba",
+    "B1V": "ddk_baba",
+    "B2A": "ddk_baba", "B2E": "ddk_baba", "B2I": "ddk_baba",
+    "B2O": "ddk_baba", "B2U": "ddk_baba", "B2L": "ddk_baba", "B2G": "ddk_baba",
+    "B2V": "ddk_baba",
+    "D1A": "ddk_dada", "D1E": "ddk_dada", "D1I": "ddk_dada",
+    "D1O": "ddk_dada", "D1U": "ddk_dada", "D1L": "ddk_dada", "D1G": "ddk_dada",
+    "D1V": "ddk_dada",
+    "D2A": "ddk_dada", "D2E": "ddk_dada", "D2I": "ddk_dada",
+    "D2O": "ddk_dada", "D2U": "ddk_dada", "D2L": "ddk_dada", "D2G": "ddk_dada",
+    "D2V": "ddk_dada",
 }
 
 
@@ -64,27 +76,48 @@ def _speaker_hash(full_name: str, group: str) -> str:
 
 def _classify_task(stem: str) -> str:
     upper = stem.upper()
-    for prefix, task in TASK_PREFIX_TO_TASK.items():
-        if upper.startswith(prefix):
-            return task
+    # Try 3-char prefix first (most specific: VA1, PR1, B1A, D2V, ...),
+    # then 2-char (less specific) as a fallback.
+    for n in (3, 2):
+        prefix = upper[:n]
+        if prefix in TASK_PREFIX_TO_TASK:
+            return TASK_PREFIX_TO_TASK[prefix]
     return "unknown"
 
 
+_RANGE_PATTERN = re.compile(r"^\d+-\d+$")
+
+
 def parse_ipvs_filename(path: Path) -> dict | None:
-    """Parse one IPVS audio path. Returns dict or None if layout doesn't match."""
+    """Parse one IPVS audio path. Returns dict or None if layout doesn't match.
+
+    Two layouts observed in the HuggingFace mirror:
+
+    * HC groups (3 levels): ``italian_parkinson/<group>/<speaker_name>/<file>.wav``
+    * PD group  (4 levels): ``italian_parkinson/<group>/<range>/<speaker_name>/<file>.wav``
+
+    Detection: if the component after the group matches ``\d+-\d+`` we
+    treat it as a range bucket and read the speaker_name one level deeper.
+    """
     parts = path.parts
     try:
         idx = parts.index("italian_parkinson")
     except ValueError:
         return None
     rel = parts[idx + 1:]
-    if len(rel) < 3:  # group / speaker / file
+    if len(rel) < 3:
         return None
     group_dir = rel[0]
-    speaker_name = rel[1]
     group = _classify_group(group_dir)
     if group == "UNKNOWN":
         return None
+
+    # Disambiguate 3-level (HC) vs 4-level (PD) layout.
+    if len(rel) >= 4 and _RANGE_PATTERN.match(rel[1]):
+        speaker_name = rel[2]
+    else:
+        speaker_name = rel[1]
+
     speaker_id = _speaker_hash(speaker_name, group)
     stem = path.stem
     task = _classify_task(stem)

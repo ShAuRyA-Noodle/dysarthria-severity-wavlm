@@ -37,9 +37,9 @@ logger = logging.getLogger(__name__)
 # IPVS used layers {1, 9, 12} in CC_01 — position 0/1/2 in stacked arrays.
 IPVS_LAYER_POSITION_MAP = {1: 0, 9: 1, 12: 2}
 
-# Tasks that have a fixed semantic content shared across speakers.
-# 'read_passage' is a standardized passage per speaker; include despite
-# variant length. Drop 'unknown' bucket until task-prefix table refined.
+# Tasks with fixed shared content across speakers (post task-prefix refinement
+# 2026-05-11). 5 sustained vowels + read passage + fixed phrase + 2 DDK
+# variants. Drops the residual 'unknown' bucket.
 ELIGIBLE_TASKS = (
     "sustained_vowel_a",
     "sustained_vowel_e",
@@ -47,7 +47,9 @@ ELIGIBLE_TASKS = (
     "sustained_vowel_o",
     "sustained_vowel_u",
     "read_passage",
-    "ddk_pataka",
+    "read_phrase",
+    "ddk_baba",
+    "ddk_dada",
 )
 
 
