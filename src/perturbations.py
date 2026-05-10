@@ -104,12 +104,19 @@ def reverberate(wave: np.ndarray, sr: int, rt60_s: float, key: str = "") -> np.n
 
 
 def pitch_shift(wave: np.ndarray, sr: int, semitones: float, key: str = "") -> np.ndarray:
-    """PSOLA pitch shift with formant ratio = 1.0 (vowel quality preserved)."""
-    snd = _to_snd(wave, sr)
-    factor = 2 ** (semitones / 12.0)
-    base = _praat_call(snd, "Get mean pitch", 0.0, 0.0, "Hertz") or 150.0
-    out = _praat_call(snd, "Change gender", 75.0, 600.0, 1.0, base * factor, 1.0, 1.0)
-    return _peak_norm(np.asarray(out.values).squeeze())
+    """Pitch shift by ``semitones`` (vowel formants preserved by phase-vocoder).
+
+    Uses librosa.effects.pitch_shift (phase-vocoder TSM under the hood),
+    which is more portable than Praat's "Change gender" command. The
+    parselmouth-based variant fails in current praat-parselmouth versions
+    with "Command 'Get mean pitch' not available for given objects"; the
+    librosa path avoids that.
+    """
+    import librosa
+    shifted = librosa.effects.pitch_shift(
+        wave.astype(np.float32), sr=sr, n_steps=float(semitones)
+    )
+    return _peak_norm(shifted)
 
 
 PERTURBATIONS = {
