@@ -30,6 +30,10 @@ results/logs/
 # ===== Privacy: real-name → anonymous-ID maps (NEVER commit) =====
 data/processed/metadata/*_speaker_map.csv
 
+# ===== MFA corpus tree (copy of TORGO audio + .lab files) =====
+mfa_corpus_torgo/
+data/processed/textgrids/
+
 # ===== OS =====
 Thumbs.db
 .DS_Store

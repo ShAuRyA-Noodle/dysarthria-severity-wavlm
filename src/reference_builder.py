@@ -185,17 +185,20 @@ def build_word_reference(
     if len(trajectories) < 2:
         return None
 
-    # 3b. HARD GUARANTEE: references are built ONLY from declared TORGO controls.
-    # Catches any metadata corruption that would silently leak dysarthric speakers
-    # into the reference trajectory. Headline ρ depends on this invariant.
+    # 3b. HARD GUARANTEE for TORGO: references only from declared controls.
+    # Catches any metadata corruption that would silently leak dysarthric
+    # speakers into the reference trajectory. Skipped automatically for
+    # corpora outside TORGO_CONTROL_SPEAKERS (e.g. IPVS uses anonymised
+    # IPVS_HC_* speaker IDs).
     speakers_set = set(speakers_used)
-    leaked = speakers_set - set(TORGO_CONTROL_SPEAKERS)
-    if leaked:
-        raise ValueError(
-            f"Reference for word={word!r} would include non-control speakers "
-            f"{sorted(leaked)}. Expected subset of {sorted(TORGO_CONTROL_SPEAKERS)}. "
-            f"Check metadata 'is_control' column integrity."
-        )
+    if speakers_set & set(TORGO_CONTROL_SPEAKERS):
+        leaked = speakers_set - set(TORGO_CONTROL_SPEAKERS)
+        if leaked:
+            raise ValueError(
+                f"Reference for word={word!r} would include non-control speakers "
+                f"{sorted(leaked)}. Expected subset of {sorted(TORGO_CONTROL_SPEAKERS)}. "
+                f"Check metadata 'is_control' column integrity."
+            )
 
     # 4. PCA-reduce: fit on concatenated control data
     all_frames = np.concatenate(trajectories, axis=0)  # (sum_T, 1024)
@@ -246,6 +249,7 @@ def build_all_references(
     output_dir: str = "data/processed/references/",
     min_control_utterances: int = 2,
     project_root: Optional[Path] = None,
+    layer_position_map: Optional[dict[int, int]] = None,
 ) -> dict:
     """
     Build references for ALL words at ALL target layers.
@@ -271,6 +275,8 @@ def build_all_references(
         target_layers = [1, 3, 6, 9, 12, 15, 18, 21, 23]
     if project_root is None:
         project_root = Path(__file__).resolve().parent.parent
+    if layer_position_map is None:
+        layer_position_map = LAYER_IDX_MAP
 
     out_path = project_root / output_dir
     out_path.mkdir(parents=True, exist_ok=True)
@@ -302,10 +308,12 @@ def build_all_references(
         word_has_ref = False
         for layer in target_layers:
             pbar.update(1)
-            # Map transformer layer to stacked array index
-            layer_arr_idx = LAYER_IDX_MAP.get(layer)
+            # Map transformer layer to stacked array index. Per-corpus
+            # override via `layer_position_map` lets cross-corpus runs use
+            # different extracted layer sets (e.g. IPVS uses {1,9,12}).
+            layer_arr_idx = layer_position_map.get(layer)
             if layer_arr_idx is None:
-                logger.warning(f"Layer {layer} not in LAYER_IDX_MAP, skipping")
+                logger.warning(f"Layer {layer} not in layer_position_map, skipping")
                 continue
 
             try:
