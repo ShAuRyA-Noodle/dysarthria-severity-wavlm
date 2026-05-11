@@ -67,6 +67,28 @@ aggregating the path's cost contributions over each phoneme's frame range,
 length-normalised by the phoneme's local span. The decomposition is
 exact: $\sum_p D(p) = \mathrm{DTW}(\mathbf{Z}_u, \mathbf{R}_w)$, providing
 a principled attribution of utterance-level deviation to articulators.
-This enables clinically actionable output --- e.g., "deviation
-concentrated on voiceless stops $\{$/p/, /t/, /k/$\}$" --- without
-modifying the headline metric.
+Per-phoneme distributions are z-scored against control-speaker tokens,
+with manner-class fallback when fewer than 30 control tokens are
+available for a specific phone.
+
+\subsection{Streaming variant}
+For real-time deployment we replace the offline fastdtw call with an
+online subsequence-DTW recurrence~\cite{Mueller2007SubseqDTW,
+Rakthanmanon2012UCRSuite} that updates the accumulated cost matrix
+column-by-column as new query frames arrive. Per-frame extension
+cost is $O(|\mathbf{R}_w|)$ regardless of cumulative utterance length;
+empirical per-frame latency is $91$\,$\mu$s (p50) and
+$402$\,$\mu$s (p99) on a single RTX~4080 thread. WavLM-Large forward
+($\approx 30$\,ms GPU on 250\,ms context) is the binding latency
+budget. SS-DTW's free initial column relaxes the offline (0,0) start
+constraint; on a 200-utterance parity test the online and offline ATD
+have Pearson $r{=}0.81$ with median absolute difference essentially
+zero ($1\!\times\!10^{-5}$).
+
+\subsection{Cross-corpus multilingual variant}
+For non-English corpora (IPVS Italian, PC-GITA Spanish, EasyCall
+Italian) we swap WavLM-Large for XLS-R-300m, which is pre-trained on
+436k hours across 128 languages. The reference-construction pipeline
+is identical except that the donor (control) frames come from the
+target corpus and the PCA basis is re-fit per corpus; a shared-basis
+zero-shot variant is also evaluated in Section~5.5.
