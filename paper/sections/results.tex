@@ -72,14 +72,34 @@ formant-shift sweep, and a parallel MFCC-trajectory comparison
 defended.
 
 \subsection{Phoneme-level localisation}
-Figure~\ref{fig:phonemes} shows the per-phoneme z-scored deviation for
-each TORGO dysarthric speaker, computed by slicing each DTW path by
-Montreal-Forced-Aligner phoneme boundaries. As predicted in our
-pre-registered Jonckheere--Terpstra trend test (Appendix~C), consonant-
-mean deviation grows monotonically across Control < Mild < Severe
-($p < 0.001$); voiceless stops $\{$/p/, /t/, /k/$\}$ show the largest
-control--severe contrast in Cliff's $\delta$, consistent with the
-consonantal-imprecision profile of mixed dysarthria.
+Figure~\ref{fig:phonemes} shows per-phoneme z-scored deviation for each
+TORGO speaker, computed by slicing each DTW path by Montreal-Forced-
+Aligner english\_us\_arpa boundaries (7654 of 8044 utterances aligned;
+68945 per-phoneme rows over 64 distinct ARPABET phones). Speaker-mean
+ATD per manner class correlates with severity at:
+
+\begin{tabular}{lccr}
+\toprule
+Manner class & $\rho$ & $p$ & $n_\mathrm{tokens}$ \\
+\midrule
+Vowels           & $0.629$ & $0.012$ & $25{,}767$ \\
+Consonants       & $0.625$ & $0.013$ & $43{,}178$ \\
+Voiceless stops  & $0.594$ & $0.020$ & $9{,}542$  \\
+\bottomrule
+\end{tabular}
+
+All three classes are significant. The pre-registered consonant-over-
+vowel hypothesis (typical consonantal-imprecision profile of mixed
+dysarthria) is \emph{not} supported at the speaker-mean aggregate level:
+vowels and consonants yield indistinguishable Spearman magnitudes.
+Voiceless stops show a slightly smaller but still significant
+correlation, plausibly limited by token count. We interpret this as
+evidence that ATD captures a manner-agnostic signal: dysarthric
+deviation distributes across both vowel quality and consonant
+articulation rather than concentrating in one class. Per-speaker
+heatmaps remain clinically useful: $|z| > 2$ cells identify specific
+articulators where individual patients deviate from the control
+distribution.
 
 \subsection{Confound analysis}
 ATD is not a proxy for speaking rate: per-utterance ATD vs.\ duration
