@@ -14,16 +14,20 @@ yields higher in-corpus $\rho$ but the worst LOSO transfer
 contribution of \emph{trajectory structure} and of \emph{pre-trained
 SSL geometry} respectively.
 
-\subsection{Mechanistic specificity}
-The controlled-perturbation study (\S~5.4) rules out the alternative
-that ATD merely tracks acoustic distance. Time-stretch
-($0.6\times$--$1.75\times$ via PSOLA) and pink-noise injection at
-SNR $-5$~dB leave ATD essentially unchanged (95\% CI on the slope
-contains zero); formant shifts and frame-dropout drive ATD up
-monotonically with intensity. MFCC trajectory DTW shows the same
-sensitivity but \emph{also} responds to time-stretch, indicating
-that ATD's length-normalised SSL pipeline isolates an articulatory
-component MFCC cannot.
+\subsection{Sensitivity profile, not specificity proof}
+The controlled-perturbation study (\S~5.4) yielded a partially
+falsified pre-registered prediction set. Formant-shift and partial-
+muting drive ATD up monotonically as expected, but \emph{pink-noise}
+($\rho{=}0.77$) and \emph{reverberation} ($\rho{=}0.67$) drive it
+up even more strongly, and \emph{time-stretch} also produces non-zero
+$\Delta$ATD. WavLM's denoising pre-training does not yield noise-
+invariance for the trajectory metric, and length-normalisation does
+not fully absorb rate. We therefore present Track~C as a
+\emph{sensitivity profile} rather than a specificity proof:
+ATD is broadly sensitive to multiple acoustic dimensions of speech
+quality. A relative-specificity comparison against MFCC trajectory
+DTW under the same protocol is in progress and will be reported in
+the camera-ready.
 
 \subsection{Trajectory-length regime}
 Direct cross-corpus transfer to UASpeech fails ($\rho{=}{-}0.22$,
