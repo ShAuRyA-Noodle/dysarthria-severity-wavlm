@@ -192,3 +192,26 @@ healthy prototype) is positive but underpowered: $\rho{=}0.18$,
 $p{=}0.17$, $n{=}61$. Within-corpus IPVS reference building
 outperforms zero-shot, consistent with channel + language mismatch
 not being fully absorbed by mean-variance normalisation alone.
+
+\paragraph{Differential-diagnosis classifier (TORGO + UASpeech + IPVS pooled).}
+A 4-class logistic regression with LOSO over $91$ pooled speakers
+(44 Control / 18 Mild--Moderate / 5 Severe / 24 Parkinson) reaches
+macro-F$_1 = 0.573$. Control + dysarthric severity are well separated
+(precision/recall both $\geq 0.78$ on Mild + Severe), but Parkinson
+is uniformly mis-classified as Control. The failure is informative:
+without per-corpus normalisation, the IPVS ATD scale overlaps
+TORGO-control magnitude, masking the within-corpus PD signal that
+Section~5.6 already documented. Per-corpus z-rank normalisation
+recovers the signal; we report the raw classifier as a falsifiable
+baseline for the pooling-without-normalisation strategy.
+
+\paragraph{Confidence-aware ATD.}
+Per-utterance DTW-path entropy decreases monotonically with severity
+(Control $0.976$, Mild $0.943$, Severe $0.929$): severe trajectories
+concentrate on a smaller subset of reference frames. Path coverage
+saturates at $1.0$ across all severity levels in this regime,
+indicating fastdtw radius~$30$ is wide enough to visit every
+reference frame regardless of speaker. The entropy drop is small
+($\sim 0.05$) but reproducible and provides a per-utterance
+confidence indicator for clinical-deployment scenarios where flagging
+low-confidence ATD outputs is important.

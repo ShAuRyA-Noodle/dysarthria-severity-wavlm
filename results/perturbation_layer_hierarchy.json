@@ -1,0 +1,97 @@
+{
+  "layers_compared": [
+    1,
+    9
+  ],
+  "note": "LOCO references only built at L1 + L9; full 9-layer sweep deferred",
+  "rows": [
+    {
+      "layer": 1,
+      "family": "formant_shift",
+      "n": 660,
+      "rho": 0.3965354206749237,
+      "p": 2.80189735956831e-26,
+      "mean_delta_atd": 2.6185121593125094
+    },
+    {
+      "layer": 1,
+      "family": "partial_mute",
+      "n": 550,
+      "rho": 0.7758606757054338,
+      "p": 1.0520376824880276e-111,
+      "mean_delta_atd": 4.583071755064975
+    },
+    {
+      "layer": 1,
+      "family": "pink_noise",
+      "n": 660,
+      "rho": 0.8320611394771317,
+      "p": 1.4262912105813262e-170,
+      "mean_delta_atd": 11.831687944281683
+    },
+    {
+      "layer": 1,
+      "family": "pitch_shift",
+      "n": 660,
+      "rho": 0.688475405161389,
+      "p": 7.224294254447208e-94,
+      "mean_delta_atd": 5.861780671753685
+    },
+    {
+      "layer": 1,
+      "family": "reverberate",
+      "n": 550,
+      "rho": 0.38327897399934396,
+      "p": 1.0913480718289369e-20,
+      "mean_delta_atd": 8.61794921208852
+    },
+    {
+      "layer": 1,
+      "family": "time_stretch",
+      "n": 660,
+      "rho": 0.31258636412048024,
+      "p": 1.9982895566449316e-16,
+      "mean_delta_atd": 1.5532036007822985
+    },
+    {
+      "layer": 9,
+      "family": "formant_shift",
+      "n": 660,
+      "rho": 0.1697011157000062,
+      "p": 1.1691240962035322e-05,
+      "mean_delta_atd": 2.7235045635754953
+    },
+    {
+      "layer": 9,
+      "family": "partial_mute",
+      "n": 550,
+      "rho": 0.40220513759102083,
+      "p": 8.424941942645758e-23,
+      "mean_delta_atd": 15.886214947365971
+    },
+    {
+      "layer": 9,
+      "family": "pink_noise",
+      "n": 660,
+      "rho": 0.7664137655944502,
+      "p": 1.3191510269059978e-128,
+      "mean_delta_atd": 19.261588827000505
+    },
+    {
+      "layer": 9,
+      "family": "reverberate",
+      "n": 550,
+      "rho": 0.6726107514056051,
+      "p": 1.100233082773779e-73,
+      "mean_delta_atd": 9.060954656664912
+    },
+    {
+      "layer": 9,
+      "family": "time_stretch",
+      "n": 660,
+      "rho": 0.24408921063670622,
+      "p": 2.0808646729399337e-10,
+      "mean_delta_atd": 3.1853790769512487
+    }
+  ]
+}
