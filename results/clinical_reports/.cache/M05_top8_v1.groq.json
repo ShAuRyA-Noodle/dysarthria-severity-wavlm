@@ -1,0 +1,6 @@
+{
+  "backend": "groq",
+  "model": "llama-3.3-70b-versatile",
+  "text": "OVERALL: The speaker's articulation patterns are mildly to moderately deviant, with a z-score of +1.22 compared to the population mean.\n\nARTICULATORY PATTERNS:\n* The phonemes /EY0/, /AY2/, and /IH2/ exhibit significant deviation, with z-scores of +19.97, +5.26, and +4.77, respectively.\n* Vowels show a mean z-score of +1.95, indicating notable deviation.\n* Liquids have a mean z-score of +2.11, suggesting pronounced deviation in this manner class.\n\nSLP RECOMMENDATIONS:\n* Target precise vowel articulation, particularly /EY0/ and /AY2/, in therapy sessions.\n* Focus on liquid sounds to improve overall articulatory accuracy.\n\nCAVEAT: The Articulatory Trajectory Deviation metric is a research-grade tool and should not be used as a sole basis for diagnosis.",
+  "elapsed_s": 0.8698823000013363
+}

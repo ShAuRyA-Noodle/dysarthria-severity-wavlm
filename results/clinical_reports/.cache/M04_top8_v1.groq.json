@@ -1,0 +1,6 @@
+{
+  "backend": "groq",
+  "model": "llama-3.3-70b-versatile",
+  "text": "OVERALL: The speaker exhibits a severe articulation pattern deviation, with a mean ATD of 106.201, indicating significant differences from the population mean.\n\nARTICULATORY PATTERNS:\n* The phonemes /AY2/, /EY0/, and /AE2/ show the most deviation, with z-scores of +10.55, +6.95, and +6.67, respectively.\n* Fricative and vowel manner classes are also notably deviant, with mean z-scores of +2.73 and +2.34.\n* Nasal manner class shows a mean z-score of +2.17, indicating significant deviation.\n\nSLP RECOMMENDATIONS:\n* Target phonemes /AY2/, /EY0/, and /AE2/ in therapy to improve articulation accuracy.\n* Focus on fricative and vowel manner classes to address overall sound production.\n\nCAVEAT: The ATD metric is a research-grade tool and should not be used as a sole basis for diagnosis.",
+  "elapsed_s": 0.9230746999965049
+}

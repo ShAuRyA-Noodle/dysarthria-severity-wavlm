@@ -1,0 +1,6 @@
+{
+  "backend": "gemini",
+  "model": "gemini-2.5-flash",
+  "text": "**OVERALL:**\nSpeaker M02 demonstrates severe articulatory deviation, with an Articulatory Trajectory Deviation (ATD) score of 94.310, which is +1.01 standard deviations above the population mean.\n\n**ARTICULATORY PATTERNS:**\n*   Significant deviations are observed across multiple vowel productions, with /EY0/ (z=+8.64), /UW0/ (z=+4.89), and /IH2/ (z=+4.12) exhibiting the highest z-scores.\n*   The vowel manner class shows a mean z-score of +1.66, indicating generalized vowel imprecision.\n*   Fricatives (mean z=+1.",
+  "elapsed_s": 7.130759899999248
+}

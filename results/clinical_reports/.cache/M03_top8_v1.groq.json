@@ -1,0 +1,6 @@
+{
+  "backend": "groq",
+  "model": "llama-3.3-70b-versatile",
+  "text": "OVERALL: The speaker's articulation patterns are rated as Mild-Moderate, with a speaker mean ATD of 60.840.\n\nARTICULATORY PATTERNS:\n* The phoneme /IY2/ shows a z-score of +2.42, indicating significant deviation.\n* The phonemes /UH2/ and /IH2/ also exhibit notable deviations, with z-scores of +1.91 and +0.71, respectively.\n* Vowel articulation patterns are generally affected, with a per-manner-class mean z-score of -0.13.\n\nSLP RECOMMENDATIONS:\n* Target precise vowel articulation, particularly for /IY2/ and /UH2/, in therapy sessions.\n* Practice consonant-vowel transitions to improve overall articulatory clarity.\n\nCAVEAT: The ATD metric is a research-grade tool and should not be considered a definitive diagnosis.",
+  "elapsed_s": 0.7468006999988575
+}
