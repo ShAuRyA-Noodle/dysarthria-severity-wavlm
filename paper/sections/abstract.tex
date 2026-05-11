@@ -10,11 +10,17 @@ dynamic-time-warping distance between the speaker's WavLM trajectory
 and a per-word reference built by DTW-barycentre averaging of seven
 control speakers, in a shared 64-dimensional PCA subspace and length-
 normalised to isolate execution quality from speaking rate. Without
-fine-tuning, ATD attains speaker-level Spearman $\rho{=}0.756$ on TORGO
-($p{=}0.0011$, $n{=}15$, bootstrap CI $[0.40,\,0.92]$), correctly ranks
-7 of 8 dysarthric speakers under LOSO, and reduces RMSE by 16.3\% over
-MFCC + SVR. Phoneme-level DTW-path decomposition (Montreal Forced
-Aligner; 68945 phoneme tokens) yields $\rho \approx 0.63$ on both
-vowels and consonants. Cross-language transfer: on Italian Parkinsonian
-voice (IPVS, XLS-R-300m layer 1, sustained vowels) all five vowel-
-specific binary HC-vs-PD tests survive BH-FDR correction at $q{=}0.05$.
+fine-tuning, ATD attains speaker-level Spearman $\rho{=}0.775$ on TORGO
+at WavLM Layer~1 ($p{=}0.0007$, $n{=}15$, 10k bootstrap CI
+$[0.38,\,0.92]$), correctly ranks 7 of 8 dysarthric speakers under
+LOSO, and reduces RMSE by 16.3\% over MFCC + SVR. A controlled-
+perturbation study at Layer~1 confirms specificity: ATD beats MFCC
+trajectory DTW on formant-shift, partial-muting, reverberation, and
+time-stretch slopes (all positive differences), tying only on pink-
+noise. Phoneme-level DTW-path decomposition (68945 tokens, Montreal
+Forced Aligner) yields $\rho \approx 0.63$ on both vowels and
+consonants. Cross-language transfer: on Italian Parkinsonian voice
+(IPVS, XLS-R-300m Layer~1, sustained vowels), all five vowel-specific
+binary HC-vs-PD tests survive BH-FDR correction at $q{=}0.05$, with
+/i/ and /o/ also passing Bonferroni. Streaming variant achieves
+$91\,\mu$s per-frame ATD update (Pearson $r{=}0.81$ vs offline).
