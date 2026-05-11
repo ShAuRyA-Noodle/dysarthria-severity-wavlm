@@ -82,6 +82,9 @@ def main() -> None:
     pert = _load_json(PROJECT_ROOT / "results/perturbation_atd_vs_mfcc.json")
     if pert:
         out["track_c_perturbation_atd_vs_mfcc"] = pert
+    pert_l1 = _load_json(PROJECT_ROOT / "results/perturbation_layer1_summary.json")
+    if pert_l1:
+        out["track_c_perturbation_layer1"] = pert_l1
 
     # IPVS.
     ipvs = _load_json(PROJECT_ROOT / "results/cross_corpus/ipvs_atd_layer9.json")

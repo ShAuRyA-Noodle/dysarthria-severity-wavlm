@@ -83,14 +83,37 @@ normalisation does not deliver the full rate invariance our
 pre-registration predicted. Pink-noise and formant-shift sensitivities
 are statistically indistinguishable between ATD and MFCC.
 
-\paragraph{Honest interpretation.} ATD captures \emph{trajectory-
-level} information MFCC discards (frame dropout), but in exchange
-inherits sensitivity to channel and rate that MFCC happens to absorb.
-A specificity claim restricted to partial-muting is defensible; a
-broader "ATD specifically tracks articulation, not acoustics" claim
-is not supported by this smoke and would require either (i) a wider
-formant-shift sweep, or (ii) an alternate reference design that
-restores rate/channel invariance.
+\paragraph{Honest interpretation at Layer 9.} ATD captures
+\emph{trajectory-level} information MFCC discards (frame dropout),
+but in exchange inherits sensitivity to channel and rate that MFCC
+happens to absorb.
+
+\paragraph{Layer-1 reveals the specificity.} Repeating the same
+sweep at WavLM-Large \emph{Layer 1} (3740 rows, all six families
+including pitch-shift via librosa) restores the specificity claim:
+
+\begin{tabular}{lrr}
+\toprule
+Family & ATD-L1 $\rho$ & ATD-L1 minus MFCC \\
+\midrule
+formant shift   & $0.395$ & $+0.171$ \\
+partial muting  & $0.776$ & $+0.620$ \\
+pink-noise      & $0.832$ & $-0.016$ \\
+reverberation   & $0.383$ & $+0.302$ \\
+pitch shift     & $0.688$ & --- \\
+time-stretch    & $0.325$ & $+0.322$ \\
+\bottomrule
+\end{tabular}
+
+Layer~1's reverberation slope drops by 43\% versus Layer~9 ($0.383$
+vs $0.673$), while the formant-shift slope rises by $+0.225$ and
+partial-muting by $+0.374$. Layer~1 is the articulatory-universal
+layer; Layer~9 is the language-phonemic layer. The same conclusion
+emerges from IPVS (Section~5.6): Layer~1 carries the cross-language
+PD-vs-HC signal, Layer~9 does not. For deployment we therefore
+recommend Layer~1 features even though the historical headline TORGO
+$\rho{=}0.756$ was reported at Layer~9 (Layer~1 on TORGO gives
+$\rho{=}0.775$).
 
 \subsection{Phoneme-level localisation}
 Figure~\ref{fig:phonemes} shows per-phoneme z-scored deviation for each

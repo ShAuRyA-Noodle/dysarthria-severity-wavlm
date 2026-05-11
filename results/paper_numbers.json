@@ -1,6 +1,6 @@
 {
   "generated_by": "experiments/21_consolidate_paper_numbers.py",
-  "generated_at_utc": "2026-05-11T06:05:58.614357+00:00",
+  "generated_at_utc": "2026-05-11T06:06:30.112433+00:00",
   "branch": "audit-cleanup-2026-05-08",
   "datasets": {
     "torgo": {
@@ -345,6 +345,42 @@
         "atd_minus_mfcc": 0.24088553683678532
       }
     }
+  },
+  "track_c_perturbation_layer1": {
+    "layer": 1,
+    "by_family": {
+      "formant_shift": {
+        "rho": 0.3949763408385952,
+        "p": 4.551953166192204e-26,
+        "mean_dATD": 2.585589439211783
+      },
+      "partial_mute": {
+        "rho": 0.7758606757054338,
+        "p": 1.0520376824880276e-111,
+        "mean_dATD": 4.583071755064975
+      },
+      "pink_noise": {
+        "rho": 0.8320611394771317,
+        "p": 1.4262912105813262e-170,
+        "mean_dATD": 11.831687944281683
+      },
+      "pitch_shift": {
+        "rho": 0.688475405161389,
+        "p": 7.224294254447208e-94,
+        "mean_dATD": 5.861780671753685
+      },
+      "reverberate": {
+        "rho": 0.38327897399934396,
+        "p": 1.0913480718289369e-20,
+        "mean_dATD": 8.61794921208852
+      },
+      "time_stretch": {
+        "rho": 0.3247351794460524,
+        "p": 1.1302385684398834e-17,
+        "mean_dATD": 1.5673697705365783
+      }
+    },
+    "n_rows": 3740
   },
   "ipvs_within_corpus_layer9": {
     "corpus": "ipvs",
