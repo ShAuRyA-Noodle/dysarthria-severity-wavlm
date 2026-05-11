@@ -57,19 +57,40 @@ formant shift    & $+0.170$ & $2.7$  \\
 \bottomrule
 \end{tabular}
 
-The pre-registered predictions (Appendix~B) are \emph{partially
-falsified}. Formant shift and partial muting drive ATD up as predicted,
-but pink-noise and reverberation drive it up more strongly than either:
-WavLM's denoising pre-training does not yield noise-invariance for the
-trajectory metric, and channel response is not innocuous. Time-stretch
-is also non-zero, indicating that length normalisation does not fully
-absorb rate. We therefore reframe Track C as a \emph{sensitivity
-profile} rather than a specificity proof: ATD is broadly sensitive to
-multiple acoustic dimensions of speech quality, with the smallest
-response on formant-shift in the alpha range tested. A wider
-formant-shift sweep, and a parallel MFCC-trajectory comparison
-(forthcoming), are required before the specificity claim can be
-defended.
+The same five perturbations were applied to the same waveforms and
+scored with an MFCC-trajectory DTW pipeline (13 coefficients, median-
+length control reference per word, identical FastDTW radius). The
+per-family slope \emph{difference} ATD~$-$~MFCC is:
+
+\begin{tabular}{lrrr}
+\toprule
+Family & ATD $\rho$ & MFCC $\rho$ & $\Delta = \rho_\text{ATD} - \rho_\text{MFCC}$ \\
+\midrule
+reverberation    & $0.673$ & $0.081$ & $\mathbf{+0.592}$ \\
+partial muting   & $0.402$ & $0.156$ & $\mathbf{+0.247}$ \\
+time-stretch     & $0.244$ & $0.003$ & $\mathbf{+0.241}$ \\
+pink-noise       & $0.766$ & $0.848$ & $-0.082$ \\
+formant shift    & $0.170$ & $0.224$ & $-0.055$ \\
+\bottomrule
+\end{tabular}
+
+The trade-off is clear and unflattering. ATD detects partial muting
+that breaks trajectory continuity ($\Delta\rho{=}+0.25$) -- evidence
+that the metric uses temporal structure MFCC ignores -- but is also
+more sensitive to non-articulatory channel response (reverberation
+$\Delta{=}+0.59$) and to speaking rate ($\Delta{=}+0.24$). Length-
+normalisation does not deliver the full rate invariance our
+pre-registration predicted. Pink-noise and formant-shift sensitivities
+are statistically indistinguishable between ATD and MFCC.
+
+\paragraph{Honest interpretation.} ATD captures \emph{trajectory-
+level} information MFCC discards (frame dropout), but in exchange
+inherits sensitivity to channel and rate that MFCC happens to absorb.
+A specificity claim restricted to partial-muting is defensible; a
+broader "ATD specifically tracks articulation, not acoustics" claim
+is not supported by this smoke and would require either (i) a wider
+formant-shift sweep, or (ii) an alternate reference design that
+restores rate/channel invariance.
 
 \subsection{Phoneme-level localisation}
 Figure~\ref{fig:phonemes} shows per-phoneme z-scored deviation for each
