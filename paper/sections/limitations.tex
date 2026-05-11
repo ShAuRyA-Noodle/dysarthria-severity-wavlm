@@ -17,12 +17,27 @@ Removing one influential speaker shifts $\rho$ from 0.756 to 0.855. We
 report the leave-one-out distribution across all 15 speakers in the
 supplementary.
 
+\paragraph{Cross-corpus z-norm caveat.}
+The 4-corpus pooled analysis (\S\ref{sec:specificity}) z-normalises
+ATD \emph{within} each corpus before pooling. This controls for
+differences in recording chain (microphone, room, sample rate) but
+also collapses any absolute-scale information across corpora. The
+specificity claim therefore concerns the \emph{relative position} of
+each population within its corpus's ATD distribution, not the
+absolute magnitude. We chose this trade-off because the alternative,
+calibrating absolute ATD across corpora with different reference
+constructions, is not solvable without a shared reference vocabulary.
+A pooled mixed-effects model with speaker random effects is degenerate
+(speaker $\to$ severity is 1:1 within corpus); we therefore report
+OLS with cluster-robust standard errors on speaker, which is the
+correct frequentist instrument given the dependence structure.
+
 \paragraph{Reproducibility caveats.}
 WavLM-Large is extracted in FP16 with cudnn determinism; bit-exact
 reproduction across GPU drivers is not guaranteed. We release pre-
 extracted embeddings on Zenodo to obviate re-extraction.
 
 \paragraph{Ethics.}
-TORGO and UASpeech are research-only releases; we do not redistribute
-audio. Speaker-level ATD scores are not personally identifying but should
-not be linked to clinical records without IRB.
+TORGO, UASpeech, L2-ARCTIC, and VCTK are research-only releases; we do
+not redistribute audio. Speaker-level ATD scores are not personally
+identifying but should not be linked to clinical records without IRB.
