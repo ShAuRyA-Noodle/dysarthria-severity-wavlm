@@ -1,0 +1,13 @@
+{
+  "n_utterances": 200,
+  "n_frame_samples": 31063,
+  "atd_pearson_r_online_vs_offline": 0.8119427443941369,
+  "atd_mean_abs_diff": 3.8692253538222108,
+  "atd_median_abs_diff": 1.1498357249450919e-05,
+  "atd_mean_rel_diff": 0.037527832166664644,
+  "atd_max_rel_diff": 0.666552977461586,
+  "per_frame_latency_us_p50": 91.40000474872068,
+  "per_frame_latency_us_p95": 260.5000037874561,
+  "per_frame_latency_us_p99": 402.4039981595714,
+  "per_frame_latency_us_max": 3105.799994955305
+}
