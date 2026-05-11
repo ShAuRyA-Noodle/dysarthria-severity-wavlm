@@ -77,6 +77,20 @@ TORGO_PIPELINE: list[Step] = [
          RESULTS / "paper_numbers.json"),
     Step("14_critical_fixes",  "14_critical_fixes.py",
          RESULTS / "critical_fixes_report.json"),
+    Step("15_perturbation",    "15_perturbation_validation.py",
+         RESULTS / "perturbation_atd.csv", optional=True),
+    Step("16_phoneme_pilot",   "16_phoneme_pilot.py",
+         RESULTS / "phoneme_atd.csv", optional=True),
+    Step("17_ipvs_bootstrap",  "17_ipvs_vowel_bootstrap.py",
+         RESULTS / "cross_corpus" / "ipvs_vowel_bootstrap.json", optional=True),
+    Step("18_torgo_loo",       "18_torgo_loo_diagnostics.py",
+         RESULTS / "torgo_loo_diagnostics.json"),
+    Step("19_torgo_bootstrap", "19_torgo_bootstrap_ci.py",
+         RESULTS / "torgo_bootstrap_ci.json"),
+    Step("20_mfcc_perturbation", "20_mfcc_perturbation.py",
+         RESULTS / "perturbation_atd_vs_mfcc.json", optional=True),
+    Step("21_consolidate_numbers", "21_consolidate_paper_numbers.py",
+         None),  # always re-run (output overwritten)
 ]
 
 UASPEECH_PIPELINE: list[Step] = [
@@ -89,6 +103,21 @@ UASPEECH_PIPELINE: list[Step] = [
          RESULTS / "uaspeech_atd_scores.csv", optional=True),
     Step("UA_05_combined",     "UA_05_combined_analysis.py",
          RESULTS / "combined_validation_report.json", optional=True),
+]
+
+
+CROSS_CORPUS_PIPELINE: list[Step] = [
+    Step("CC_01_extract_ipvs", "CC_01_extract_ipvs.py",
+         PROJECT_ROOT / "data" / "embeddings" / "ssl_index_ipvs_xlsr_300m.json",
+         optional=True),
+    Step("CC_02_within",       "CC_02_within_corpus_atd.py",
+         RESULTS / "cross_corpus" / "ipvs_atd_layer9.csv", optional=True),
+    Step("CC_03_zero_shot",    "CC_03_zero_shot_cross.py",
+         RESULTS / "cross_corpus" / "zero_shot_torgo2ipvs.json", optional=True),
+    Step("CC_04_pooled",       "CC_04_pooled_analysis.py",
+         RESULTS / "cross_corpus" / "pooled_lme.json", optional=True),
+    Step("CC_05_layer_sweep",  "CC_05_layer_sweep.py",
+         RESULTS / "cross_corpus" / "layer_sweep_wavlm_large.csv", optional=True),
 ]
 
 
@@ -157,6 +186,8 @@ def main(argv: list[str] | None = None) -> int:
                         help="Skip 04_extract_ssl (use cached embeddings).")
     parser.add_argument("--include-uaspeech", action="store_true",
                         help="Also run UA_01..UA_05 after the TORGO pipeline.")
+    parser.add_argument("--include-cross-corpus", action="store_true",
+                        help="Also run CC_01..CC_05 after the TORGO pipeline.")
     parser.add_argument("--smoke", action="store_true",
                         help="Dry-run: print step plan, don't execute.")
     parser.add_argument("--from-step", default=None,
@@ -168,6 +199,8 @@ def main(argv: list[str] | None = None) -> int:
     pipeline = list(TORGO_PIPELINE)
     if args.include_uaspeech:
         pipeline.extend(UASPEECH_PIPELINE)
+    if args.include_cross_corpus:
+        pipeline.extend(CROSS_CORPUS_PIPELINE)
     if args.skip_extract:
         pipeline = [s for s in pipeline if s.name != "04_extract_ssl"]
     if args.from_step:
