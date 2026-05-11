@@ -8,10 +8,8 @@ keys, so the file stays in sync with reality.
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -124,6 +122,16 @@ def main() -> None:
     bl = _load_json(PROJECT_ROOT / "results/best_layer.json")
     if bl:
         out["torgo_best_layer"] = bl
+
+    # Streaming parity + latency (Track A).
+    sp = _load_json(PROJECT_ROOT / "results/streaming_parity.json")
+    if sp:
+        out["track_a_streaming_parity"] = sp
+
+    # IPVS MFCC baseline (Track D competitor).
+    ipvs_mfcc = _load_json(PROJECT_ROOT / "results/cross_corpus/ipvs_mfcc_baseline.json")
+    if ipvs_mfcc:
+        out["ipvs_mfcc_svr_baseline"] = ipvs_mfcc
 
     # Write.
     out_path = PROJECT_ROOT / "results/paper_numbers.json"

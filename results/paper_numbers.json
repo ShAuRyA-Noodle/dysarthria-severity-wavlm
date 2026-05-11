@@ -1,6 +1,6 @@
 {
   "generated_by": "experiments/21_consolidate_paper_numbers.py",
-  "generated_at_utc": "2026-05-11T05:32:19.526855+00:00",
+  "generated_at_utc": "2026-05-11T05:38:59.800857+00:00",
   "branch": "audit-cleanup-2026-05-08",
   "datasets": {
     "torgo": {
@@ -513,5 +513,28 @@
   "torgo_best_layer": {
     "best_layer": 1,
     "spearman_rho": 0.7754
+  },
+  "track_a_streaming_parity": {
+    "n_utterances": 200,
+    "n_frame_samples": 31063,
+    "atd_pearson_r_online_vs_offline": 0.8119427443941369,
+    "atd_mean_abs_diff": 3.8692253538222108,
+    "atd_median_abs_diff": 1.1498357249450919e-05,
+    "atd_mean_rel_diff": 0.037527832166664644,
+    "atd_max_rel_diff": 0.666552977461586,
+    "per_frame_latency_us_p50": 91.40000474872068,
+    "per_frame_latency_us_p95": 260.5000037874561,
+    "per_frame_latency_us_p99": 402.4039981595714,
+    "per_frame_latency_us_max": 3105.799994955305
+  },
+  "ipvs_mfcc_svr_baseline": {
+    "corpus": "ipvs",
+    "n_speakers": 61,
+    "n_hc": 37,
+    "n_pd": 24,
+    "mfcc_norm_rho": -0.1276989931021028,
+    "mfcc_norm_p": 0.32671579082134317,
+    "mfcc_svr_loso_rho": 0.25730394132513257,
+    "mfcc_svr_loso_p": 0.045297861409091755
   }
 }
