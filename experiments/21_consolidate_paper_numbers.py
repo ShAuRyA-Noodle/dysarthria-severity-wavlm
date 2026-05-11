@@ -136,6 +136,31 @@ def main() -> None:
     if ipvs_mfcc:
         out["ipvs_mfcc_svr_baseline"] = ipvs_mfcc
 
+    # Differential dx classifier (T3).
+    diff_dx = _load_json(PROJECT_ROOT / "results/differential_dx_loso.json")
+    if diff_dx:
+        out["differential_dx_classifier"] = diff_dx
+
+    # Layer hierarchy (T1).
+    lh = _load_json(PROJECT_ROOT / "results/perturbation_layer_hierarchy.json")
+    if lh:
+        out["perturbation_layer_hierarchy"] = lh
+
+    # SSL backbone comparison (T2).
+    ssl_bb = _load_json(PROJECT_ROOT / "results/cross_corpus/ssl_backbone_compare.json")
+    if ssl_bb:
+        out["ssl_backbone_comparison"] = ssl_bb
+
+    # ATD confidence stratified means (T4) — built from CSV.
+    conf_csv = PROJECT_ROOT / "results/atd_confidence.csv"
+    if conf_csv.exists():
+        cdf = pd.read_csv(conf_csv)
+        if not cdf.empty:
+            grp = cdf.groupby("severity_score")[
+                ["atd_score", "path_entropy", "coverage_pct", "confidence_combined"]
+            ].mean().round(4)
+            out["atd_confidence_by_severity"] = grp.reset_index().to_dict(orient="records")
+
     # Write.
     out_path = PROJECT_ROOT / "results/paper_numbers.json"
     with open(out_path, "w", encoding="utf-8") as f:
