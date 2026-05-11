@@ -1,6 +1,6 @@
 {
   "generated_by": "experiments/21_consolidate_paper_numbers.py",
-  "generated_at_utc": "2026-05-11T06:29:28.717869+00:00",
+  "generated_at_utc": "2026-05-11T06:38:32.650473+00:00",
   "branch": "audit-cleanup-2026-05-08",
   "datasets": {
     "torgo": {
@@ -753,6 +753,45 @@
         "rho": 0.24408921063670622,
         "p": 2.0808646729399337e-10,
         "mean_delta_atd": 3.1853790769512487
+      }
+    ]
+  },
+  "ssl_backbone_comparison": {
+    "task": "ipvs_sustained_vowel_a",
+    "layer": 1,
+    "by_backbone": [
+      {
+        "backbone": "wavlm_large",
+        "status": "ok",
+        "n_utts": 99,
+        "n_speakers": 46,
+        "n_controls": 22,
+        "n_pd": 24,
+        "rho": 0.4622081388685876,
+        "p_value": 0.0012213869191219251,
+        "elapsed_min": 1.8884288867314656
+      },
+      {
+        "backbone": "xlsr_300m",
+        "status": "ok",
+        "n_utts": 99,
+        "n_speakers": 46,
+        "n_controls": 22,
+        "n_pd": 24,
+        "rho": 0.07867372576486599,
+        "p_value": 0.603263492448917,
+        "elapsed_min": 1.6768760879834492
+      },
+      {
+        "backbone": "hubert_large",
+        "status": "ok",
+        "n_utts": 99,
+        "n_speakers": 46,
+        "n_controls": 22,
+        "n_pd": 24,
+        "rho": 0.31797297496633337,
+        "p_value": 0.031280708479481674,
+        "elapsed_min": 6.262005678812662
       }
     ]
   },

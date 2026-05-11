@@ -215,3 +215,31 @@ reference frame regardless of speaker. The entropy drop is small
 ($\sim 0.05$) but reproducible and provides a per-utterance
 confidence indicator for clinical-deployment scenarios where flagging
 low-confidence ATD outputs is important.
+
+\paragraph{Cross-SSL backbone bake-off (IPVS sustained-$/$a$/$, Layer 1).}
+A surprising negative finding: the English-pretrained WavLM-Large
+out-performs the multilingual XLS-R-300m on Italian Parkinsonian
+speech.
+
+\begin{tabular}{lrr}
+\toprule
+Backbone (Layer 1) & $\rho$ (PD vs HC) & $p$ \\
+\midrule
+WavLM-Large       & $\mathbf{0.462}$ & $0.0012$ \\
+HuBERT-Large      & $0.318$          & $0.031$ \\
+XLS-R-300m        & $0.079$          & $0.60$ (NS) \\
+\bottomrule
+\end{tabular}
+
+n=46 speakers (22 HC + 24 PD) per backbone, identical pipeline
+(layer-1 features, median-length DTW-barycentre reference from IPVS
+controls, length-normalised FastDTW). Pre-training language is
+\emph{less} important than denoising objective: WavLM's masked-
+denoising pre-training produces frame-level features whose geometry
+discriminates Parkinsonian dysarthria better than XLS-R's
+multilingual contrastive objective, even on Italian audio. HuBERT-
+Large, also English-pretrained with masked prediction, sits in
+between. This reframes the multilingual-transfer narrative: \emph{at
+Layer~1, articulatory features are language-agnostic enough that
+English pre-training transfers without an explicit multilingual
+objective}.
