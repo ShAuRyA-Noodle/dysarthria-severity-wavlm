@@ -3,10 +3,18 @@ data/raw/
 data/embeddings/
 data/processed/audio_16khz/
 data/processed/references/
+data/processed/references_loco/
+data/processed/references_ipvs/
+data/processed/features/
 F/
 M/
 FC/
 MC/
+
+# ===== Raw external-corpus archives (NEVER commit, copyrighted) =====
+DS_10283_3443/
+l2arctic_release_v5.0/
+paper/references/
 
 # ===== Python cache =====
 __pycache__/

@@ -1,0 +1,14 @@
+{
+  "torgo_n_speakers": 8,
+  "torgo_spearman_rho": -0.394,
+  "torgo_p_value": 0.3336,
+  "uaspeech_n_speakers": 15,
+  "uaspeech_spearman_rho": -0.22,
+  "uaspeech_p_value": 0.4303,
+  "combined_n_speakers": 23,
+  "combined_spearman_rho": -0.074,
+  "combined_p_value": 0.7368,
+  "method": "ATD (WavLM-Large, Layer 1, PCA=64, DTW)",
+  "zero_shot_cross_corpus": true,
+  "note": "TORGO severity mapped to intelligibility: 0->100%, 1->60%, 2->20%"
+}

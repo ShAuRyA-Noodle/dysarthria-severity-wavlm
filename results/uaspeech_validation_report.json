@@ -1,0 +1,18 @@
+{
+  "dataset": "UA-Speech",
+  "layer": 1,
+  "n_dysarthric_speakers": 15,
+  "n_utterances": 11220,
+  "spearman_rho": -0.22,
+  "p_value": 0.4303,
+  "abs_spearman_rho": 0.22,
+  "references_from": "UA-Speech_controls",
+  "zero_shot_cross_corpus": true,
+  "method_from": "TORGO (Layer 1, PCA=64, DTW norm)",
+  "severity_group_means": {
+    "very_low": 39.0,
+    "low": 36.3,
+    "mid": 39.0,
+    "high": 35.7
+  }
+}

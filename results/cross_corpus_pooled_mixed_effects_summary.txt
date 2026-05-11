@@ -1,0 +1,57 @@
+=== MODEL A (severity grading) ===
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                  atd_z   R-squared:                       0.080
+Model:                            OLS   Adj. R-squared:                  0.080
+Method:                 Least Squares   F-statistic:                     3.996
+Date:                Mon, 11 May 2026   Prob (F-statistic):             0.0293
+Time:                        22:39:11   Log-Likelihood:                -26228.
+No. Observations:               19046   AIC:                         5.246e+04
+Df Residuals:                   19043   BIC:                         5.249e+04
+Df Model:                           2                                         
+Covariance Type:              cluster                                         
+=========================================================================================
+                            coef    std err          z      P>|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+Intercept                -0.1477      0.153     -0.963      0.336      -0.448       0.153
+C(corpus)[T.UASpeech]    -0.3741      0.213     -1.754      0.080      -0.792       0.044
+severity                  0.2733      0.104      2.634      0.008       0.070       0.477
+==============================================================================
+Omnibus:                     2773.826   Durbin-Watson:                   0.742
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             5472.639
+Skew:                           0.906   Prob(JB):                         0.00
+Kurtosis:                       4.900   Cond. No.                         5.46
+==============================================================================
+
+Notes:
+[1] Standard Errors are robust to cluster correlation (cluster)
+
+=== MODEL B (dysarthric binary) ===
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                  atd_z   R-squared:                       0.073
+Model:                            OLS   Adj. R-squared:                  0.073
+Method:                 Least Squares   F-statistic:                     4.323
+Date:                Mon, 11 May 2026   Prob (F-statistic):            0.00238
+Time:                        22:39:11   Log-Likelihood:                -38780.
+No. Observations:               28082   AIC:                         7.757e+04
+Df Residuals:                   28077   BIC:                         7.761e+04
+Df Model:                           4                                         
+Covariance Type:              cluster                                         
+=========================================================================================
+                            coef    std err          z      P>|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+Intercept              5.565e-14      0.039   1.41e-12      1.000      -0.077       0.077
+C(corpus)[T.TORGO]       -0.2718      0.148     -1.842      0.065      -0.561       0.017
+C(corpus)[T.UASpeech]    -0.5984      0.184     -3.246      0.001      -0.960      -0.237
+C(corpus)[T.VCTK]     -1.405e-14      0.053  -2.66e-13      1.000      -0.104       0.104
+is_dysarthric             0.7523      0.192      3.918      0.000       0.376       1.129
+==============================================================================
+Omnibus:                     2558.823   Durbin-Watson:                   0.780
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             7305.191
+Skew:                           0.501   Prob(JB):                         0.00
+Kurtosis:                       5.289   Cond. No.                         7.61
+==============================================================================
+
+Notes:
+[1] Standard Errors are robust to cluster correlation (cluster)

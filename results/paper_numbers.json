@@ -1,6 +1,6 @@
 {
   "generated_by": "experiments/21_consolidate_paper_numbers.py",
-  "generated_at_utc": "2026-05-11T12:21:14.585372+00:00",
+  "generated_at_utc": "2026-05-11T17:09:50.794904+00:00",
   "branch": "audit-cleanup-2026-05-08",
   "datasets": {
     "torgo": {
@@ -876,6 +876,722 @@
       "rho_0.8": 10
     },
     "notes": "Fisher z-transform closed-form assumes Pearson; Spearman is rank-based but converges to Pearson under Gaussian copula. Monte Carlo confirms within 0.02 of Fisher estimate."
+  },
+  "l2arctic_accent_specificity": {
+    "n_l2_speakers": 24,
+    "test_1_corr_atd_vs_per": {
+      "spearman_rho": 0.040869565217391296,
+      "spearman_p": 0.8496151500324182,
+      "pearson_r": 0.02642664918054194,
+      "pearson_p": 0.9024449466627966,
+      "interpretation": "H0: ATD independent of per-speaker phone-error-rate (accent strength). Significant rho => ATD is generic deviation detector. NS rho => specific to dysarthric temporal disruption (desired)."
+    },
+    "test_2_kruskal_wallis_across_l1": {
+      "H": 12.290000000000006,
+      "p": 0.031023083283616307,
+      "n_groups": 6,
+      "group_means": {
+        "Arabic": {
+          "mean": 7.160883207876578,
+          "std": 0.10533024701579327,
+          "count": 4.0
+        },
+        "Chinese": {
+          "mean": 6.98714529826086,
+          "std": 0.17861887377571106,
+          "count": 4.0
+        },
+        "Hindi": {
+          "mean": 7.349285761885874,
+          "std": 0.062575861867966,
+          "count": 4.0
+        },
+        "Korean": {
+          "mean": 6.9749783540676455,
+          "std": 0.1764822763026309,
+          "count": 4.0
+        },
+        "Spanish": {
+          "mean": 6.974301405337058,
+          "std": 0.2487017006420003,
+          "count": 4.0
+        },
+        "Vietnamese": {
+          "mean": 7.028696312396667,
+          "std": 0.08146026249703774,
+          "count": 4.0
+        }
+      },
+      "interpretation": "H0: mean ATD same across 6 L1 groups (Arabic, Chinese, Hindi, Korean, Spanish, Vietnamese). NS => ATD does not distinguish accents (desired)."
+    },
+    "test_3_cross_corpus_effect_sizes": {
+      "torgo_control_n": 7,
+      "torgo_control_mean": 69.84997560512393,
+      "torgo_dys_n": 8,
+      "torgo_dys_mean": 92.87537122712737,
+      "l2_arctic_n": 24,
+      "l2_arctic_mean": 7.079215056637447,
+      "cohen_d_l2_vs_torgo_ctrl": -15.996213596974709,
+      "cohen_d_l2_vs_torgo_dys": -12.813993413512321,
+      "cohen_d_torgo_ctrl_vs_dys": -1.9624200114873682,
+      "mw_l2_vs_torgo_ctrl_p": 7.605791810463668e-07,
+      "mw_l2_vs_torgo_dys_p": 1.901447952615917e-07
+    },
+    "summary_table": [
+      {
+        "speaker_id": "HJK",
+        "l1": "Korean",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.937806606319241,
+        "per": 0.0692104729044043
+      },
+      {
+        "speaker_id": "YBAA",
+        "l1": "Arabic",
+        "gender": "M",
+        "n_utts": 149,
+        "mean_atd": 7.1306086770601365,
+        "per": 0.0789685737308622
+      },
+      {
+        "speaker_id": "HKK",
+        "l1": "Korean",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.1769096762361295,
+        "per": 0.0936933306467862
+      },
+      {
+        "speaker_id": "ABA",
+        "l1": "Arabic",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.028326043448904,
+        "per": 0.1019349690803909
+      },
+      {
+        "speaker_id": "YDCK",
+        "l1": "Korean",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.755290291138426,
+        "per": 0.1074096507167373
+      },
+      {
+        "speaker_id": "ZHAA",
+        "l1": "Arabic",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.270033089319256,
+        "per": 0.1108883096049729
+      },
+      {
+        "speaker_id": "RRBI",
+        "l1": "Hindi",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.365121703936316,
+        "per": 0.1127804487179487
+      },
+      {
+        "speaker_id": "TNI",
+        "l1": "Hindi",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.422838036477659,
+        "per": 0.1146149181322013
+      },
+      {
+        "speaker_id": "MBMPS",
+        "l1": "Spanish",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.6364722869938815,
+        "per": 0.1227200634417129
+      },
+      {
+        "speaker_id": "NCC",
+        "l1": "Chinese",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.999378155152177,
+        "per": 0.1249497790277219
+      },
+      {
+        "speaker_id": "YKWK",
+        "l1": "Korean",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.029906842576785,
+        "per": 0.1255052546483427
+      },
+      {
+        "speaker_id": "NJS",
+        "l1": "Spanish",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.081713171038558,
+        "per": 0.1344820756585462
+      },
+      {
+        "speaker_id": "TXHC",
+        "l1": "Chinese",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 6.944618750261449,
+        "per": 0.1381028298126743
+      },
+      {
+        "speaker_id": "SKA",
+        "l1": "Arabic",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.214565021678018,
+        "per": 0.1470240441466298
+      },
+      {
+        "speaker_id": "SVBI",
+        "l1": "Hindi",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.272254564409526,
+        "per": 0.1685529506871463
+      },
+      {
+        "speaker_id": "PNV",
+        "l1": "Vietnamese",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.958905581705694,
+        "per": 0.1769367941351297
+      },
+      {
+        "speaker_id": "ASI",
+        "l1": "Hindi",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.336928742719995,
+        "per": 0.1828629032258064
+      },
+      {
+        "speaker_id": "ERMS",
+        "l1": "Spanish",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 6.960386635111909,
+        "per": 0.1886867088607595
+      },
+      {
+        "speaker_id": "BWC",
+        "l1": "Chinese",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 6.786309387241884,
+        "per": 0.1895411741134041
+      },
+      {
+        "speaker_id": "LXC",
+        "l1": "Chinese",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.218274900387931,
+        "per": 0.1966786714685874
+      },
+      {
+        "speaker_id": "EBVS",
+        "l1": "Spanish",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.218633528203882,
+        "per": 0.2279498235985887
+      },
+      {
+        "speaker_id": "TLV",
+        "l1": "Vietnamese",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 6.964367940057044,
+        "per": 0.2498031496062992
+      },
+      {
+        "speaker_id": "HQTV",
+        "l1": "Vietnamese",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.1266141741472,
+        "per": 0.2657534246575342
+      },
+      {
+        "speaker_id": "THV",
+        "l1": "Vietnamese",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.064897553676731,
+        "per": 0.2744751814793015
+      }
+    ]
+  },
+  "l2arctic_per_per_speaker": [
+    {
+      "speaker_id": "ABA",
+      "l1": "Arabic",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 402,
+      "n_dels": 31,
+      "n_adds": 78,
+      "n_phones_total": 5013,
+      "per": 0.1019349690803909
+    },
+    {
+      "speaker_id": "SKA",
+      "l1": "Arabic",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 571,
+      "n_dels": 59,
+      "n_adds": 116,
+      "n_phones_total": 5074,
+      "per": 0.1470240441466298
+    },
+    {
+      "speaker_id": "YBAA",
+      "l1": "Arabic",
+      "gender": "M",
+      "n_annotated_utterances": 149,
+      "n_subs": 331,
+      "n_dels": 31,
+      "n_adds": 30,
+      "n_phones_total": 4964,
+      "per": 0.0789685737308622
+    },
+    {
+      "speaker_id": "ZHAA",
+      "l1": "Arabic",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 404,
+      "n_dels": 99,
+      "n_adds": 50,
+      "n_phones_total": 4987,
+      "per": 0.1108883096049729
+    },
+    {
+      "speaker_id": "BWC",
+      "l1": "Chinese",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 696,
+      "n_dels": 206,
+      "n_adds": 44,
+      "n_phones_total": 4991,
+      "per": 0.1895411741134041
+    },
+    {
+      "speaker_id": "LXC",
+      "l1": "Chinese",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 709,
+      "n_dels": 216,
+      "n_adds": 58,
+      "n_phones_total": 4998,
+      "per": 0.1966786714685874
+    },
+    {
+      "speaker_id": "NCC",
+      "l1": "Chinese",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 536,
+      "n_dels": 55,
+      "n_adds": 31,
+      "n_phones_total": 4978,
+      "per": 0.1249497790277219
+    },
+    {
+      "speaker_id": "TXHC",
+      "l1": "Chinese",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 492,
+      "n_dels": 128,
+      "n_adds": 73,
+      "n_phones_total": 5018,
+      "per": 0.1381028298126743
+    },
+    {
+      "speaker_id": "ASI",
+      "l1": "Hindi",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 761,
+      "n_dels": 120,
+      "n_adds": 26,
+      "n_phones_total": 4960,
+      "per": 0.1828629032258064
+    },
+    {
+      "speaker_id": "RRBI",
+      "l1": "Hindi",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 451,
+      "n_dels": 65,
+      "n_adds": 47,
+      "n_phones_total": 4992,
+      "per": 0.1127804487179487
+    },
+    {
+      "speaker_id": "SVBI",
+      "l1": "Hindi",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 717,
+      "n_dels": 89,
+      "n_adds": 28,
+      "n_phones_total": 4948,
+      "per": 0.1685529506871463
+    },
+    {
+      "speaker_id": "TNI",
+      "l1": "Hindi",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 491,
+      "n_dels": 68,
+      "n_adds": 8,
+      "n_phones_total": 4947,
+      "per": 0.1146149181322013
+    },
+    {
+      "speaker_id": "HJK",
+      "l1": "Korean",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 330,
+      "n_dels": 4,
+      "n_adds": 7,
+      "n_phones_total": 4927,
+      "per": 0.0692104729044043
+    },
+    {
+      "speaker_id": "HKK",
+      "l1": "Korean",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 318,
+      "n_dels": 103,
+      "n_adds": 44,
+      "n_phones_total": 4963,
+      "per": 0.0936933306467862
+    },
+    {
+      "speaker_id": "YDCK",
+      "l1": "Korean",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 450,
+      "n_dels": 58,
+      "n_adds": 24,
+      "n_phones_total": 4953,
+      "per": 0.1074096507167373
+    },
+    {
+      "speaker_id": "YKWK",
+      "l1": "Korean",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 462,
+      "n_dels": 129,
+      "n_adds": 30,
+      "n_phones_total": 4948,
+      "per": 0.1255052546483427
+    },
+    {
+      "speaker_id": "EBVS",
+      "l1": "Spanish",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 876,
+      "n_dels": 194,
+      "n_adds": 93,
+      "n_phones_total": 5102,
+      "per": 0.2279498235985887
+    },
+    {
+      "speaker_id": "ERMS",
+      "l1": "Spanish",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 855,
+      "n_dels": 56,
+      "n_adds": 43,
+      "n_phones_total": 5056,
+      "per": 0.1886867088607595
+    },
+    {
+      "speaker_id": "MBMPS",
+      "l1": "Spanish",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 530,
+      "n_dels": 63,
+      "n_adds": 26,
+      "n_phones_total": 5044,
+      "per": 0.1227200634417129
+    },
+    {
+      "speaker_id": "NJS",
+      "l1": "Spanish",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 561,
+      "n_dels": 80,
+      "n_adds": 38,
+      "n_phones_total": 5049,
+      "per": 0.1344820756585462
+    },
+    {
+      "speaker_id": "HQTV",
+      "l1": "Vietnamese",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 809,
+      "n_dels": 477,
+      "n_adds": 72,
+      "n_phones_total": 5110,
+      "per": 0.2657534246575342
+    },
+    {
+      "speaker_id": "PNV",
+      "l1": "Vietnamese",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 631,
+      "n_dels": 246,
+      "n_adds": 16,
+      "n_phones_total": 5047,
+      "per": 0.1769367941351297
+    },
+    {
+      "speaker_id": "THV",
+      "l1": "Vietnamese",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 926,
+      "n_dels": 406,
+      "n_adds": 67,
+      "n_phones_total": 5097,
+      "per": 0.2744751814793015
+    },
+    {
+      "speaker_id": "TLV",
+      "l1": "Vietnamese",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 789,
+      "n_dels": 437,
+      "n_adds": 43,
+      "n_phones_total": 5080,
+      "per": 0.2498031496062992
+    }
+  ],
+  "vctk_native_accent_specificity": {
+    "n_speakers": 110,
+    "n_accents_total": 13,
+    "n_accents_retained_n_ge_4": 7,
+    "kruskal_wallis_across_accents": {
+      "H": 11.473842121054247,
+      "p": 0.07479021038234804,
+      "n_groups": 7,
+      "groups": [
+        "English",
+        "American",
+        "Scottish",
+        "Irish",
+        "Canadian",
+        "NorthernIrish",
+        "SouthAfrican"
+      ],
+      "per_accent_stats": {
+        "American": {
+          "mean": 7.7176,
+          "median": 7.8113,
+          "std": 0.3488,
+          "count": 22
+        },
+        "Canadian": {
+          "mean": 7.727,
+          "median": 7.9199,
+          "std": 0.406,
+          "count": 8
+        },
+        "English": {
+          "mean": 7.9607,
+          "median": 7.9992,
+          "std": 0.1701,
+          "count": 33
+        },
+        "Irish": {
+          "mean": 7.792,
+          "median": 7.8359,
+          "std": 0.2541,
+          "count": 9
+        },
+        "NorthernIrish": {
+          "mean": 7.7045,
+          "median": 7.831,
+          "std": 0.4266,
+          "count": 6
+        },
+        "Scottish": {
+          "mean": 7.9399,
+          "median": 7.9157,
+          "std": 0.1645,
+          "count": 19
+        },
+        "SouthAfrican": {
+          "mean": 7.811,
+          "median": 7.7989,
+          "std": 0.2085,
+          "count": 4
+        }
+      },
+      "interpretation": "H0: ATD distribution identical across native-English accents. NS p => ATD does not distinguish accents (specificity desired)."
+    },
+    "spearman_atd_vs_age": {
+      "rho": -0.12428918034585346,
+      "p": 0.19577343262933694
+    },
+    "gender_effect": {
+      "n_male": 47,
+      "n_female": 63,
+      "male_mean": 7.936734653111103,
+      "female_mean": 7.776590196555699,
+      "mw_p": 0.01005113546796562
+    }
+  },
+  "four_corpus_pooled": {
+    "n_observations": 28082,
+    "n_speakers": 164,
+    "corpus_counts": {
+      "UASpeech": 11220,
+      "TORGO": 7826,
+      "VCTK": 5437,
+      "L2ARCTIC": 3599
+    },
+    "per_population_atd_z": {
+      "L2ARCTIC": {
+        "mean": 0.0,
+        "std": 1.0001,
+        "count": 3599
+      },
+      "TORGO_sev0": {
+        "mean": -0.3694,
+        "std": 0.8471,
+        "count": 4999
+      },
+      "TORGO_sev1": {
+        "mean": 0.3989,
+        "std": 0.8413,
+        "count": 1425
+      },
+      "TORGO_sev2": {
+        "mean": 0.9116,
+        "std": 0.909,
+        "count": 1402
+      },
+      "UASpeech_sev0": {
+        "mean": -0.3858,
+        "std": 0.6615,
+        "count": 2295
+      },
+      "UASpeech_sev1": {
+        "mean": 0.2553,
+        "std": 0.6495,
+        "count": 1530
+      },
+      "UASpeech_sev2": {
+        "mean": -0.2588,
+        "std": 0.8332,
+        "count": 2295
+      },
+      "UASpeech_sev3": {
+        "mean": 0.2135,
+        "std": 1.1842,
+        "count": 5100
+      },
+      "VCTK": {
+        "mean": 0.0,
+        "std": 1.0001,
+        "count": 5437
+      }
+    },
+    "model_a_severity_grading_torgo_ua": {
+      "formula": "atd_z ~ severity + C(corpus); cluster-robust SE on speaker",
+      "n_obs": 19046,
+      "n_speakers": 30,
+      "n_clusters": 30,
+      "beta_severity": 0.27332157917266975,
+      "se_severity": 0.10375556803314803,
+      "ci_severity_low": 0.06996440263220427,
+      "ci_severity_high": 0.4766787557131352,
+      "p_severity": 0.008431505959905425,
+      "r_squared": 0.08027052285681213
+    },
+    "model_b_dysarthric_binary_all_corpora": {
+      "formula": "atd_z ~ is_dysarthric + C(corpus); cluster-robust SE on speaker",
+      "n_obs": 28082,
+      "n_speakers": 164,
+      "n_clusters": 164,
+      "beta_is_dysarthric": 0.7522966404379542,
+      "se": 0.19203231148561922,
+      "ci_low": 0.37592022605816316,
+      "ci_high": 1.1286730548177453,
+      "p_value": 8.945260966770741e-05,
+      "r_squared": 0.07318468732327799
+    },
+    "pairwise_cohens_d_on_z_atd": {
+      "L2ARCTIC vs TORGO_sev0": 0.4040137266523647,
+      "L2ARCTIC vs TORGO_sev1": -0.41648521741613614,
+      "L2ARCTIC vs TORGO_sev2": -0.9345510272403628,
+      "L2ARCTIC vs UASpeech_sev0": 0.436454767302697,
+      "L2ARCTIC vs UASpeech_sev1": -0.2805472620296072,
+      "L2ARCTIC vs UASpeech_sev2": 0.27571555413712684,
+      "L2ARCTIC vs UASpeech_sev3": -0.19202102785514458,
+      "L2ARCTIC vs VCTK": 7.160002141980038e-16,
+      "TORGO_sev0 vs TORGO_sev1": -0.9083317508062969,
+      "TORGO_sev0 vs TORGO_sev2": -1.4877476016551252,
+      "TORGO_sev0 vs UASpeech_sev0": 0.020654076666756224,
+      "TORGO_sev0 vs UASpeech_sev1": -0.7757715347151627,
+      "TORGO_sev0 vs UASpeech_sev2": -0.1311990214537383,
+      "TORGO_sev0 vs UASpeech_sev3": -0.5652174820432213,
+      "TORGO_sev0 vs VCTK": -0.3972040228848633,
+      "TORGO_sev1 vs TORGO_sev2": -0.5855853413438583,
+      "TORGO_sev1 vs UASpeech_sev0": 1.0666923539071926,
+      "TORGO_sev1 vs UASpeech_sev1": 0.19200204228274015,
+      "TORGO_sev1 vs UASpeech_sev2": 0.7864183870546347,
+      "TORGO_sev1 vs UASpeech_sev3": 0.16579183596983538,
+      "TORGO_sev1 vs VCTK": 0.41154809176015644,
+      "TORGO_sev2 vs UASpeech_sev0": 1.6962421979862263,
+      "TORGO_sev2 vs UASpeech_sev1": 0.8367811399191164,
+      "TORGO_sev2 vs UASpeech_sev2": 1.3566250134993088,
+      "TORGO_sev2 vs UASpeech_sev3": 0.6174913629950884,
+      "TORGO_sev2 vs VCTK": 0.928216666958313,
+      "UASpeech_sev0 vs UASpeech_sev1": -0.9760222391888198,
+      "UASpeech_sev0 vs UASpeech_sev2": -0.16875755486282162,
+      "UASpeech_sev0 vs UASpeech_sev3": -0.5705727204923161,
+      "UASpeech_sev0 vs VCTK": -0.42261070047334126,
+      "UASpeech_sev1 vs UASpeech_sev2": 0.6719117344165163,
+      "UASpeech_sev1 vs UASpeech_sev3": 0.03850983400187422,
+      "UASpeech_sev1 vs VCTK": 0.2731497130124756,
+      "UASpeech_sev2 vs UASpeech_sev3": -0.434289524444453,
+      "UASpeech_sev2 vs VCTK": -0.27139732257656796,
+      "UASpeech_sev3 vs VCTK": 0.19530215854667338
+    },
+    "interpretation": "Model A: severity beta on z-ATD pooled across TORGO + UASpeech. Model B: dysarthric-vs-healthy contrast across 4 corpora. If L2ARCTIC + VCTK z-ATD means hug TORGO/UA control z-ATD (NOT dysarthric), ATD is specific to dysarthric pathology rather than to pronunciation deviation generally."
   },
   "differential_dx_zrank_classifier": {
     "n_speakers": 91,

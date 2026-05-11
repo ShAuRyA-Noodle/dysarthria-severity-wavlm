@@ -171,6 +171,24 @@ def main() -> None:
     if pw:
         out["torgo_power_analysis"] = pw
 
+    # L2-ARCTIC accent-specificity (new).
+    l2_spec = _load_json(PROJECT_ROOT / "results/l2arctic_specificity.json")
+    if l2_spec:
+        out["l2arctic_accent_specificity"] = l2_spec
+    l2_per = PROJECT_ROOT / "results/l2arctic_speaker_per.csv"
+    if l2_per.exists():
+        out["l2arctic_per_per_speaker"] = pd.read_csv(l2_per).to_dict(orient="records")
+
+    # VCTK native-accent specificity (new).
+    vctk_spec = _load_json(PROJECT_ROOT / "results/vctk_specificity.json")
+    if vctk_spec:
+        out["vctk_native_accent_specificity"] = vctk_spec
+
+    # 4-corpus pooled mixed-effects / OLS (new).
+    pool = _load_json(PROJECT_ROOT / "results/cross_corpus_pooled_mixed_effects.json")
+    if pool:
+        out["four_corpus_pooled"] = pool
+
     # z-rank classifier (v2 of differential dx).
     zr = _load_json(PROJECT_ROOT / "results/differential_dx_zrank_loso.json")
     if zr:
