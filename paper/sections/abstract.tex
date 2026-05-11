@@ -1,20 +1,20 @@
-% Target ~180 words.
+% Target ~180 words. Updated 2026-05-11 to reflect honest findings.
 
-We propose Articulatory Trajectory Deviation (ATD), a zero-shot metric for
-dysarthric speech severity that exploits the geometric structure of frozen
-self-supervised speech representations. Pre-trained on 94k hours of
-neurotypical speech, WavLM-Large implicitly learns a manifold of normal
-articulatory execution; dysarthric speakers trace deviated trajectories
-through this manifold. ATD measures the per-utterance dynamic-time-warping
-distance between the speaker's WavLM trajectory and a per-word reference
-trajectory built by DTW-barycentre averaging of seven control speakers,
-operating in a shared 64-dimensional PCA subspace and length-normalized to
-isolate execution quality from speaking rate. Without fine-tuning of any
-model, ATD attains a speaker-level Spearman $\rho = 0.756$ with severity
-labels on TORGO ($p = 0.0011$, $n = 15$, bootstrap CI $[0.40,\,0.92]$),
-correctly ranks 7 of 8 dysarthric speakers under leave-one-speaker-out, and
-reduces RMSE by 16.3\% over MFCC + SVR baselines. A controlled-perturbation
-study confirms that ATD responds specifically to articulatory distortion
-(formant shift, frame dropout) and not to acoustic factors (time-stretch,
-additive noise). Phoneme-level path decomposition further localises
-deviation to specific articulators.
+We propose Articulatory Trajectory Deviation (ATD), a zero-shot metric
+for dysarthric speech severity that exploits the geometric structure of
+frozen self-supervised speech representations. Pre-trained on 94k hours
+of neurotypical speech, WavLM-Large implicitly learns a manifold of
+typical articulatory execution; dysarthric speakers trace deviated
+trajectories through this manifold. ATD measures the per-utterance
+dynamic-time-warping distance between the speaker's WavLM trajectory
+and a per-word reference built by DTW-barycentre averaging of seven
+control speakers, in a shared 64-dimensional PCA subspace and length-
+normalised to isolate execution quality from speaking rate. Without
+fine-tuning, ATD attains speaker-level Spearman $\rho{=}0.756$ on TORGO
+($p{=}0.0011$, $n{=}15$, bootstrap CI $[0.40,\,0.92]$), correctly ranks
+7 of 8 dysarthric speakers under LOSO, and reduces RMSE by 16.3\% over
+MFCC + SVR. Phoneme-level DTW-path decomposition (Montreal Forced
+Aligner; 68945 phoneme tokens) yields $\rho \approx 0.63$ on both
+vowels and consonants. Cross-language transfer: on Italian Parkinsonian
+voice (IPVS, XLS-R-300m layer 1, sustained vowels) all five vowel-
+specific binary HC-vs-PD tests survive BH-FDR correction at $q{=}0.05$.
