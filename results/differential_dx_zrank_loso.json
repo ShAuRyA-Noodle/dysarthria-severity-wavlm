@@ -1,0 +1,87 @@
+{
+  "n_speakers": 91,
+  "feature": "atd_zrank (per-corpus rank z-normalised mean ATD)",
+  "loso_macro_f1": 0.16296296296296298,
+  "labels_in_order": [
+    "Control",
+    "Mild-Mod",
+    "Parkinson",
+    "Severe"
+  ],
+  "confusion_matrix": [
+    [
+      44,
+      0,
+      0,
+      0
+    ],
+    [
+      18,
+      0,
+      0,
+      0
+    ],
+    [
+      24,
+      0,
+      0,
+      0
+    ],
+    [
+      5,
+      0,
+      0,
+      0
+    ]
+  ],
+  "per_class": {
+    "Control": {
+      "precision": 0.4835164835164835,
+      "recall": 1.0,
+      "f1-score": 0.6518518518518519,
+      "support": 44.0
+    },
+    "Mild-Mod": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 18.0
+    },
+    "Parkinson": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 24.0
+    },
+    "Severe": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 5.0
+    },
+    "accuracy": 0.4835164835164835,
+    "macro avg": {
+      "precision": 0.12087912087912088,
+      "recall": 0.25,
+      "f1-score": 0.16296296296296298,
+      "support": 91.0
+    },
+    "weighted avg": {
+      "precision": 0.23378818983214586,
+      "recall": 0.4835164835164835,
+      "f1-score": 0.3151811151811152,
+      "support": 91.0
+    }
+  },
+  "by_corpus": {
+    "IPVS": "61",
+    "TORGO": "15",
+    "UASpeech": "15"
+  },
+  "class_distribution": {
+    "Control": "44",
+    "Parkinson": "24",
+    "Mild-Mod": "18",
+    "Severe": "5"
+  }
+}
