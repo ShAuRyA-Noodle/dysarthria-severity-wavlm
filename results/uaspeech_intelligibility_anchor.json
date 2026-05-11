@@ -1,0 +1,16 @@
+{
+  "corpus": "UASpeech",
+  "n_speakers_with_intelligibility": 15,
+  "speaker_level": {
+    "spearman_rho_raw": -0.22023356064917626,
+    "spearman_p_raw": 0.43027536650165854,
+    "pearson_r": -0.2513990921898934,
+    "pearson_p": 0.36608340110865517,
+    "partial_spearman_controlling_for_n_utts": {
+      "rho": -0.16114650779208017,
+      "p": 0.5661408649548558
+    }
+  },
+  "utterance_level_mixed_effects": null,
+  "interpretation": "Negative rho expected: lower ATD = higher intelligibility. Significant rho (any sign) is the construct-validity evidence that ATD tracks a perceptual instrument."
+}
