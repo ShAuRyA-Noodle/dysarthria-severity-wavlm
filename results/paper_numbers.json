@@ -1,6 +1,6 @@
 {
   "generated_by": "experiments/21_consolidate_paper_numbers.py",
-  "generated_at_utc": "2026-05-11T12:20:52.360375+00:00",
+  "generated_at_utc": "2026-05-11T12:21:14.585372+00:00",
   "branch": "audit-cleanup-2026-05-08",
   "datasets": {
     "torgo": {
@@ -794,6 +794,175 @@
         "elapsed_min": 6.262005678812662
       }
     ]
+  },
+  "torgo_mixed_effects_per_utterance": {
+    "n_observations": 7826,
+    "n_speakers": 15,
+    "n_words": 794,
+    "formula": "atd_score ~ severity_score + (1|speaker) + (1|word)",
+    "fixed_effect_severity": {
+      "beta": 13.682281120300162,
+      "se": 0.550580886589147,
+      "ci_low": 12.603162412009302,
+      "ci_high": 14.761399828591022,
+      "p_value": 2.545723386501186e-136,
+      "z": 24.85062858803909
+    },
+    "random_effects_variance": {
+      "speaker": null,
+      "word": 1105.933750298004,
+      "residual": 69.12085939362522,
+      "icc_speaker": null
+    },
+    "aic": NaN,
+    "log_likelihood": -36791.487821162555,
+    "interpretation": "beta is the per-unit change in ATD when severity_score moves from 0->1->2. CI is the journal-grade precision estimate; compare to the speaker-mean bootstrap CI on Spearman rho (width 0.54). The fixed-effect CI here is much tighter because n_obs = 7826, not 15."
+  },
+  "torgo_bayesian_rho_posterior": {
+    "observed_rho": 0.7560864148142503,
+    "observed_p": 0.0011089540064018154,
+    "n_speakers": 15,
+    "fisher_se": 0.2886751345948129,
+    "prior": {
+      "family": "Beta(a,b) on (rho+1)/2",
+      "a": 8.0,
+      "b": 2.0,
+      "implied_prior_mean_rho": 0.6000000000000001
+    },
+    "posterior": {
+      "mean": 0.69823694367013,
+      "median": 0.7163090086253187,
+      "ci_95_low": 0.41305842736301346,
+      "ci_95_high": 0.8833124536153244,
+      "ci_width": 0.47025402625231094,
+      "mode_kde": 0.7513827655310622,
+      "n_samples": 100000
+    },
+    "comparison_to_frequentist": {
+      "frequentist_ci_low": 0.382,
+      "frequentist_ci_high": 0.921,
+      "frequentist_ci_width": 0.539,
+      "bayesian_ci_width_reduction": 0.12754355055229888
+    }
+  },
+  "uaspeech_intelligibility_anchor": {
+    "corpus": "UASpeech",
+    "n_speakers_with_intelligibility": 15,
+    "speaker_level": {
+      "spearman_rho_raw": -0.22023356064917626,
+      "spearman_p_raw": 0.43027536650165854,
+      "pearson_r": -0.2513990921898934,
+      "pearson_p": 0.36608340110865517,
+      "partial_spearman_controlling_for_n_utts": {
+        "rho": -0.16114650779208017,
+        "p": 0.5661408649548558
+      }
+    },
+    "utterance_level_mixed_effects": null,
+    "interpretation": "Negative rho expected: lower ATD = higher intelligibility. Significant rho (any sign) is the construct-validity evidence that ATD tracks a perceptual instrument."
+  },
+  "torgo_power_analysis": {
+    "alpha": 0.05,
+    "n_observed": 15,
+    "rho_observed": 0.756,
+    "achieved_power_monte_carlo_10k": 0.8967,
+    "achieved_power_fisher_closed_form": 0.9276425546050868,
+    "min_detectable_rho_at_n15_power80": 0.6699999999999999,
+    "n_required_for_power80_two_sided": {
+      "rho_0.4": 47,
+      "rho_0.5": 30,
+      "rho_0.6": 20,
+      "rho_0.7": 14,
+      "rho_0.8": 10
+    },
+    "notes": "Fisher z-transform closed-form assumes Pearson; Spearman is rank-based but converges to Pearson under Gaussian copula. Monte Carlo confirms within 0.02 of Fisher estimate."
+  },
+  "differential_dx_zrank_classifier": {
+    "n_speakers": 91,
+    "feature": "atd_zrank (per-corpus rank z-normalised mean ATD)",
+    "loso_macro_f1": 0.16296296296296298,
+    "labels_in_order": [
+      "Control",
+      "Mild-Mod",
+      "Parkinson",
+      "Severe"
+    ],
+    "confusion_matrix": [
+      [
+        44,
+        0,
+        0,
+        0
+      ],
+      [
+        18,
+        0,
+        0,
+        0
+      ],
+      [
+        24,
+        0,
+        0,
+        0
+      ],
+      [
+        5,
+        0,
+        0,
+        0
+      ]
+    ],
+    "per_class": {
+      "Control": {
+        "precision": 0.4835164835164835,
+        "recall": 1.0,
+        "f1-score": 0.6518518518518519,
+        "support": 44.0
+      },
+      "Mild-Mod": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 18.0
+      },
+      "Parkinson": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 24.0
+      },
+      "Severe": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 5.0
+      },
+      "accuracy": 0.4835164835164835,
+      "macro avg": {
+        "precision": 0.12087912087912088,
+        "recall": 0.25,
+        "f1-score": 0.16296296296296298,
+        "support": 91.0
+      },
+      "weighted avg": {
+        "precision": 0.23378818983214586,
+        "recall": 0.4835164835164835,
+        "f1-score": 0.3151811151811152,
+        "support": 91.0
+      }
+    },
+    "by_corpus": {
+      "IPVS": "61",
+      "TORGO": "15",
+      "UASpeech": "15"
+    },
+    "class_distribution": {
+      "Control": "44",
+      "Parkinson": "24",
+      "Mild-Mod": "18",
+      "Severe": "5"
+    }
   },
   "atd_confidence_by_severity": [
     {

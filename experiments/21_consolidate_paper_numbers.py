@@ -151,6 +151,31 @@ def main() -> None:
     if ssl_bb:
         out["ssl_backbone_comparison"] = ssl_bb
 
+    # Mixed-effects per-utterance model (T32 — neutralises n=15 attack).
+    me = _load_json(PROJECT_ROOT / "results/torgo_mixed_effects.json")
+    if me:
+        out["torgo_mixed_effects_per_utterance"] = me
+
+    # Bayesian posterior on TORGO rho (T33).
+    bayes = _load_json(PROJECT_ROOT / "results/torgo_bayesian_rho.json")
+    if bayes:
+        out["torgo_bayesian_rho_posterior"] = bayes
+
+    # UASpeech intelligibility anchor (T34 — construct validity).
+    ua_anchor = _load_json(PROJECT_ROOT / "results/uaspeech_intelligibility_anchor.json")
+    if ua_anchor:
+        out["uaspeech_intelligibility_anchor"] = ua_anchor
+
+    # Power analysis (T31).
+    pw = _load_json(PROJECT_ROOT / "results/power_analysis.json")
+    if pw:
+        out["torgo_power_analysis"] = pw
+
+    # z-rank classifier (v2 of differential dx).
+    zr = _load_json(PROJECT_ROOT / "results/differential_dx_zrank_loso.json")
+    if zr:
+        out["differential_dx_zrank_classifier"] = zr
+
     # ATD confidence stratified means (T4) — built from CSV.
     conf_csv = PROJECT_ROOT / "results/atd_confidence.csv"
     if conf_csv.exists():
