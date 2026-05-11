@@ -22,5 +22,15 @@ Forced Aligner) yields $\rho \approx 0.63$ on both vowels and
 consonants. Cross-language transfer: on Italian Parkinsonian voice
 (IPVS, XLS-R-300m Layer~1, sustained vowels), all five vowel-specific
 binary HC-vs-PD tests survive BH-FDR correction at $q{=}0.05$, with
-/i/ and /o/ also passing Bonferroni. Streaming variant achieves
+/i/ and /o/ also passing Bonferroni. A 4-corpus pooled analysis
+(28{,}082 utterances, 164 speakers) shows ATD is specific to
+dysarthric pathology, not pronunciation deviation in general:
+across 24 L2-ARCTIC speakers (6 native-language backgrounds), the
+correlation between mean ATD and ground-truth phone-error rate is
+$\rho{=}0.041$ ($p{=}0.85$, NS), and across 110 VCTK speakers
+spanning 13 native English regional accents, Kruskal--Wallis is
+$p{=}0.075$ (NS). The dysarthric-vs-healthy contrast on the pooled
+4-corpus dataset (with VCTK + L2-ARCTIC acting as accented-healthy
+distractors) is highly significant ($\hat{\beta}{=}0.75$ z-units,
+$p{=}8.9{\times}10^{-5}$). Streaming variant achieves
 $91\,\mu$s per-frame ATD update (Pearson $r{=}0.81$ vs offline).

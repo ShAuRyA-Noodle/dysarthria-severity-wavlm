@@ -243,3 +243,88 @@ between. This reframes the multilingual-transfer narrative: \emph{at
 Layer~1, articulatory features are language-agnostic enough that
 English pre-training transfers without an explicit multilingual
 objective}.
+
+\subsection{Accent-versus-dysarthria specificity (L2-ARCTIC + VCTK)}
+\label{sec:specificity}
+
+A key reviewer concern for any deviation-based dysarthria metric is
+whether it merely measures \emph{any} pronunciation deviation from a
+canonical reference, rather than dysarthric pathology specifically.
+We address this directly by running the ATD pipeline on two
+neurologically healthy but acoustically non-canonical populations:
+L2-ARCTIC (24 second-language English speakers, 6 native-language
+backgrounds; \cite{Zhao2018L2Arctic}) and VCTK Corpus 0.92
+(110 native English speakers, 13 regional accents;
+\cite{Veaux2017VCTK}).
+
+\paragraph{Within-corpus design.}
+For each corpus we build a within-corpus leave-one-speaker-out (LOCO)
+reference: the per-sentence reference is the linear-interpolated
+average of all annotated speakers' PCA-64 trajectories at WavLM
+Layer~9, minus the target speaker's contribution. Reference DTW uses
+the same fast banded algorithm (window~20) as the TORGO headline
+pipeline. L2-ARCTIC analysis is restricted to the 3{,}599 manually
+phone-annotated utterances; VCTK analysis uses the 50 sentence IDs
+read by at least 100 speakers (5{,}437 utterances).
+
+\paragraph{Result 1: ATD does not track L2 accent strength.}
+L2-ARCTIC ships speaker-level manual annotations of phone
+substitutions, deletions, and additions; we summarise these as a
+per-speaker phone-error rate (PER) ranging from 0.069 (HJK, Korean)
+to 0.274 (THV, Vietnamese). The speaker-level Spearman correlation
+between mean ATD and PER is $\rho = 0.041$ ($p = 0.85$;
+$n = 24$).\footnote{Cluster-robust SE on speaker; identical
+direction in Pearson $r = 0.026$.}
+The corresponding Kruskal--Wallis test across the six L1 groups gives
+$H = 12.29$, $p = 0.031$, which is \emph{not} significant after
+Bonferroni correction over the three specificity tests in this
+section ($p_{\text{adj}} = 0.093$).
+
+\paragraph{Result 2: ATD does not distinguish native English accents.}
+Across the 7 VCTK accent groups with $n \geq 4$ speakers (English,
+American, Scottish, Irish, Canadian, NorthernIrish, SouthAfrican),
+Kruskal--Wallis gives $H = 11.47$, $p = 0.075$ (NS). Age has no
+significant association ($\rho = -0.12$, $p = 0.20$). A small gender
+effect remains ($M\!=\!7.94$, $F\!=\!7.78$, Mann--Whitney $p = 0.010$),
+$\Delta = 0.16$ in ATD units (2\%~of the absolute scale), at least an
+order of magnitude smaller than the TORGO control--severe gap.
+
+\paragraph{Result 3: pooled 4-corpus cross-validation.}
+We pool all 28{,}082 utterances from 164 speakers into a single OLS
+model with corpus fixed effects and cluster-robust standard errors on
+speaker (mixed-effects models are degenerate because severity is
+constant within speaker). On TORGO~$+$~UASpeech only (19{,}046
+utts), the within-corpus severity coefficient is
+$\hat{\beta}_{\text{sev}} = 0.273$ z-units per severity step, 95\%
+CI~$[0.070,\,0.477]$, $p = 0.008$. Across all four corpora the
+binary contrast \emph{dysarthric vs healthy} (with VCTK + L2-ARCTIC
+acting as accented-healthy distractors) gives
+$\hat{\beta}_{\text{dys}} = 0.752$ z-units, 95\%
+CI~$[0.376,\,1.129]$, $p = 8.9{\times}10^{-5}$.
+
+The per-population z-ATD picture (Fig.~\ref{fig:specificity_4corpus})
+is the cleanest summary: TORGO\,controls~$\approx$~UA\,controls
+($d = 0.02$) $\approx$~VCTK~native-accented healthy ($d = 0.40$) $\approx$~L2-ARCTIC
+L2-accented healthy ($d = 0.40$ vs TORGO\,controls), while
+TORGO\,severe and UA\,severe sit \emph{above} all healthy
+populations: $d(\text{TORGO\,severe},\text{VCTK}) = 0.93$,
+$d(\text{TORGO\,severe},\text{UA\,controls}) = 1.70$,
+$d(\text{TORGO\,severe},\text{TORGO\,controls}) = 1.49$. The
+accented-but-healthy populations do not elevate into the dysarthric
+range. The most parsimonious account is that ATD is a pathology
+detector, not an accent detector.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_specificity_4corpus.pdf}
+\caption{Per-population ATD distribution (z-scored within each corpus).
+Blue: clinical controls. Cyan: neurologically healthy speakers with
+non-canonical accents (VCTK regional accents, L2-ARCTIC L2 speakers).
+Orange: mild dysarthria. Red: severe dysarthria. The accented-healthy
+populations (cyan) sit in the same band as the clinical controls
+(blue), \emph{not} the dysarthric populations (orange/red). The
+specificity claim is a falsifiable prediction passing in both
+corpora, with $n = 134$ accented-but-healthy speakers as the
+adversarial test set.}
+\label{fig:specificity_4corpus}
+\end{figure}

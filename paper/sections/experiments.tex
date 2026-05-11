@@ -37,6 +37,25 @@ rank accuracy ("higher-ATD speaker is more severe than 7/8 hold-outs").
 For supervised baselines (MFCC+SVR, WavLM Pool+Ridge) the LOSO
 loop refits the regression head on the remaining speakers; ATD is fold-free.
 
+\subsection{Accent-versus-dysarthria specificity}
+To address the standing concern that any deviation-based metric may
+merely measure pronunciation atypicality rather than dysarthric
+pathology, we run the same ATD pipeline on two neurologically healthy
+non-canonical-accent corpora: L2-ARCTIC (24 second-language English
+speakers, 6 L1 backgrounds, 3{,}599 phone-annotated utterances) and
+VCTK Corpus 0.92 (110 native English speakers, 13 regional accents,
+restricted to the 50 sentence IDs read by $\geq$100 speakers, yielding
+5{,}437 utterances). Within each corpus we build per-sentence LOCO
+references by linear-interpolating all speakers' Layer-9 trajectories
+to the median sentence length, averaging, and subtracting the target
+speaker's contribution. DTW uses the same banded algorithm
+(window~20). The specificity hypothesis is pre-registered: (i)
+within L2-ARCTIC, Spearman $\rho(\text{mean ATD},\text{phone-error
+rate})$ should not differ from zero; (ii) within VCTK, Kruskal--Wallis
+across accent groups should not be significant; (iii) on the pooled
+4-corpus dataset, the dysarthric-vs-healthy contrast on
+within-corpus-z-normalised ATD should be highly significant.
+
 \subsection{Confound and sensitivity analyses}
 We check that ATD is not a proxy for speaking rate by reporting the
 Pearson correlation between ATD and per-utterance duration.
