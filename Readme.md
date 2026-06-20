@@ -8,7 +8,7 @@
 <p align="center">
   <b>Articulatory trajectories in WavLM latent space for the word "yes".</b><br>
   Control speakers (left) trace tight, consistent paths. Severe dysarthric speakers (right) deviate sharply.<br>
-  ATD measures this deviation — no fine-tuning, no labels required.
+  ATD measures this deviation: no fine-tuning, no labels required.
 </p>
 
 ---
@@ -20,20 +20,20 @@
   <img src="https://img.shields.io/badge/Zero--Shot-No%20Fine--Tuning-orange?style=flat-square"/>
   <img src="https://img.shields.io/badge/Dataset-TORGO-lightgrey?style=flat-square"/>
   <img src="https://img.shields.io/badge/Python-3.11-blue?style=flat-square"/>
-  <img src="https://img.shields.io/badge/PyTorch-2.2.2-red?style=flat-square"/>
+  <img src="https://img.shields.io/badge/PyTorch-2.6%2B-red?style=flat-square"/>
 </p>
 
 ---
 
 ## What Is This?
 
-Dysarthria is a motor speech disorder — caused by cerebral palsy, ALS, stroke, or traumatic brain injury — that affects millions of people worldwide. Assessing its severity currently requires a trained Speech-Language Pathologist: expensive, scarce, and subjective.
+Dysarthria is a motor speech disorder (caused by cerebral palsy, ALS, stroke, or traumatic brain injury) that affects millions of people worldwide. Assessing its severity currently requires a trained Speech-Language Pathologist: expensive, scarce, and subjective.
 
-**We propose ATD (Articulatory Trajectory Deviation):** a zero-shot metric that estimates dysarthric severity directly from raw audio — with no labeled training data and no fine-tuning of any model.
+**We propose ATD (Articulatory Trajectory Deviation):** a zero-shot metric that estimates dysarthric severity directly from raw audio, with no labeled training data and no fine-tuning of any model.
 
 ### The Core Insight
 
-Large SSL models like WavLM-Large, pre-trained on 94,000 hours of neurotypical speech, have implicitly learned a geometric manifold of normal articulatory execution. Neurotypical speakers trace tight, consistent trajectories through this space when producing any given word. Dysarthric speakers — due to impaired motor control — trace erratic, deviated paths.
+Large SSL models like WavLM-Large, pre-trained on 94,000 hours of neurotypical speech, have implicitly learned a geometric manifold of normal articulatory execution. Neurotypical speakers trace tight, consistent trajectories through this space when producing any given word. Dysarthric speakers, due to impaired motor control, trace erratic, deviated paths.
 
 **ATD measures the geometric deviation of a speaker's WavLM trajectory from neurotypical reference trajectories. The geometry IS the severity signal.**
 
@@ -52,17 +52,17 @@ Large SSL models like WavLM-Large, pre-trained on 94,000 hours of neurotypical s
 | **ATD-L9 + Ridge (ours)** | 0.721 | **0.756** | 0.282 | **No** |
 | **ATD-All + Ridge (ours)** | **0.671** | **0.756** | **0.394** | **No** |
 
-**LOSO = Leave-One-Speaker-Out** across 8 dysarthric speakers — tests generalization to completely unseen speakers.
+**LOSO = Leave-One-Speaker-Out** across 8 dysarthric speakers, testing generalization to completely unseen speakers.
 
 ### Headline Numbers
 
 - **Speaker-level Spearman ρ = 0.756** (p = 0.0011, n = 15 speakers)
 - **16.3% RMSE improvement** over MFCC baseline
-- **7× higher LOSO Spearman** than MFCC (0.394 vs 0.056)
-- **87.5% LOSO rank accuracy** — 7/8 dysarthric speakers correctly ranked
+- **7x higher LOSO Spearman** than MFCC (0.394 vs 0.056)
+- **87.5% LOSO rank accuracy**: 7/8 dysarthric speakers correctly ranked
 - **Cohen's d = 1.488** (large effect) between control and severe groups
-- **ATD-duration correlation r = 0.105** — ATD is NOT a proxy for speaking rate
-- **Zero fine-tuning** — WavLM is permanently frozen
+- **ATD-duration correlation r = 0.105**: ATD is NOT a proxy for speaking rate
+- **Zero fine-tuning**: WavLM is permanently frozen
 
 ---
 
@@ -74,7 +74,7 @@ Large SSL models like WavLM-Large, pre-trained on 94,000 hours of neurotypical s
 
 We analyzed all 9 sampled WavLM-Large layers. Every single layer achieves statistically significant correlation (p < 0.01).
 
-**Novel finding:** Early transformer layers (Layer 1, ρ = 0.775) and middle layers (Layer 9, ρ = 0.756) both strongly encode dysarthric severity — suggesting that motor speech disruption manifests at both acoustic and articulatory levels of SSL representation.
+**Novel finding:** Early transformer layers (Layer 1, ρ = 0.775) and middle layers (Layer 9, ρ = 0.756) both strongly encode dysarthric severity, suggesting that motor speech disruption manifests at both acoustic and articulatory levels of SSL representation.
 
 ---
 
@@ -86,8 +86,8 @@ We analyzed all 9 sampled WavLM-Large layers. Every single layer achieves statis
 
 ATD reveals clinically meaningful speaker profiles beyond categorical labels:
 
-- **F04** (labeled Severe): ATD = 72.9 — within control range, consistent with documented preserved intelligibility in her spastic dysarthria profile
-- **M05** (labeled Mild-Moderate): ATD = 97.96 — approaching severe range, consistent with notably reduced intelligibility
+- **F04** (labeled Severe): ATD = 72.9, within control range, consistent with documented preserved intelligibility in her spastic dysarthria profile
+- **M05** (labeled Mild-Moderate): ATD = 97.96, approaching severe range, consistent with notably reduced intelligibility
 
 **ATD captures articulatory execution quality independently of diagnostic categorization.**
 
@@ -98,7 +98,7 @@ ATD reveals clinically meaningful speaker profiles beyond categorical labels:
 ```
 Raw audio (16kHz)
       ↓
-WavLM-Large (frozen, eval mode — never fine-tuned)
+WavLM-Large (frozen, eval mode, never fine-tuned)
       ↓
 Frame-level embeddings: shape (T_frames, 1024)
       ↓
@@ -120,23 +120,23 @@ For utterance $u$ of word $w$ by speaker $s$, with WavLM layer $l$ embeddings:
 $$\text{ATD}(u, w, l) = \frac{\text{DTW}\left(\text{PCA}_{64}(\mathbf{E}_u^{(l)}),\; \mathbf{R}_w^{(l)}\right)}{\max(T_u,\, T_{\mathbf{R}_w})}$$
 
 Where:
-- $\mathbf{E}_u^{(l)} \in \mathbb{R}^{T_u \times 1024}$ — frame-level WavLM embeddings
-- $\mathbf{R}_w^{(l)}$ — reference trajectory built by DTW-averaging 7 control speakers
-- $\text{PCA}_{64}$ — same PCA model used for both reference and test (same coordinate space)
+- $\mathbf{E}_u^{(l)} \in \mathbb{R}^{T_u \times 1024}$: frame-level WavLM embeddings
+- $\mathbf{R}_w^{(l)}$: reference trajectory built by DTW-averaging 7 control speakers
+- $\text{PCA}_{64}$: same PCA model used for both reference and test (same coordinate space)
 - Length normalization ensures ATD measures quality, not speaking rate
 
 ---
 
 ## Dataset
 
-**TORGO** — University of Toronto dysarthric speech database
+**TORGO**: University of Toronto dysarthric speech database
 
 | Group | Speakers | Utterances | Severity |
 |---|---|---|---|
 | Control | FC01, FC02, FC03, MC01, MC02, MC03, MC04 | ~5,220 | None |
 | Mild-Moderate | F03, M03, M05 | ~1,425 | 1 |
 | Severe | F01, F04, M01, M02, M04 | ~1,181 | 2 |
-| **Total** | **15** | **~7,826** | — |
+| **Total** | **15** | **~7,826** | n/a |
 
 - Headset microphone recordings only (higher SNR)
 - Resampled to 16kHz, normalized to -20 dBFS
@@ -151,17 +151,17 @@ Every design decision is empirically justified:
 
 | Variant | Spearman ρ (Global) | ρ (LOSO) | Interpretation |
 |---|---|---|---|
-| **Full ATD — Layer 1 (best)** | **0.775** | **0.394** | Best overall |
-| Full ATD — Layer 9 | 0.756 | 0.394 | Strong mid-network |
-| No DTW — Mean L2 | 0.471 | 0.394 | DTW critical (−40%) |
-| No PCA — 1024-dim DTW | 0.802 | 0.394 | PCA is safe speedup |
+| **Full ATD, Layer 1 (best)** | **0.775** | **0.394** | Best overall |
+| Full ATD, Layer 9 | 0.756 | 0.394 | Strong mid-network |
+| No DTW, Mean L2 | 0.471 | 0.394 | DTW critical (-40%) |
+| No PCA, 1024-dim DTW | 0.802 | 0.394 | PCA is safe speedup |
 | Mean-pool distance | 0.471 | 0.394 | Trajectory structure critical |
 | MFCC trajectory DTW | 0.849 | 0.282 | SSL generalizes better (LOSO) |
 
 **Key findings:**
-- Removing DTW drops ρ by 40% — temporal alignment is essential
-- MFCC trajectories have high global ρ but collapse under LOSO (0.282 vs 0.394) — SSL representations generalize better to unseen speakers
-- PCA reduction to 64 dims is lossless — 16× speedup with no quality loss
+- Removing DTW drops ρ by 40%, so temporal alignment is essential
+- MFCC trajectories have high global ρ but collapse under LOSO (0.282 vs 0.394), showing SSL representations generalize better to unseen speakers
+- PCA reduction to 64 dims is lossless: 16x speedup with no quality loss
 
 ---
 
@@ -169,8 +169,8 @@ Every design decision is empirically justified:
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOURUSERNAME/dysarthria-atd.git
-cd dysarthria-atd
+git clone https://github.com/ShAuRyA-Noodle/dysarthria-severity-wavlm.git
+cd dysarthria-severity-wavlm
 
 # Create conda environment
 conda create -n dysarthria python=3.11 -y
@@ -183,7 +183,7 @@ conda install pytorch==2.2.2 torchaudio==2.2.2 pytorch-cuda=12.1 -c pytorch -c n
 pip install -r requirements.txt
 ```
 
-**Requirements:** NVIDIA GPU with ≥ 8GB VRAM, CUDA 12.1+, ~80GB disk space for embeddings
+**Requirements:** NVIDIA GPU with at least 8GB VRAM, CUDA 12.1+, ~80GB disk space for embeddings
 
 ---
 
@@ -203,7 +203,7 @@ data/raw/torgo/
 
 ---
 
-## Quick Start (Verify Setup — 5 Minutes)
+## Quick Start (Verify Setup in 5 Minutes)
 
 ```bash
 conda activate dysarthria
@@ -225,12 +225,22 @@ Expected output:
 
 ## Reproduce All Results
 
+Run the numbered experiment scripts in order. Each stage writes its outputs to `results/` and is consumed by the next:
+
 ```bash
 conda activate dysarthria
-python reproduce_all.py
+python experiments/03_preprocess_audio.py
+python experiments/04_extract_ssl.py
+python experiments/05_build_references.py
+python experiments/06_compute_atd.py
+python experiments/07_validate_atd.py
+python experiments/08_baselines.py
+python experiments/09_layer_analysis.py
+python experiments/10_loso_validation.py
+python experiments/11_ablations.py
+python experiments/12_generate_figures.py
+python experiments/13_generate_tables.py
 ```
-
-This runs the full pipeline end-to-end:
 
 | Step | Script | Time |
 |---|---|---|
@@ -253,7 +263,7 @@ This runs the full pipeline end-to-end:
 ## Project Structure
 
 ```
-dysarthria-atd/
+dysarthria-severity-wavlm/
 ├── src/
 │   ├── data_pipeline.py      # TORGO loading, preprocessing, splits
 │   ├── ssl_extractor.py      # Frozen WavLM-Large extraction
@@ -275,7 +285,8 @@ dysarthria-atd/
 │   ├── 10_loso_validation.py
 │   ├── 11_ablations.py
 │   ├── 12_generate_figures.py
-│   └── 13_generate_tables.py
+│   ├── 13_generate_tables.py
+│   └── ...                   # auxiliary verification / patch scripts
 ├── results/
 │   ├── figures/              # All 6 figures (PNG + PDF)
 │   ├── tables/               # CSVs for all results
@@ -284,16 +295,13 @@ dysarthria-atd/
 │   ├── speaker_atd.csv       # Speaker-level ATD aggregation
 │   └── atd_validation_report.json
 ├── paper/
-│   ├── sections/             # LaTeX sections
-│   ├── figures/              # Publication figures
-│   ├── tables/               # LaTeX tables
-│   └── main.tex
+│   ├── figures/              # Publication figures (PNG + PDF)
+│   └── tables/               # LaTeX result tables
 ├── data/
 │   ├── processed/metadata/   # metadata_unified.csv
 │   └── splits/               # splits.json (LOSO, severity, cross-session)
-├── reproduce_all.py
 ├── requirements.txt
-└── README.md
+└── Readme.md
 ```
 
 ---
@@ -302,10 +310,10 @@ dysarthria-atd/
 
 | Decision | Choice | Why |
 |---|---|---|
-| SSL model | WavLM-Large | Denoising objective — most robust to irregular speech |
+| SSL model | WavLM-Large | Denoising objective, most robust to irregular speech |
 | Model state | **Frozen always** | Preserves pre-trained articulatory geometry |
 | Features | Frame-level | Trajectory structure, not mean-pooled averages |
-| Alignment | DTW (fastdtw) | Handles 2–3× slower dysarthric speech naturally |
+| Alignment | DTW (fastdtw) | Handles 2 to 3x slower dysarthric speech naturally |
 | Reduction | PCA → 64 dims | 16× speedup, <5% information loss |
 | References | Control speakers only | True neurotypical articulation, not mild dysarthric |
 | Evaluation | LOSO | Only valid generalization test for 8-speaker dataset |
@@ -321,13 +329,13 @@ dysarthria-atd/
 - Empirical proof that SSL representations generalize better than MFCC under LOSO (0.394 vs 0.282)
 
 **For clinicians:**
-- Zero-shot — no labeled data needed for new patients
-- Interpretable — trajectory deviation has geometric meaning
-- Deployable — no retraining, no clinical infrastructure
+- Zero-shot: no labeled data needed for new patients
+- Interpretable: trajectory deviation has geometric meaning
+- Deployable: no retraining, no clinical infrastructure
 - Speaker-specific profiles reveal execution quality beyond categorical labels
 
 **For the field:**
-- Framework extensible to: ALS progression tracking, therapy monitoring, cross-language dysarthria, other motor speech disorders
+- Framework extensible to ALS progression tracking, therapy monitoring, cross-language dysarthria, and other motor speech disorders
 
 ---
 
@@ -363,7 +371,7 @@ dysarthria-atd/
 
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
+Released under the MIT License. Code is provided for research use; the TORGO dataset is governed by its own license terms (see the TORGO link above).
 
 ---
 
