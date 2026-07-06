@@ -4,7 +4,7 @@ import librosa
 import numpy as np
 
 from src.perturbations import formant_shift  # real DSP on real audio
-from src.veritas.faithfulness import cycle_faithfulness
+from src.veritas.faithfulness import OODScorer, cycle_faithfulness
 from src.veritas.inversion import SPARCInverter
 from src.veritas.wavlm_features import WavLMFeatures
 
@@ -25,3 +25,19 @@ def test_faithfulness_drops_under_distortion():
     f_bad = cycle_faithfulness(x_bad, sr, inv, fx).mean()
     assert 0.0 <= f_bad <= f_clean <= 1.0
     assert f_clean - f_bad > 0.02  # measurable drop
+
+
+def _feats(pattern, fx, n=3):
+    out = []
+    for w in glob.glob(pattern, recursive=True)[:n]:
+        x, sr = librosa.load(w, sr=16000)
+        out.append(fx.extract(x, sr=16000))
+    return np.concatenate(out, 0)
+
+
+def test_ood_higher_for_dysarthric():
+    fx = WavLMFeatures(device="cpu")
+    ctrl = _feats(r"C:/Users/Dell/Desktop/Dysar/FC/**/*.wav", fx)  # controls
+    dys = _feats(r"C:/Users/Dell/Desktop/Dysar/F/**/*.wav", fx)  # dysarthric (F01/F03/F04)
+    ood = OODScorer().fit(ctrl)
+    assert ood.score(dys).mean() > ood.score(ctrl).mean()

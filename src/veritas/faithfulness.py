@@ -41,3 +41,31 @@ def cycle_faithfulness(audio: np.ndarray, sr: int, inverter, wavlm) -> np.ndarra
     fxh = wavlm.extract(xhat, sr=16000)
     cos = _cos_per_frame(fx, fxh)
     return np.clip((cos + 1.0) / 2.0, 0.0, 1.0)  # map [-1,1] -> [0,1]
+
+
+class OODScorer:
+    """Diagonal-covariance Mahalanobis distance to the healthy feature manifold.
+
+    Fit on healthy (control) WavLM frames; ``score`` returns a per-frame
+    out-of-distribution distance. Disordered speech, being off the healthy
+    manifold, scores higher — the anti-normalisation half of the fused signal.
+    """
+
+    def fit(self, healthy_feats: np.ndarray):
+        self.mu = healthy_feats.mean(0)
+        self.var = healthy_feats.var(0) + 1e-6
+        return self
+
+    def score(self, feats: np.ndarray) -> np.ndarray:
+        d = (feats - self.mu) ** 2 / self.var
+        return np.sqrt(d.sum(1))  # per-frame OOD distance
+
+
+def fused_faithfulness(
+    cycle_F: np.ndarray, ood: np.ndarray, ood_ref: float
+) -> np.ndarray:
+    """Combine cycle faithfulness with an OOD penalty normalised by a healthy
+    reference OOD level. Returns per-frame faithfulness in [0,1]."""
+    T = min(len(cycle_F), len(ood))
+    ood_pen = np.clip(1.0 - (ood[:T] / (ood_ref + 1e-8) - 1.0), 0.0, 1.0)
+    return np.clip(0.5 * cycle_F[:T] + 0.5 * ood_pen, 0.0, 1.0)
