@@ -1,0 +1,357 @@
+{
+  "hypothesis": "faithfulness DROPS with severity (expect negative rho)",
+  "metric": "centered cycle-consistency faithfulness (healthy-manifold centered), mean per utterance, averaged per speaker",
+  "centered": true,
+  "healthy_reference": "mean of control-speaker WavLM frames; fit on head-mic wavs disjoint from each control's eval slice",
+  "input_ood_fused": false,
+  "mic": "head-mic preferred (higher SNR); fallback any",
+  "limit_per_speaker": 40,
+  "mu_per_speaker": 8,
+  "n_healthy_fit_wavs": 56,
+  "layers": [
+    9,
+    15
+  ],
+  "primary_layer": 9,
+  "spearman_rho": 0.46676763363532797,
+  "p_value": 0.07942323074713495,
+  "n_speakers": 15,
+  "per_layer": {
+    "9": {
+      "spearman_rho": 0.46676763363532797,
+      "p_value": 0.07942323074713495,
+      "n": 15
+    },
+    "15": {
+      "spearman_rho": 0.37418562365807284,
+      "p_value": 0.16943331753570434,
+      "n": 15
+    }
+  },
+  "accounting": {
+    "total_attempted": 600,
+    "total_used": 600,
+    "total_skipped": 0,
+    "total_skipped_short": 0,
+    "total_skipped_error": 0,
+    "speakers_with_zero_utterances": [],
+    "all_speakers_have_utterances": true
+  },
+  "per_speaker": {
+    "F01": {
+      "severity": 2,
+      "is_control": false,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.817629985511303,
+      "std_faithfulness": 0.0452419044464595,
+      "by_layer": {
+        "9": {
+          "mean": 0.817629985511303,
+          "std": 0.0452419044464595
+        },
+        "15": {
+          "mean": 0.8291696280241012,
+          "std": 0.04877572569437865
+        }
+      }
+    },
+    "F03": {
+      "severity": 1,
+      "is_control": false,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7821527242660522,
+      "std_faithfulness": 0.06765588664036516,
+      "by_layer": {
+        "9": {
+          "mean": 0.7821527242660522,
+          "std": 0.06765588664036516
+        },
+        "15": {
+          "mean": 0.8016956329345704,
+          "std": 0.07403511237416066
+        }
+      }
+    },
+    "F04": {
+      "severity": 2,
+      "is_control": false,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7702222794294358,
+      "std_faithfulness": 0.03794227375753212,
+      "by_layer": {
+        "9": {
+          "mean": 0.7702222794294358,
+          "std": 0.03794227375753212
+        },
+        "15": {
+          "mean": 0.8031511962413788,
+          "std": 0.04417069481965937
+        }
+      }
+    },
+    "M01": {
+      "severity": 2,
+      "is_control": false,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7574069619178772,
+      "std_faithfulness": 0.04415234659476969,
+      "by_layer": {
+        "9": {
+          "mean": 0.7574069619178772,
+          "std": 0.04415234659476969
+        },
+        "15": {
+          "mean": 0.7864150777459145,
+          "std": 0.04486637466311596
+        }
+      }
+    },
+    "M02": {
+      "severity": 2,
+      "is_control": false,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7747212827205658,
+      "std_faithfulness": 0.044981526761407944,
+      "by_layer": {
+        "9": {
+          "mean": 0.7747212827205658,
+          "std": 0.044981526761407944
+        },
+        "15": {
+          "mean": 0.77603070884943,
+          "std": 0.047314572156299514
+        }
+      }
+    },
+    "M03": {
+      "severity": 1,
+      "is_control": false,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7721147000789642,
+      "std_faithfulness": 0.049792316118242023,
+      "by_layer": {
+        "9": {
+          "mean": 0.7721147000789642,
+          "std": 0.049792316118242023
+        },
+        "15": {
+          "mean": 0.7908713713288307,
+          "std": 0.05398065054576366
+        }
+      }
+    },
+    "M04": {
+      "severity": 2,
+      "is_control": false,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7602582946419716,
+      "std_faithfulness": 0.0494165298791934,
+      "by_layer": {
+        "9": {
+          "mean": 0.7602582946419716,
+          "std": 0.0494165298791934
+        },
+        "15": {
+          "mean": 0.7709498971700668,
+          "std": 0.052691726323623914
+        }
+      }
+    },
+    "M05": {
+      "severity": 1,
+      "is_control": false,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7654419913887978,
+      "std_faithfulness": 0.031260855606913114,
+      "by_layer": {
+        "9": {
+          "mean": 0.7654419913887978,
+          "std": 0.031260855606913114
+        },
+        "15": {
+          "mean": 0.7804571449756622,
+          "std": 0.030238105478980502
+        }
+      }
+    },
+    "FC01": {
+      "severity": 0,
+      "is_control": true,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7006402879953384,
+      "std_faithfulness": 0.0851592587039425,
+      "by_layer": {
+        "9": {
+          "mean": 0.7006402879953384,
+          "std": 0.0851592587039425
+        },
+        "15": {
+          "mean": 0.7351221606135369,
+          "std": 0.08230073371925627
+        }
+      }
+    },
+    "FC02": {
+      "severity": 0,
+      "is_control": true,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7795693710446358,
+      "std_faithfulness": 0.06613736593379199,
+      "by_layer": {
+        "9": {
+          "mean": 0.7795693710446358,
+          "std": 0.06613736593379199
+        },
+        "15": {
+          "mean": 0.8106835335493088,
+          "std": 0.07111816766600215
+        }
+      }
+    },
+    "FC03": {
+      "severity": 0,
+      "is_control": true,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7410983130335808,
+      "std_faithfulness": 0.06259953395960421,
+      "by_layer": {
+        "9": {
+          "mean": 0.7410983130335808,
+          "std": 0.06259953395960421
+        },
+        "15": {
+          "mean": 0.7823135882616044,
+          "std": 0.06219238431823379
+        }
+      }
+    },
+    "MC01": {
+      "severity": 0,
+      "is_control": true,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.6758513003587723,
+      "std_faithfulness": 0.07184070674736076,
+      "by_layer": {
+        "9": {
+          "mean": 0.6758513003587723,
+          "std": 0.07184070674736076
+        },
+        "15": {
+          "mean": 0.7151616781949997,
+          "std": 0.07466337429327055
+        }
+      }
+    },
+    "MC02": {
+      "severity": 0,
+      "is_control": true,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.6881054759025573,
+      "std_faithfulness": 0.09041061084969644,
+      "by_layer": {
+        "9": {
+          "mean": 0.6881054759025573,
+          "std": 0.09041061084969644
+        },
+        "15": {
+          "mean": 0.7243449911475182,
+          "std": 0.08716999364043648
+        }
+      }
+    },
+    "MC03": {
+      "severity": 0,
+      "is_control": true,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.7075954556465149,
+      "std_faithfulness": 0.058011553455684116,
+      "by_layer": {
+        "9": {
+          "mean": 0.7075954556465149,
+          "std": 0.058011553455684116
+        },
+        "15": {
+          "mean": 0.7571915775537491,
+          "std": 0.05533735265800733
+        }
+      }
+    },
+    "MC04": {
+      "severity": 0,
+      "is_control": true,
+      "attempted": 40,
+      "used": 40,
+      "skipped": 0,
+      "skipped_short": 0,
+      "skipped_error": 0,
+      "mean_faithfulness": 0.773784002661705,
+      "std_faithfulness": 0.05813800151268494,
+      "by_layer": {
+        "9": {
+          "mean": 0.773784002661705,
+          "std": 0.05813800151268494
+        },
+        "15": {
+          "mean": 0.8009206205606461,
+          "std": 0.060829986736682266
+        }
+      }
+    }
+  }
+}

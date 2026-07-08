@@ -55,3 +55,26 @@ class WavLMFeatures:
         wav = wav.to(self.device)
         hs = self.model(wav).hidden_states  # tuple: [cnn_out, layer1..layer24]
         return hs[self.layer].squeeze(0).cpu().numpy()  # (T, 1024)
+
+    @torch.no_grad()
+    def extract_layers(
+        self, audio: np.ndarray, sr: int = 16000, layers: tuple[int, ...] = (9,)
+    ) -> dict[int, np.ndarray]:
+        """Extract several transformer layers in ONE forward pass.
+
+        Returns ``{layer: (T, 1024)}``. Used to measure cycle-consistency at a
+        layer OTHER than SPARC's inversion source (layer 9) essentially for free
+        — the shared-information confound check (P2)."""
+        audio = np.asarray(audio, dtype=np.float32)
+        if sr != 16000:
+            audio = torchaudio.functional.resample(
+                torch.from_numpy(audio), sr, 16000
+            ).numpy()
+        wav = torch.from_numpy(np.ascontiguousarray(audio)).float().unsqueeze(0)
+        mean = wav.mean()
+        std = wav.std()
+        if std > 0:
+            wav = (wav - mean) / std
+        wav = wav.to(self.device)
+        hs = self.model(wav).hidden_states
+        return {L: hs[L].squeeze(0).cpu().numpy() for L in layers}
