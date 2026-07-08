@@ -32,15 +32,64 @@ def _to16k(audio, sr):
     ).numpy()
 
 
-def cycle_faithfulness(audio: np.ndarray, sr: int, inverter, wavlm) -> np.ndarray:
+class HealthyReference:
+    """Healthy-manifold centroid: the mean of control-speaker WavLM frames.
+
+    Anisotropy fix. Raw cosine on WavLM features is saturated by a large shared
+    component (every frame points in a similar direction), which compresses all
+    faithfulness into a narrow band and destroys discrimination. Subtracting the
+    healthy centroid ``mu`` measures cosine on the *deviation-from-healthy*
+    subspace — the actual concept — and recovers dynamic range.
+
+    Fit ONCE on control frames extracted at the SAME WavLM layer later used for
+    ``E(x)``; ``center`` then subtracts ``mu``. With ``mu is None`` (unfit)
+    ``center`` is the identity, i.e. the uncentered fallback.
+    """
+
+    def __init__(self, mu: np.ndarray | None = None):
+        self.mu = None if mu is None else np.asarray(mu, dtype=np.float32)
+
+    def fit(self, control_frames: np.ndarray) -> "HealthyReference":
+        # float64 accumulation for a stable centroid, stored float32 to match feats
+        self.mu = np.asarray(control_frames, dtype=np.float64).mean(0).astype(np.float32)
+        return self
+
+    def center(self, feats: np.ndarray) -> np.ndarray:
+        feats = np.asarray(feats)
+        return feats if self.mu is None else feats - self.mu
+
+
+def frame_faithfulness(
+    fx: np.ndarray, fxh: np.ndarray, healthy_ref: "HealthyReference | None" = None
+) -> np.ndarray:
+    """Per-frame faithfulness in [0,1] from WavLM features of x and x_hat.
+
+    Pure cycle consistency: ``cosine(E(x), E(x_hat))`` mapped [-1,1]->[0,1]. When
+    a fitted ``HealthyReference`` is given, both feature sets are centered against
+    the healthy manifold first (anisotropy fix). This depends ONLY on how well
+    the reconstruction preserved the input (E(x) vs E(x_hat)) — never on how far
+    the INPUT itself sits from the healthy manifold (see module docstring)."""
+    if healthy_ref is not None:
+        fx = healthy_ref.center(fx)
+        fxh = healthy_ref.center(fxh)
+    cos = _cos_per_frame(np.asarray(fx), np.asarray(fxh))
+    return np.clip((cos + 1.0) / 2.0, 0.0, 1.0)  # map [-1,1] -> [0,1]
+
+
+def cycle_faithfulness(
+    audio: np.ndarray, sr: int, inverter, wavlm, healthy_ref: "HealthyReference | None" = None
+) -> np.ndarray:
     """GT-free per-frame faithfulness in [0,1]: how much the articulatory
     bottleneck preserves the input, measured in WavLM space after re-synthesis.
-    audio->encode->decode->re-encode(WavLM); compare WavLM(x) vs WavLM(x_hat)."""
+    audio->encode->decode->re-encode(WavLM); compare WavLM(x) vs WavLM(x_hat).
+
+    Pass a fitted ``HealthyReference`` to center against the healthy manifold
+    (recommended — recovers dynamic range); ``healthy_ref=None`` is the
+    uncentered fallback."""
     xhat = inverter.resynth(audio if sr == 16000 else _to16k(audio, sr))
     fx = wavlm.extract(audio, sr=sr)
     fxh = wavlm.extract(xhat, sr=16000)
-    cos = _cos_per_frame(fx, fxh)
-    return np.clip((cos + 1.0) / 2.0, 0.0, 1.0)  # map [-1,1] -> [0,1]
+    return frame_faithfulness(fx, fxh, healthy_ref)
 
 
 class OODScorer:
