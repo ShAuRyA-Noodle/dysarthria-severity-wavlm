@@ -7,8 +7,13 @@ the articulatory code preserved the input; low faithfulness = the invertible
 model could not represent this frame and "normalised" it toward its training
 manifold. No ground-truth articulography is required.
 
-``fused_faithfulness`` combines the cycle signal with an out-of-distribution
-penalty fit on healthy speech (``OODScorer``).
+Faithfulness is centered cycle-consistency ALONE (see ``frame_faithfulness``).
+We deliberately do NOT subtract an INPUT out-of-distribution penalty: doing so
+would drive faithfulness down simply because the input is atypical (dysarthric),
+conflating "atypical input" with "unfaithful reconstruction" and making any
+severity correlation true by construction. ``OODScorer`` is retained as a
+SEPARATE, independently reported axis (input typicality) — never fused into
+faithfulness.
 """
 from __future__ import annotations
 
@@ -95,9 +100,10 @@ def cycle_faithfulness(
 class OODScorer:
     """Diagonal-covariance Mahalanobis distance to the healthy feature manifold.
 
-    Fit on healthy (control) WavLM frames; ``score`` returns a per-frame
-    out-of-distribution distance. Disordered speech, being off the healthy
-    manifold, scores higher — the anti-normalisation half of the fused signal.
+    A SEPARATE axis measuring INPUT typicality — reported alongside, and never
+    subtracted from, faithfulness (FIX 2). Fit on healthy (control) WavLM frames;
+    ``score`` returns a per-frame out-of-distribution distance. Disordered
+    speech, being off the healthy manifold, scores higher.
     """
 
     def fit(self, healthy_feats: np.ndarray):
@@ -108,13 +114,3 @@ class OODScorer:
     def score(self, feats: np.ndarray) -> np.ndarray:
         d = (feats - self.mu) ** 2 / self.var
         return np.sqrt(d.sum(1))  # per-frame OOD distance
-
-
-def fused_faithfulness(
-    cycle_F: np.ndarray, ood: np.ndarray, ood_ref: float
-) -> np.ndarray:
-    """Combine cycle faithfulness with an OOD penalty normalised by a healthy
-    reference OOD level. Returns per-frame faithfulness in [0,1]."""
-    T = min(len(cycle_F), len(ood))
-    ood_pen = np.clip(1.0 - (ood[:T] / (ood_ref + 1e-8) - 1.0), 0.0, 1.0)
-    return np.clip(0.5 * cycle_F[:T] + 0.5 * ood_pen, 0.0, 1.0)

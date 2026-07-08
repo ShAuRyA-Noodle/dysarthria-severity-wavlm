@@ -87,6 +87,44 @@ def test_centered_faithfulness_monotone_dose_response():
     assert (cen >= 0).all() and (cen <= 1).all()
 
 
+def test_faithfulness_tracks_reconstruction_not_input_ood():
+    """FIX 2: faithfulness must reward RECONSTRUCTION fidelity (E(x) vs E(x_hat)),
+    never punish a merely-atypical INPUT. A perfectly reconstructed but very
+    out-of-distribution input is FULLY faithful; an on-manifold but poorly
+    reconstructed input is not. (The old fused metric drove faithfulness down
+    for atypical inputs, making severity-correlation true by construction.)"""
+    rng = np.random.default_rng(0)
+    D = 32
+    mu = (rng.standard_normal(D) * 2.0).astype(np.float32)
+    healthy = (mu + 0.3 * rng.standard_normal((300, D))).astype(np.float32)
+    ref = HealthyReference().fit(healthy)
+    ood = OODScorer().fit(healthy)
+
+    far = (mu + 8.0 * rng.standard_normal((40, D))).astype(np.float32)  # very OOD input
+    f_far_faithful = float(frame_faithfulness(far, far.copy(), ref).mean())  # perfect recon
+
+    near = (mu + 0.3 * rng.standard_normal((40, D))).astype(np.float32)  # on-manifold input
+    near_hat = (mu + 0.3 * rng.standard_normal((40, D))).astype(np.float32)  # poor recon
+    f_near_unfaithful = float(frame_faithfulness(near, near_hat, ref).mean())
+
+    # perfect reconstruction of a very-OOD input is scored fully faithful ...
+    assert f_far_faithful > 0.99
+    # ... and beats an on-manifold-but-unfaithful reconstruction by a wide margin
+    assert f_far_faithful > f_near_unfaithful + 0.2
+    # OOD stays a VALID, SEPARATE axis: same 'far' input is high-OOD yet
+    # high-faithfulness — the two axes are decoupled, not fused.
+    assert ood.score(far).mean() > ood.score(near).mean()
+
+
+def test_no_circular_input_ood_fusion():
+    """FIX 2: the circular fused_faithfulness (subtracted an INPUT-OOD penalty)
+    must not exist as a faithfulness path — faithfulness is centered
+    cycle-consistency alone."""
+    import src.veritas.faithfulness as F
+
+    assert not hasattr(F, "fused_faithfulness")
+
+
 def _feats(pattern, fx, sl=slice(0, 3)):
     out = []
     for w in sorted(glob.glob(pattern, recursive=True))[sl]:
