@@ -11,6 +11,11 @@ M/
 FC/
 MC/
 
+# ===== VERITAS cross-corpus harness: all downloaded/derived corpus data =====
+# (archives, extracted audio, and cached WavLM features — all regenerable;
+#  the baseline result JSON lives in results/veritas/ and IS tracked)
+data/veritas/
+
 # ===== Raw external-corpus archives (NEVER commit, copyrighted) =====
 DS_10283_3443/
 l2arctic_release_v5.0/
@@ -27,6 +32,9 @@ __pycache__/
 *.h5
 *.hdf5
 *.pkl
+# Exception: the HF Space reference trajectories are required at
+# Space startup and are tracked via Git LFS (see space/.gitattributes).
+!space/references/*.pkl
 
 # ===== Environment =====
 .env

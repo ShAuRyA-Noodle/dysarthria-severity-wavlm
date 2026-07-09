@@ -1,0 +1,269 @@
+{
+  "config": {
+    "random_seed": 42,
+    "feature": "frozen WavLM-Large layer-9 mean-pool (1024-d), speaker=mean over utts",
+    "device": "cuda:0",
+    "probe": "Ridge / LinearSVR, nested GroupKFold CV per fold (reuses exp 42 protocol)",
+    "within_eval": "leave-one-speaker-out",
+    "loco_eval": "train pooled others -> test held-out corpus; per-corpus speaker z-rank targets; per-corpus unsupervised standardisation (CMVN)",
+    "ridge_alphas": [
+      0.1,
+      1.0,
+      10.0,
+      100.0,
+      1000.0
+    ],
+    "svr_Cs": [
+      0.1,
+      1.0
+    ],
+    "inner_cv_folds": 3,
+    "max_utts_per_speaker": 80
+  },
+  "corpora_on_disk": {
+    "torgo": {
+      "n_speakers": 15,
+      "n_utterances_used": 1200,
+      "n_utterances_available": 8196,
+      "language": "en",
+      "etiologies": [
+        "control",
+        "dysarthria"
+      ],
+      "label_kind": "graded_severity",
+      "severity_levels": [
+        0.0,
+        1.0,
+        2.0
+      ],
+      "n_severity_levels": 3
+    },
+    "ipvs": {
+      "n_speakers": 61,
+      "n_utterances_used": 831,
+      "n_utterances_available": 831,
+      "language": "it",
+      "etiologies": [
+        "PD",
+        "control"
+      ],
+      "label_kind": "binary_detection",
+      "severity_levels": [
+        0.0,
+        1.0
+      ],
+      "n_severity_levels": 2
+    },
+    "easycall": {
+      "n_speakers": 55,
+      "n_utterances_used": 2640,
+      "n_utterances_available": 2640,
+      "language": "it",
+      "etiologies": [
+        "control",
+        "dysarthria"
+      ],
+      "label_kind": "binary_detection",
+      "severity_levels": [
+        0.0,
+        1.0
+      ],
+      "n_severity_levels": 2
+    }
+  },
+  "within_corpus": {
+    "torgo": {
+      "ridge": {
+        "n": 15,
+        "rho": 0.7445136635670934,
+        "rho_p": 0.0014537567726604448,
+        "pearson_r": 0.7484473479196485,
+        "rank_accuracy_affected_over_control": 0.9464285714285714,
+        "n_speakers": 15
+      },
+      "linsvr": {
+        "n": 15,
+        "rho": 0.636501318593629,
+        "rho_p": 0.010732549227337553,
+        "pearson_r": 0.6638863667543715,
+        "rank_accuracy_affected_over_control": 0.875,
+        "n_speakers": 15
+      }
+    },
+    "ipvs": {
+      "ridge": {
+        "n": 61,
+        "rho": 0.8462440736915471,
+        "rho_p": 8.942682110996183e-18,
+        "pearson_r": 0.9711038473014492,
+        "rank_accuracy_affected_over_control": 1.0,
+        "n_speakers": 61
+      },
+      "linsvr": {
+        "n": 61,
+        "rho": 0.8462440736915471,
+        "rho_p": 8.942682110996183e-18,
+        "pearson_r": 0.9738137017349329,
+        "rank_accuracy_affected_over_control": 1.0,
+        "n_speakers": 61
+      }
+    },
+    "easycall": {
+      "ridge": {
+        "n": 55,
+        "rho": 0.8406488931351015,
+        "rho_p": 9.864135413342527e-16,
+        "pearson_r": 0.8631448320109154,
+        "rank_accuracy_affected_over_control": 0.989247311827957,
+        "n_speakers": 55
+      },
+      "linsvr": {
+        "n": 55,
+        "rho": 0.8337204681916804,
+        "rho_p": 2.779004958525465e-15,
+        "pearson_r": 0.854079664212806,
+        "rank_accuracy_affected_over_control": 0.9852150537634409,
+        "n_speakers": 55
+      }
+    }
+  },
+  "leave_one_corpus_out": {
+    "torgo": {
+      "ridge": {
+        "n": 15,
+        "rho": 0.43204937989385733,
+        "rho_p": 0.10777768863555542,
+        "pearson_r": 0.44888256414246763,
+        "rank_accuracy_affected_over_control": 0.7142857142857143,
+        "n_speakers": 15,
+        "train_corpora": [
+          "ipvs",
+          "easycall"
+        ],
+        "selected_hyperparam": {
+          "alpha": 1000.0
+        }
+      },
+      "linsvr": {
+        "n": 15,
+        "rho": 0.34332495366565446,
+        "rho_p": 0.210260818873276,
+        "pearson_r": 0.3386214788414811,
+        "rank_accuracy_affected_over_control": 0.6607142857142857,
+        "n_speakers": 15,
+        "train_corpora": [
+          "ipvs",
+          "easycall"
+        ],
+        "selected_hyperparam": {
+          "C": 0.1
+        }
+      }
+    },
+    "ipvs": {
+      "ridge": {
+        "n": 61,
+        "rho": 0.26683371692976715,
+        "rho_p": 0.03763776268624911,
+        "pearson_r": 0.32458168085216166,
+        "rank_accuracy_affected_over_control": 0.6576576576576577,
+        "n_speakers": 61,
+        "train_corpora": [
+          "torgo",
+          "easycall"
+        ],
+        "selected_hyperparam": {
+          "alpha": 1000.0
+        }
+      },
+      "linsvr": {
+        "n": 61,
+        "rho": 0.4116863061202121,
+        "rho_p": 0.0009795274704690444,
+        "pearson_r": 0.44814315786218883,
+        "rank_accuracy_affected_over_control": 0.7432432432432432,
+        "n_speakers": 61,
+        "train_corpora": [
+          "torgo",
+          "easycall"
+        ],
+        "selected_hyperparam": {
+          "C": 0.1
+        }
+      }
+    },
+    "easycall": {
+      "ridge": {
+        "n": 55,
+        "rho": 0.6443435197381685,
+        "rho_p": 1.1072449866145263e-07,
+        "pearson_r": 0.6346906554214418,
+        "rank_accuracy_affected_over_control": 0.875,
+        "n_speakers": 55,
+        "train_corpora": [
+          "torgo",
+          "ipvs"
+        ],
+        "selected_hyperparam": {
+          "alpha": 1000.0
+        }
+      },
+      "linsvr": {
+        "n": 55,
+        "rho": 0.4388002464166739,
+        "rho_p": 0.0008046293880941314,
+        "pearson_r": 0.41844655615520054,
+        "rank_accuracy_affected_over_control": 0.7553763440860215,
+        "n_speakers": 55,
+        "train_corpora": [
+          "torgo",
+          "ipvs"
+        ],
+        "selected_hyperparam": {
+          "C": 0.1
+        }
+      }
+    }
+  },
+  "skipped_corpora": [
+    {
+      "name": "uaspeech",
+      "label_kind": "graded_severity",
+      "is_severity_target": true,
+      "reason": "metadata present (28 speakers) but NO audio on disk",
+      "activation": "restore UASpeech wavs so paths in metadata_uaspeech.csv resolve, e.g. data\\processed\\audio_16khz\\uaspeech\\<spk>\\<utt>.wav (or the raw UASpeech_original_C\\...\\audio\\original\\<spk>\\<file>.wav tree)",
+      "n_speakers_hint": 28
+    },
+    {
+      "name": "mdvr_kcl",
+      "label_kind": "graded_severity",
+      "is_severity_target": true,
+      "reason": "MDVR-KCL.zip is valid but not extracted yet",
+      "activation": "extract MDVR-KCL.zip to data/veritas/downloads/, then provide the H&Y/UPDRS score per patient ID (ID## in filenames). Audio alone gives only a binary HC/PD detection split, not graded severity.",
+      "n_speakers_hint": 0
+    },
+    {
+      "name": "vocals",
+      "label_kind": "graded_severity",
+      "is_severity_target": true,
+      "reason": "VOC-ALS not downloaded",
+      "activation": "download + extract VOC-ALS to data/veritas/downloads/VOC-ALS/, then provide per-speaker ALSFRS-R (ideally the speech/bulbar subscore); confirm corpus language; then fill in load().",
+      "n_speakers_hint": 0
+    },
+    {
+      "name": "svd",
+      "label_kind": "none",
+      "is_severity_target": false,
+      "reason": "SVD_data.zip present but unreadable (download incomplete)",
+      "activation": "finish/repair SVD_data.zip, extract to data/veritas/downloads/SVD/; used as a specificity/OOD arm (voice-disorder controls), NOT a severity target.",
+      "n_speakers_hint": 0
+    }
+  ],
+  "confounds_flagged": [
+    "Speech material differs across corpora (TORGO words+sentences EN; IPVS sustained vowels/DDK/read passages IT; EasyCall voice commands IT) \u2014 a cross-corpus task-mismatch confound.",
+    "Silence/VAD: TORGO features come from the project's existing non-VAD-trimmed L9 cache; other corpora are mean-pooled over full clips. Silence dilutes the pooled feature and is a known TORGO confound (see exp 43_silence_confound). Not VAD-trimmed here; flagged.",
+    "IPVS labels are binary PD-vs-HC (no graded UPDRS/H&Y in the public release); IPVS controls mix young + elderly while all PD are older (age confound; ipvs.load(elderly_only=True) restricts to the age-matched subset).",
+    "EasyCall labels are binary dysarthric-vs-healthy (graded TOM severity is in the source paper, not the audio package)."
+  ],
+  "honest_summary": "On-disk corpora: torgo(n=15), ipvs(n=61), easycall(n=55).\nWITHIN torgo: ridge rho=+0.745, linsvr rho=+0.637 (speaker LOSO).\nWITHIN ipvs: ridge rho=+0.846, linsvr rho=+0.846 (speaker LOSO).\nWITHIN easycall: ridge rho=+0.841, linsvr rho=+0.834 (speaker LOSO).\nLOCO test-torgo: ridge rho=+0.432, linsvr rho=+0.343 (train ['ipvs', 'easycall']).\nLOCO test-ipvs: ridge rho=+0.267, linsvr rho=+0.412 (train ['torgo', 'easycall']).\nLOCO test-easycall: ridge rho=+0.644, linsvr rho=+0.439 (train ['torgo', 'ipvs'])."
+}
