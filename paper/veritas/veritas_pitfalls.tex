@@ -54,9 +54,12 @@ speech (TORGO, $n{=}15$, with AG500 EMA), Parkinsonian speech (IPVS, $n{=}61$),
 and Italian dysarthria (EasyCall, $n{=}55$), against real articulatory ground
 truth. We report five reproducible negative findings that recur across popular
 metric families: (1)~frozen-WavLM severity prediction is strong \emph{within}
-corpus (Spearman $\rho{=}0.74$--$0.85$) but \emph{fails to generalise across
-corpora/etiologies} (graded transfer to TORGO $\rho{=}0.43$, \ns, $p{=}0.11$;
-$n{=}131$ pooled); (2)~reference-based severity metrics are \emph{inflated by
+corpus (Spearman $\rho{=}0.74$--$0.85$); cross-corpus transfer is
+\emph{heterogeneous and, for graded severity, underpowered}---4 of 6
+leave-one-corpus-out cells stay significant (binary corpora, $\rho$ up to
+$0.64$), but transfer to the only graded corpus (TORGO, $n{=}15$) is not
+significant ($\rho{=}0.43$, $p{=}0.11$) and, at $n{=}15$ (critical
+$\rho{\approx}0.52$), is an underpowered null rather than a proven absence; (2)~reference-based severity metrics are \emph{inflated by
 speaker-identity leakage}---a naive early-layer score of $\rho{=}0.775$
 collapses to $0.687$ under a leave-one-control-out (LOCO) reference protocol,
 while the mid-layer score is leakage-robust ($0.756{\to}0.756$); (3)~an SSL
@@ -139,14 +142,17 @@ throughout.
 \section{Finding 1 --- Within-corpus success, cross-corpus failure}
 % =============================================================================
 A fairly-tuned linear probe (Ridge / LinearSVR, nested CV) on frozen
-WavLM-L9 recovers severity \emph{within} corpus but does \emph{not} transfer
-across corpora (Table~\ref{tab:crosscorpus}, Fig.~\ref{fig:fig1}). The
-within-corpus signal reaches $\rho{=}0.74$--$0.85$; \emph{leave-one-corpus-out}
-transfer to the only graded corpus (TORGO) collapses to $\rho{=}0.43$ (Ridge) /
-$0.34$ (LinSVR), which is \emph{not significant} ($p{=}0.11$). The signal that
-looks like ``severity'' within a corpus does not survive an etiology/language
-shift---the failure mode a real deployment hits first, and one that is invisible
-to single-corpus evaluation.\footnote{\texttt{results/veritas/cross\_corpus\_severity.json}}
+WavLM-L9 recovers severity \emph{within} corpus ($\rho{=}0.74$--$0.85$;
+Table~\ref{tab:crosscorpus}, Fig.~\ref{fig:fig1}). Leave-one-corpus-out transfer
+is \emph{heterogeneous}: 4 of 6 cells remain significant---binary detection
+\emph{does} partially transfer (EasyCall $\rho{=}0.64$, $p{=}1{\times}10^{-7}$;
+IPVS $\rho{=}0.41$ / $0.27$). What does \emph{not} transfer significantly is the
+only \emph{graded}-severity corpus, TORGO ($\rho{=}0.43$, $p{=}0.11$); at
+$n{=}15$ the critical value is $\rho{\approx}0.52$, so this is an
+\emph{underpowered null, not a proven absence}. The honest claim is narrow:
+\emph{graded} cross-corpus severity is established on exactly one small corpus
+and is not yet shown to transfer---a failure mode invisible to single-corpus
+evaluation.\footnote{\texttt{results/veritas/cross\_corpus\_severity.json}}
 
 \begin{table}[t]
 \centering
@@ -231,9 +237,11 @@ speakers, $\mathbf{22{,}854}$ frames, held-out affine alignment, no
 circularity): the raw pooled Spearman is $+0.129$ ($p\approx 2\times10^{-85}$)
 but is a \emph{speech-energy artifact} ($\rho_{\text{faith,energy}}{=}-0.468$,
 $\rho_{\text{err,energy}}{=}-0.228$); the \emph{energy-controlled partial
-Spearman} $=-0.001$ (Fig.~\ref{fig:fig3}). Cycle-consistency carries \textbf{no}
-information about real inversion error once silence/energy is
-removed.\footnote{\texttt{results/veritas/h1\_faithfulness\_vs\_inversion\_error.json}}
+Spearman} $=-0.001$ (Fig.~\ref{fig:fig3}). A healthy-manifold-\emph{centered}
+variant does not rescue it---its pooled Spearman is $+0.39$, the \emph{wrong
+sign} (higher ``faithfulness'' $\leftrightarrow$ \emph{higher} error). Either
+way, cycle-consistency carries \textbf{no} usable information about real
+inversion error once silence/energy is removed.\footnote{\texttt{results/veritas/h1\_faithfulness\_vs\_inversion\_error.json}}
 
 \begin{figure}[t]
 \centering
@@ -313,8 +321,10 @@ MFCC $+$ RBF-SVR                       & 0.609\\
 % =============================================================================
 Frozen-SSL clinical-speech metrics are easy to build and easy to fool. Across
 four metric families and real articulatory ground truth, the apparent signal is
-repeatedly a confound---speaker identity, silence, energy, or corpus
-overfitting---and the one regime that would validate pathological articulatory
+repeatedly \emph{entangled} with a confound---speaker identity, silence/pausing,
+energy, or corpus overfitting---and the residual genuine signal, once those are
+controlled, is real but \emph{smaller and narrower} than single-corpus numbers
+imply; meanwhile the one regime that would validate pathological articulatory
 inversion (dysarthric EMA) barely exists in public data. We release the harness,
 diagnostics, and demo so these pitfalls are checkable, not repeated. Honest
 negative results, rigorously obtained, are the contribution.
