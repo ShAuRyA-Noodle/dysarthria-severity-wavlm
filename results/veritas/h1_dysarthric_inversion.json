@@ -1,0 +1,176 @@
+{
+  "hypothesis": "per-frame faithfulness NEGATIVELY predicts per-frame articulatory inversion error vs measured TORGO EMA (low faithfulness <-> high error)",
+  "decisive": true,
+  "articulator_primary": "tongue (dorsum/body/tip); 6 SPARC channels TDX..TTY",
+  "faithfulness_primary": "plain cycle-consistency (uncentered), WavLM layer 9",
+  "faithfulness_secondary": "healthy-manifold centered (mu on ALIGN control frames)",
+  "alignment": {
+    "method": "per-speaker integer lag (max_lag=15) + per-articulator 3D->2D affine (TORGO xyz -> SPARC XY); fit on held-out ALIGN utts, applied to disjoint EVAL utts; faithfulness never used in the fit (no circularity)",
+    "ema_downsample": "200Hz -> 50fps polyphase (scipy.resample_poly 1/4)",
+    "coord_axes": "TORGO x=ant-post, y=lateral(dropped by affine), z=vertical; SPARC 2D (X,Y) recovered by the affine",
+    "align_utts_per_speaker": 10
+  },
+  "data_gate": "controls only; skip if >2 dead coils or tongue coils don't move (objective AG500 session validity, not SPARC performance)",
+  "n_speakers_used": 2,
+  "speakers_used": [
+    "F03",
+    "M03"
+  ],
+  "speakers_skipped": {
+    "F04": "3 dead coils > 2 (degenerate session)",
+    "M01": "6 dead coils > 2 (degenerate session)",
+    "M02": "8 dead coils > 2 (degenerate session)",
+    "M04": "4 dead coils > 2 (degenerate session)",
+    "M05": "6 dead coils > 2 (degenerate session)"
+  },
+  "n_frames": 11693,
+  "n_utts": 60,
+  "median_utt_spearman_plain": 0.07495847731193009,
+  "mean_utt_spearman_plain": 0.09542687387752143,
+  "pooled_spearman_plain": 0.1602935834234841,
+  "pooled_spearman_plain_p": 3.80568180824589e-68,
+  "pooled_within_spk_spearman_plain": 0.16618982419228132,
+  "pooled_pearson_plain": 0.16861595204938967,
+  "pooled_spearman_centered": 0.38701405125850674,
+  "median_utt_spearman_centered": 0.38701405125850674,
+  "spearman_faith_energy": -0.26553189891092976,
+  "spearman_err_energy": -0.21472071538543788,
+  "partial_spearman_plain_ctrl_energy": 0.11594403265268119,
+  "pooled_spearman_top50pct_energy": 0.2126471185168118,
+  "pooled_spearman_top25pct_energy": -0.1273020919851168,
+  "utt_meanfaith_vs_meanerr_spearman": -0.1124756876910253,
+  "verdict": "faithfulness predicts inversion error: NO (median per-utt Spearman=+0.075; the raw association is a speech-energy artifact \u2014 energy-controlled partial Spearman=+0.116 ~ 0, faith-vs-energy and error-vs-energy dominate). As formulated the cycle-consistency metric does NOT measure per-frame inversion reliability on real EMA.",
+  "per_speaker": {
+    "F03": {
+      "used": 30,
+      "eval_utts_failed": 0,
+      "n_frames": 5019,
+      "lag_frames": 5,
+      "lag_ms": 100,
+      "dead_coils_1idx": [
+        12
+      ],
+      "tongue_coils_1idx": {
+        "TD": 1,
+        "TB": 2,
+        "TT": 4
+      },
+      "align_corr_tongue": 0.37004866496951033,
+      "spearman_plain": 0.248456257482351,
+      "pearson_plain": 0.2622327468778267,
+      "spearman_centered": 0.49612518657895466,
+      "spearman_faith_energy": -0.4040491520982985,
+      "spearman_err_energy": -0.1791468461918924,
+      "partial_spearman_plain_ctrl_energy": 0.19564896257257092,
+      "spearman_plain_top25pct_energy": 0.1987401686946785,
+      "mean_faith": 0.7979254126548767,
+      "mean_err": 1.7628550756286885
+    },
+    "F04": {
+      "used": 0,
+      "skipped_reason": "3 dead coils > 2 (degenerate session)",
+      "dead_coils_1idx": [
+        1,
+        2,
+        10
+      ],
+      "tongue_coils_1idx": {
+        "TD": 3,
+        "TB": 8,
+        "TT": 6
+      }
+    },
+    "M01": {
+      "used": 0,
+      "skipped_reason": "6 dead coils > 2 (degenerate session)",
+      "dead_coils_1idx": [
+        1,
+        2,
+        3,
+        6,
+        7,
+        10
+      ],
+      "tongue_coils_1idx": {
+        "TD": 8,
+        "TB": 9
+      }
+    },
+    "M02": {
+      "used": 0,
+      "skipped_reason": "8 dead coils > 2 (degenerate session)",
+      "dead_coils_1idx": [
+        1,
+        2,
+        3,
+        7,
+        8,
+        9,
+        10,
+        12
+      ],
+      "tongue_coils_1idx": {
+        "TD": 11,
+        "TB": 4,
+        "TT": 6
+      }
+    },
+    "M03": {
+      "used": 30,
+      "eval_utts_failed": 0,
+      "n_frames": 6674,
+      "lag_frames": 7,
+      "lag_ms": 140,
+      "dead_coils_1idx": [],
+      "tongue_coils_1idx": {
+        "TD": 1,
+        "TB": 2,
+        "TT": 3
+      },
+      "align_corr_tongue": 0.6128148507789443,
+      "spearman_plain": 0.1081765094165057,
+      "pearson_plain": 0.10353606087854048,
+      "spearman_centered": 0.3282624474798181,
+      "spearman_faith_energy": -0.154504136557404,
+      "spearman_err_energy": -0.2171542415344418,
+      "partial_spearman_plain_ctrl_energy": 0.07737872659689521,
+      "spearman_plain_top25pct_energy": -0.3049230745245976,
+      "mean_faith": 0.8319746255874634,
+      "mean_err": 1.7412455880019062
+    },
+    "M04": {
+      "used": 0,
+      "skipped_reason": "4 dead coils > 2 (degenerate session)",
+      "dead_coils_1idx": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "tongue_coils_1idx": {
+        "TD": 4,
+        "TB": 9,
+        "TT": 5
+      }
+    },
+    "M05": {
+      "used": 0,
+      "skipped_reason": "6 dead coils > 2 (degenerate session)",
+      "dead_coils_1idx": [
+        1,
+        2,
+        3,
+        7,
+        8,
+        9
+      ],
+      "tongue_coils_1idx": {
+        "TD": 4,
+        "TB": 5,
+        "TT": 6
+      }
+    }
+  },
+  "layer": 9,
+  "limit_per_speaker": 40
+}

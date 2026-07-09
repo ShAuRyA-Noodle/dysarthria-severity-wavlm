@@ -1,0 +1,167 @@
+{
+  "description": "articulatory-kinematic severity features from SPARC inversion; EMA-grounded + severity-correlated on real TORGO",
+  "features": "tongue range (working space) & speed (velocity)",
+  "severity_corr": {
+    "sparc_range_vs_severity": [
+      0.5169162223730078,
+      0.0484826492819712,
+      15
+    ],
+    "sparc_speed_vs_severity": [
+      0.38575837490522974,
+      0.15557949721454709,
+      15
+    ]
+  },
+  "ema_grounding": {
+    "range_sparc_vs_ema": [
+      0.39285714285714296,
+      0.38331687042697266,
+      7
+    ],
+    "speed_sparc_vs_ema": [
+      0.03571428571428572,
+      0.9394082054712856,
+      7
+    ],
+    "n_ema_usable": 7
+  },
+  "n_speakers": 15,
+  "per_speaker": {
+    "F01": {
+      "severity": 2,
+      "is_control": false,
+      "n_utts": 40,
+      "sparc_range": 1.1525211967133013,
+      "sparc_speed": 0.2650183110338563,
+      "ema_range": NaN,
+      "ema_speed": NaN
+    },
+    "F03": {
+      "severity": 1,
+      "is_control": false,
+      "n_utts": 40,
+      "sparc_range": 1.1546387200088772,
+      "sparc_speed": 0.2578926539312721,
+      "ema_range": 4.413680630544181,
+      "ema_speed": 0.7574107817909373
+    },
+    "F04": {
+      "severity": 2,
+      "is_control": false,
+      "n_utts": 40,
+      "sparc_range": 1.0887115003058754,
+      "sparc_speed": 0.2331905450720529,
+      "ema_range": NaN,
+      "ema_speed": NaN
+    },
+    "M01": {
+      "severity": 2,
+      "is_control": false,
+      "n_utts": 40,
+      "sparc_range": 1.1470923378477171,
+      "sparc_speed": 0.21772826924142324,
+      "ema_range": NaN,
+      "ema_speed": NaN
+    },
+    "M02": {
+      "severity": 2,
+      "is_control": false,
+      "n_utts": 40,
+      "sparc_range": 1.100688964880288,
+      "sparc_speed": 0.2512418433606171,
+      "ema_range": NaN,
+      "ema_speed": NaN
+    },
+    "M03": {
+      "severity": 1,
+      "is_control": false,
+      "n_utts": 40,
+      "sparc_range": 1.083694858075944,
+      "sparc_speed": 0.21375807282882872,
+      "ema_range": 4.642170413027705,
+      "ema_speed": 0.7618157817042812
+    },
+    "M04": {
+      "severity": 2,
+      "is_control": false,
+      "n_utts": 40,
+      "sparc_range": 1.191920003017564,
+      "sparc_speed": 0.2696124694779531,
+      "ema_range": NaN,
+      "ema_speed": NaN
+    },
+    "M05": {
+      "severity": 1,
+      "is_control": false,
+      "n_utts": 40,
+      "sparc_range": 1.1887603836186642,
+      "sparc_speed": 0.24739966624942764,
+      "ema_range": NaN,
+      "ema_speed": NaN
+    },
+    "FC01": {
+      "severity": 0,
+      "is_control": true,
+      "n_utts": 40,
+      "sparc_range": 0.8915870065509338,
+      "sparc_speed": 0.19792392207986453,
+      "ema_range": 4.33617851360961,
+      "ema_speed": 0.7742366227093066
+    },
+    "FC02": {
+      "severity": 0,
+      "is_control": true,
+      "n_utts": 40,
+      "sparc_range": 1.0159213127585123,
+      "sparc_speed": 0.23587089478357606,
+      "ema_range": 4.012235509903541,
+      "ema_speed": 0.6852474836476107
+    },
+    "FC03": {
+      "severity": 0,
+      "is_control": true,
+      "n_utts": 40,
+      "sparc_range": 1.0974282345069164,
+      "sparc_speed": 0.23586439266554865,
+      "ema_range": NaN,
+      "ema_speed": NaN
+    },
+    "MC01": {
+      "severity": 0,
+      "is_control": true,
+      "n_utts": 40,
+      "sparc_range": 0.9862938999911866,
+      "sparc_speed": 0.20988437136875637,
+      "ema_range": 5.5581278562515,
+      "ema_speed": 0.8411821890884006
+    },
+    "MC02": {
+      "severity": 0,
+      "is_control": true,
+      "n_utts": 40,
+      "sparc_range": 0.9797932430439691,
+      "sparc_speed": 0.21146580763697426,
+      "ema_range": NaN,
+      "ema_speed": NaN
+    },
+    "MC03": {
+      "severity": 0,
+      "is_control": true,
+      "n_utts": 40,
+      "sparc_range": 1.0106753459072189,
+      "sparc_speed": 0.22827686071024206,
+      "ema_range": 4.091991822658322,
+      "ema_speed": 0.9271728176390932
+    },
+    "MC04": {
+      "severity": 0,
+      "is_control": true,
+      "n_utts": 40,
+      "sparc_range": 1.2597154122791927,
+      "sparc_speed": 0.27546850232148345,
+      "ema_range": 5.984687657260361,
+      "ema_speed": 0.9770593588315226
+    }
+  }
+}

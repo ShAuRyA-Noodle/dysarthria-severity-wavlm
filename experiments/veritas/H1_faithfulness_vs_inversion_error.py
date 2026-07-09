@@ -64,16 +64,21 @@ from src.veritas.torgo_ema import (  # noqa: E402
 )
 from src.veritas.wavlm_features import WavLMFeatures  # noqa: E402
 
-SPK_GROUP = {  # speaker -> top-level TORGO group dir
-    "FC01": "FC", "FC02": "FC", "FC03": "FC",
-    "MC01": "MC", "MC02": "MC", "MC03": "MC", "MC04": "MC",
-}
+def spk_group(spk: str) -> str:
+    """TORGO top-level group dir for a speaker id (controls FC*/MC*, dysarthric F*/M*)."""
+    if spk.startswith("FC"):
+        return "FC"
+    if spk.startswith("MC"):
+        return "MC"
+    if spk.startswith("F"):
+        return "F"
+    return "M"
 
 
 def speaker_pos_files(spk: str) -> list[str]:
-    """Deterministic ordered list of a control speaker's head-corrected .pos
+    """Deterministic ordered list of a speaker's head-corrected .pos
     files (the `pos/` dir only, never `rawpos/`)."""
-    grp = SPK_GROUP[spk]
+    grp = spk_group(spk)
     files = glob.glob(str(ROOT / grp / spk / "**" / "pos" / "*.pos"), recursive=True)
     return sorted(files)
 
