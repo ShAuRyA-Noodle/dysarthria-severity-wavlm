@@ -1,0 +1,5 @@
+# HF Space reference trajectories: per-word WavLM-Large layer-9 PCA-64
+# bundles consumed by app.py at startup. Tracked via Git LFS so the Space
+# repo ships them on clone (without LFS they are gitignored -> empty
+# dropdown). ~318 KB each, 15 files.
+references/*.pkl filter=lfs diff=lfs merge=lfs -text
