@@ -1,0 +1,24 @@
+# VERITAS — Articulatory-Bottleneck Clarifier (HF Space, Gradio SDK)
+#
+# Default target: FREE CPU Space. The extra-index below pulls CPU torch wheels
+# (small, no CUDA). For a GPU Space, DELETE the extra-index line and the
+# torch/torchaudio pins so the Space's CUDA torch is used instead.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# Pinned to the versions this demo was validated against.
+torch==2.2.2
+torchaudio==2.2.2
+transformers==4.40.0
+
+# SPARC acoustic-to-articulatory inversion + HiFi-GAN resynthesis (Cho et al.).
+# Run with use_penn=False so the (optionally broken) penn/torbi path is unused.
+speech-articulatory-coding==0.1.0
+
+# App + healthy-manifold projection + experimental overlay
+gradio>=4.44,<6
+librosa>=0.10.2
+soundfile>=0.12.1
+numpy>=1.26,<2
+scipy>=1.13
+matplotlib>=3.8
+huggingface_hub>=0.23

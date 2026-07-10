@@ -1,0 +1,289 @@
+{
+  "title": "P2 articulatory-bottleneck clarifier -- honest typicality eval (TORGO)",
+  "proxy": "healthy-manifold typicality: WavLM-Large L9 diagonal-Mahalanobis OOD distance to TORGO control frames (lower = more typical). Robustness layer 12. Content preservation = per-frame WavLM-L9 cosine vs original.",
+  "proxy_is_not_intelligibility": true,
+  "no_asr_reason": "no ASR model in the offline HF cache (only WavLM-Large + SPARC + text embedders) and network unavailable; WER/CER not computable. TORGO prompt transcripts exist (metadata 'word' column) but cannot be scored without an ASR.",
+  "circularity_disclosure": "the clarifier projects toward the healthy manifold, so this typicality proxy is partially aligned with its objective; the strength-0 RESYNTH control and content-cosine guard are reported so the projection's marginal effect is isolated.",
+  "manifold_fit": {
+    "cached": true,
+    "n_control_speakers": 7
+  },
+  "eval": {
+    "n_dysarthric_speakers": 8,
+    "n_utts": 175,
+    "strengths": [
+      0.5,
+      1.0
+    ],
+    "mode": "per_tract",
+    "primary_layer": 9,
+    "robust_layer": 12,
+    "limit_per_speaker": 25,
+    "min_seconds": 0.4,
+    "max_seconds": 8.0,
+    "seed": 42,
+    "device": "cuda:0"
+  },
+  "results": {
+    "overall": {
+      "n_utts": 175,
+      "speakers": [
+        "F01",
+        "F03",
+        "F04",
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "orig": {
+        "ood9": {
+          "mean": 34.61490071977888,
+          "std": 2.3333159140362447,
+          "n": 175
+        },
+        "ood12": {
+          "mean": 34.760661196027485,
+          "std": 2.3883387816134514,
+          "n": 175
+        }
+      },
+      "resynth": {
+        "ood9": {
+          "mean": 35.87364828927176,
+          "std": 1.30949951265197,
+          "n": 175
+        },
+        "ood12": {
+          "mean": 36.12411978585379,
+          "std": 1.528848863492097,
+          "n": 175
+        },
+        "content_cos9": {
+          "mean": 0.7225883947099958,
+          "std": 0.051703247162307876,
+          "n": 175
+        }
+      },
+      "clar0.5": {
+        "ood9": {
+          "mean": 36.19264070783343,
+          "std": 1.2121539116764053,
+          "n": 175
+        },
+        "ood12": {
+          "mean": 36.42999762398856,
+          "std": 1.3265023660708868,
+          "n": 175
+        },
+        "content_cos9": {
+          "mean": 0.7056486616815839,
+          "std": 0.05497602265521341,
+          "n": 175
+        }
+      },
+      "clar1": {
+        "ood9": {
+          "mean": 36.61016584123884,
+          "std": 1.120950540561006,
+          "n": 175
+        },
+        "ood12": {
+          "mean": 36.76219253540039,
+          "std": 1.1569088107576022,
+          "n": 175
+        },
+        "content_cos9": {
+          "mean": 0.6744580118996757,
+          "std": 0.05708980686903634,
+          "n": 175
+        }
+      },
+      "delta_ood9_clar_vs_orig": {
+        "mean": -1.995265121459961,
+        "std": 2.0983232716526063,
+        "n": 175
+      },
+      "delta_ood9_clar_vs_resynth": {
+        "mean": -0.7365175519670759,
+        "std": 0.9860681771644523,
+        "n": 175
+      },
+      "frac_clar_more_typical_than_orig": 0.16,
+      "frac_clar_more_typical_than_resynth": 0.24,
+      "verdict": "PROXY: HURTS typicality -- projection moves AWAY from the healthy manifold relative to plain resynthesis. [strength=1] projection-vs-resynth OOD delta=-0.737 (std 0.986); clarified content cosine=0.674 (resynth 0.723)"
+    },
+    "mild_moderate": {
+      "n_utts": 67,
+      "speakers": [
+        "F03",
+        "M03",
+        "M05"
+      ],
+      "orig": {
+        "ood9": {
+          "mean": 33.79410661156498,
+          "std": 1.9725381765283017,
+          "n": 67
+        },
+        "ood12": {
+          "mean": 33.8916184439588,
+          "std": 1.9349575553280731,
+          "n": 67
+        }
+      },
+      "resynth": {
+        "ood9": {
+          "mean": 35.878764650714935,
+          "std": 1.280872737697862,
+          "n": 67
+        },
+        "ood12": {
+          "mean": 35.99064408487349,
+          "std": 1.4031514752768948,
+          "n": 67
+        },
+        "content_cos9": {
+          "mean": 0.7247839632318981,
+          "std": 0.056786943538520165,
+          "n": 67
+        }
+      },
+      "clar0.5": {
+        "ood9": {
+          "mean": 36.18414318027781,
+          "std": 1.1435890736405991,
+          "n": 67
+        },
+        "ood12": {
+          "mean": 36.274283224077365,
+          "std": 1.1514983332115594,
+          "n": 67
+        },
+        "content_cos9": {
+          "mean": 0.70631937037653,
+          "std": 0.05986694391794519,
+          "n": 67
+        }
+      },
+      "clar1": {
+        "ood9": {
+          "mean": 36.5968286315007,
+          "std": 1.1071732846617133,
+          "n": 67
+        },
+        "ood12": {
+          "mean": 36.630232967547514,
+          "std": 1.00830227645751,
+          "n": 67
+        },
+        "content_cos9": {
+          "mean": 0.6746711664235414,
+          "std": 0.061298182516504734,
+          "n": 67
+        }
+      },
+      "delta_ood9_clar_vs_orig": {
+        "mean": -2.8027220199357217,
+        "std": 1.9702725481135976,
+        "n": 67
+      },
+      "delta_ood9_clar_vs_resynth": {
+        "mean": -0.7180639807857684,
+        "std": 1.0135971784948767,
+        "n": 67
+      },
+      "frac_clar_more_typical_than_orig": 0.05970149253731343,
+      "frac_clar_more_typical_than_resynth": 0.29850746268656714,
+      "verdict": "PROXY: HURTS typicality -- projection moves AWAY from the healthy manifold relative to plain resynthesis. [strength=1] projection-vs-resynth OOD delta=-0.718 (std 1.014); clarified content cosine=0.675 (resynth 0.725)"
+    },
+    "severe": {
+      "n_utts": 108,
+      "speakers": [
+        "F01",
+        "F04",
+        "M01",
+        "M02",
+        "M04"
+      ],
+      "orig": {
+        "ood9": {
+          "mean": 35.12409706468935,
+          "std": 2.3939204530265057,
+          "n": 108
+        },
+        "ood12": {
+          "mean": 35.29978956999602,
+          "std": 2.4821293186673077,
+          "n": 108
+        }
+      },
+      "resynth": {
+        "ood9": {
+          "mean": 35.87047425022832,
+          "std": 1.3269384334514855,
+          "n": 108
+        },
+        "ood12": {
+          "mean": 36.20692415590639,
+          "std": 1.596278226696999,
+          "n": 108
+        },
+        "content_cos9": {
+          "mean": 0.7212263290528897,
+          "std": 0.04823096959010289,
+          "n": 108
+        }
+      },
+      "clar0.5": {
+        "ood9": {
+          "mean": 36.19791232215034,
+          "std": 1.2527758965993199,
+          "n": 108
+        },
+        "ood12": {
+          "mean": 36.52659822393347,
+          "std": 1.4157205350936382,
+          "n": 108
+        },
+        "content_cos9": {
+          "mean": 0.7052325738800896,
+          "std": 0.05170547678214573,
+          "n": 108
+        }
+      },
+      "clar1": {
+        "ood9": {
+          "mean": 36.6184398509838,
+          "std": 1.1293339099992796,
+          "n": 108
+        },
+        "ood12": {
+          "mean": 36.844056341383194,
+          "std": 1.2331045263864036,
+          "n": 108
+        },
+        "content_cos9": {
+          "mean": 0.674325777148759,
+          "std": 0.05431499560908371,
+          "n": 108
+        }
+      },
+      "delta_ood9_clar_vs_orig": {
+        "mean": -1.4943427862944427,
+        "std": 2.017614642405974,
+        "n": 108
+      },
+      "delta_ood9_clar_vs_resynth": {
+        "mean": -0.7479656007554796,
+        "std": 0.9684201032737781,
+        "n": 108
+      },
+      "frac_clar_more_typical_than_orig": 0.2222222222222222,
+      "frac_clar_more_typical_than_resynth": 0.2037037037037037,
+      "verdict": "PROXY: HURTS typicality -- projection moves AWAY from the healthy manifold relative to plain resynthesis. [strength=1] projection-vs-resynth OOD delta=-0.748 (std 0.968); clarified content cosine=0.674 (resynth 0.721)"
+    }
+  },
+  "elapsed_s": 135.3
+}
