@@ -103,3 +103,35 @@ e.g. ATD speech-only ρ=0.181 and early-layer leakage Δ=0.089 match the standal
 
 The value is exactly this: a single headline ρ (0.74–0.77 — all "PASS" on predictive validity) hides
 that every metric fails at least one confound control. VERITAS-Bench makes that visible in one card.
+
+## Auditing the strongest published metric family
+
+To show the battery **discriminates** rather than simply failing everything, we ran it on an
+independent reimplementation of the strongest current training-free metric family — the
+**phonological-subspace d′** metric of Muller et al. (2026): MFA phone-level frozen-WavLM embeddings,
+binary phonological-contrast directions (nasality/voicing/stridency/sonorance/continuancy) estimated
+from healthy controls only, scored per speaker by d′ along those directions.
+(`experiments/veritas/B4_audit_phonosubspace.py` → `results/veritas/veritas_bench_phonosubspace.json`.
+**This is our reimplementation from the published description, not the authors' code.**)
+
+| Control | ATD-L9 | Pooled probe | **Phono-subspace d′** |
+|---|---|---|---|
+| predictive validity | PASS ρ=0.772 | PASS ρ=0.745 | **PASS ρ=0.741** |
+| leakage (LOCO Δ) | PASS 0.000 | N/A | **PASS 0.000** |
+| silence (kept) | **FAIL** 24% | WARN 100% | **WARN** 100% |
+| energy (kept) | PASS 96% | PASS 80% | **PASS 88%** |
+| cross-corpus | **FAIL** n.s. | **FAIL** n.s. | **FAIL** ρ=0.467 (p=0.079) |
+| identity AUC | **FAIL** 0.996 | **FAIL** 0.996 | **FAIL** 0.999 |
+| **overall** | **FAIL** | **FAIL** | **FAIL** |
+
+**Reading — the battery works as intended:**
+- It **validates** the phonological-subspace design where it deserves it: leakage-robust, energy-robust,
+  and *silence-robust by construction* (100% retained, versus 24% for the trajectory-distance metric).
+  A benchmark that only ever returns FAIL is a hit-piece; this one separates good design from bad.
+- It **surfaces one confound the original work does not report checking**: the representation is almost
+  perfectly speaker-identifiable (**AUC 0.999**). Crucially this holds for *every* metric here
+  (0.996–0.999), so it is a **systemic property of the frozen SSL representation** — a leakage risk
+  inherited by any reference-based clinical metric built on it — not a defect unique to that method.
+- The cross-corpus FAIL is on our **n=15 graded** TORGO and is **underpowered** (critical ρ≈0.52).
+  The original work demonstrates transfer at n=3,374; we do not claim otherwise. The battery reports
+  what it can measure on the data at hand, and says so.
