@@ -53,7 +53,16 @@ class ReportCard:
 
     @property
     def overall(self) -> str:
-        return worst([Outcome(r.outcome) for r in self.results]).value
+        # Total function: malformed outcome strings are ignored here and caught
+        # separately by validate_card, so building/serialising a card never
+        # crashes on bad data.
+        valid = []
+        for r in self.results:
+            try:
+                valid.append(Outcome(r.outcome))
+            except ValueError:
+                continue
+        return worst(valid).value if valid else Outcome.NA.value
 
     def to_dict(self) -> dict:
         return {

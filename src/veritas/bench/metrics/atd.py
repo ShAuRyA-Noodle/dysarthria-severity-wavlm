@@ -91,7 +91,10 @@ class ATDReferenceDistance(VeritasMetric):
         p = PROJECT_ROOT / entry["wavlm_large"]
         if not p.exists():
             return None
-        return np.load(str(p))[self.layer_pos]
+        # mmap + slice: read ONLY the requested layer off disk, never allocate
+        # the full (n_layers, T, 1024) array (long TORGO utts are ~300 MB each).
+        arr = np.load(str(p), mmap_mode="r")
+        return np.asarray(arr[self.layer_pos])
 
     def _word(self, utt_id: str) -> str | None:
         entry = self._ssl_index.get(utt_id)
@@ -147,28 +150,30 @@ class ATDReferenceDistance(VeritasMetric):
         return _speaker_means(per_spk, self.name, mode, "full")
 
     def _scores_speech(self, views: list[SpeakerView], mode: str) -> dict[str, float]:
-        """Rebuild references on MFA speech-span frames and score speech frames."""
-        # 1. slice every utterance's trajectory to its speech span (cache).
-        slices: dict[str, np.ndarray] = {}
-        for v in views:
-            for utt_id in v.utt_ids:
-                tr = self._speech_frames(utt_id, v.speaker_id)
-                if tr is not None:
-                    slices[utt_id] = tr
+        """Rebuild references on MFA speech-span frames and score speech frames.
 
-        # 2. control utterances grouped by word (for reference construction).
-        word_to_ctrl: dict[str, list[tuple[str, str]]] = {}
+        Memory-streamed: only CONTROL speech slices are cached (they are needed
+        to build the per-word references); every utterance is (re)loaded, scored,
+        and discarded, so peak RAM is ~the control slices rather than *all*
+        utterances at once (TORGO array recordings can be 60+ s / ~300 MB each).
+        Numerically identical to caching every slice.
+        """
+        # control speech slices grouped by word (for reference construction).
+        word_to_ctrl: dict[str, list[tuple[str, np.ndarray]]] = {}
         for v in views:
             if not v.is_control:
                 continue
             for utt_id in v.utt_ids:
                 word = self._word(utt_id)
-                if word is not None and utt_id in slices:
-                    word_to_ctrl.setdefault(word, []).append((utt_id, v.speaker_id))
+                if word is None:
+                    continue
+                tr = self._speech_frames(utt_id, v.speaker_id)
+                if tr is not None:
+                    word_to_ctrl.setdefault(word, []).append((v.speaker_id, tr))
 
         def build_ref(word: str, exclude: str | None):
-            trajs = [slices[u] for u, s in word_to_ctrl.get(word, [])
-                     if u in slices and (exclude is None or s != exclude)]
+            trajs = [s for spk, s in word_to_ctrl.get(word, [])
+                     if exclude is None or spk != exclude]
             if len(trajs) < _MIN_CONTROL_UTTS:
                 return None
             return _build_reference(trajs)
@@ -177,12 +182,11 @@ class ATDReferenceDistance(VeritasMetric):
         if mode == "naive":
             for word in word_to_ctrl:
                 global_ref[word] = build_ref(word, exclude=None)
+            word_to_ctrl = {}   # references built; free the control slices
 
         per_spk: dict[str, list[float]] = {v.speaker_id: [] for v in views}
         for v in views:
             for utt_id in v.utt_ids:
-                if utt_id not in slices:
-                    continue
                 word = self._word(utt_id)
                 if word is None:
                     continue
@@ -192,7 +196,10 @@ class ATDReferenceDistance(VeritasMetric):
                     ref = global_ref.get(word) if mode == "naive" else build_ref(word, exclude=None)
                 if ref is None:
                     continue
-                per_spk[v.speaker_id].append(_score_against_ref(slices[utt_id], ref))
+                tr = self._speech_frames(utt_id, v.speaker_id)   # stream: load+score+discard
+                if tr is None:
+                    continue
+                per_spk[v.speaker_id].append(_score_against_ref(tr, ref))
         return _speaker_means(per_spk, self.name, mode, "speech_only")
 
     def _speech_frames(self, utt_id: str, speaker_id: str) -> np.ndarray | None:
