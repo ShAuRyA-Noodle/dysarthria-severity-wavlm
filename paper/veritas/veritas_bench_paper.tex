@@ -1,0 +1,290 @@
+% =============================================================================
+% PAPER B — the VERITAS-Bench benchmark/tool paper.
+% Target: IEEE INDICON 2026 (deadline 31 Aug 2026) or a Springer CCIS/LNNS venue.
+% IEEEtran conference format, max 6 pages.
+%
+% RELATION TO PAPER A (ethics — read this):
+%   Paper A ("A Validity Audit ... for Dysarthric-Speech Severity") reports the
+%   EMPIRICAL findings (five confounds, EMA grounding, cycle-consistency,
+%   inversion kinematics). THIS paper reports the TOOL: its six controls, the
+%   threshold policy, the plug-in API, the report-card schema, and report cards
+%   for four metrics — including an audit of the strongest published metric
+%   family, which does not appear in Paper A.
+%   These are distinct contributions and may be submitted in parallel, BUT you
+%   must post Paper A to arXiv FIRST and cite it here (\cite{companion}) so the
+%   relationship is transparent. Fill in the arXiv ID before submitting.
+%
+% BEFORE SUBMITTING: fill \author{}, keep <= 6 pages, add the arXiv ID.
+% =============================================================================
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+
+\newcommand{\ns}{\emph{n.s.}}
+
+\begin{document}
+
+\title{VERITAS-Bench: A Validity Test-Suite for\\
+Frozen Self-Supervised Clinical-Speech Metrics}
+
+% ---------------------------------------------------------------------------
+% TODO: fill in your name, affiliation and email.
+% ---------------------------------------------------------------------------
+\author{\IEEEauthorblockN{FIRSTNAME LASTNAME}
+\IEEEauthorblockA{\textit{Department / Institute} \\
+\textit{University Name}\\
+City, India \\
+your.email@example.com}
+}
+
+\maketitle
+
+\begin{abstract}
+Training-free clinical-speech metrics built on frozen self-supervised (SSL)
+models are proliferating: a severity score is obtained by comparing a patient's
+frozen embeddings to healthy-control references, with no labels and no
+fine-tuning. Such a metric is typically validated by a single number---a
+correlation with clinical severity on one corpus. We argue that this is not
+validation, and we provide the missing procedure. \textbf{VERITAS-Bench} takes
+\emph{any} per-speaker metric and a corpus and runs six confound controls---
+predictive validity, speaker-identity leakage under a leave-one-control-out
+reference, silence/pausing, speech energy, cross-corpus transfer, and
+representation-level speaker identifiability---emitting a machine-readable
+PASS/WARN/FAIL report card against documented thresholds. We report cards for
+four metrics on real dysarthric speech (TORGO, $n{=}15$ graded; IPVS $n{=}61$;
+EasyCall $n{=}55$), including an independent reimplementation of the strongest
+published training-free metric family. Every metric ``passes'' its headline
+correlation ($\rho{=}0.74$--$0.77$) yet each fails at least one control. The
+battery \emph{discriminates}: it certifies the phonological-subspace design as
+silence-, energy- and leakage-robust while exposing a trajectory-distance metric
+whose signal is $76\%$ silence; and it surfaces a confound no published metric
+reports checking---the frozen representation is almost perfectly
+speaker-identifiable (AUC $0.996$--$0.999$), a leakage risk inherited by any
+reference-based metric built on it. VERITAS-Bench is released.
+\end{abstract}
+
+\begin{IEEEkeywords}
+benchmark, validity, dysarthria, self-supervised speech models, clinical speech,
+confounds, reproducibility
+\end{IEEEkeywords}
+
+% ===========================================================================
+\section{Introduction}
+% ===========================================================================
+Frozen SSL speech representations (WavLM~\cite{chen2022wavlm},
+HuBERT~\cite{hsu2021hubert}) encode phonetic and articulatory structure, and a
+growing literature exploits this to build \emph{training-free} clinical-speech
+metrics---severity scores requiring no dysarthric training data. The evidence
+offered for such a metric is almost always the same: a Spearman correlation with
+clinical severity, on one corpus.
+
+That number is necessary but nowhere near sufficient. A metric can correlate with
+severity because it measures the disorder---or because it measures how long the
+speaker pauses, how loudly they speak, or simply \emph{who they are}. These are
+not hypothetical: all three occur in metrics currently in use. What the field
+lacks is not another metric but a \textbf{standard procedure for deciding whether
+a metric is measuring what it claims}.
+
+We contribute that procedure. \textbf{VERITAS-Bench} is a released test-suite
+that audits any per-speaker clinical-speech metric against six confound controls
+and returns a PASS/WARN/FAIL report card. Our contributions:
+
+\noindent\textbf{(i)} Six validity controls with documented thresholds, covering
+predictive validity, speaker-identity leakage, silence, energy, cross-corpus
+transfer, and representation-level identifiability (Sec.~\ref{sec:controls}).
+
+\noindent\textbf{(ii)} A metric-agnostic API and a machine-readable report-card
+schema, so an author can audit a new metric in a few lines (Sec.~\ref{sec:design}).
+
+\noindent\textbf{(iii)} Report cards for four metrics on real dysarthric speech,
+\textbf{including an independent reimplementation of the strongest published
+training-free metric family}~\cite{frozenssl2026a,frozenssl2026b}
+(Sec.~\ref{sec:cards}). The battery is shown to discriminate---certifying good
+design where it is present, not merely failing everything.
+
+\noindent\textbf{(iv)} A systemic finding: the frozen representation on which all
+these metrics are built is near-perfectly speaker-identifiable (AUC
+$0.996$--$0.999$), which is a leakage risk for \emph{any} reference-based
+clinical metric and is not reported as checked by any of them.
+
+The empirical confound findings that motivated these controls are reported in a
+companion audit~\cite{companion}; this paper contributes the tool, the threshold
+policy, and the report cards.
+
+% ===========================================================================
+\section{Related Work}
+% ===========================================================================
+\textbf{Training-free clinical metrics.} The strongest current example estimates
+phonological-feature directions from healthy-control speech in a frozen SSL model
+and scores a speaker by the $d'$ separation of their phone embeddings along those
+directions, reporting severity correlations across thousands of speakers, many
+languages and several aetiologies~\cite{frozenssl2026a,frozenssl2026b}. That work
+carefully controls token count and alignment quality. It does \emph{not} report
+controlling for speaker-identity leakage or speech energy---two of our six
+controls. We audit it in Sec.~\ref{sec:cards}, and it largely holds up.
+
+\textbf{Speaker information in SSL layers.} Early SSL layers encode speaker
+identity strongly~\cite{zhu2024wavrx}; we operationalise this as a reference-
+construction confound (a control speaker scored against a reference containing its
+own data) and as a representation-level AUC probe.
+
+\textbf{What is missing.} Benchmarks in clinical speech rank \emph{systems by
+accuracy}. None, to our knowledge, audit \emph{whether a metric's accuracy is
+confounded}. VERITAS-Bench is a validity benchmark, not a leaderboard: a metric
+does not win by scoring highest, it wins by surviving the controls.
+
+% ===========================================================================
+\section{The Six Validity Controls}
+\label{sec:controls}
+% ===========================================================================
+Every threshold is a stated policy choice, documented in one place so a card is
+auditable. $\alpha{=}0.05$ throughout; the overall verdict is the \emph{worst
+applicable} control.
+
+\begin{enumerate}\itemsep2pt
+\item \textbf{Predictive validity.} Within-corpus leave-one-speaker-out Spearman
+$\rho$ against clinical severity. PASS $\rho\ge0.50$ and $p<\alpha$.
+\item \textbf{Speaker-identity leakage (LOCO).} For reference-based metrics,
+$\Delta = \rho(\text{naive reference}) - \rho(\text{leave-one-control-out
+reference})$. A reference (or a fitted direction) that contains the test speaker's
+own data inflates the score. PASS $\Delta\le0.05$.
+\item \textbf{Silence confound.} Retention $=\rho(\text{speech-only}) /
+\rho(\text{full})$ under MFA~\cite{mcauliffe2017mfa} alignment, plus the silence
+frame fraction. PASS if retention $\ge0.70$ \emph{and} silence $<50\%$.
+\item \textbf{Energy confound.} Partial Spearman controlling for mean speech
+log-RMS energy, relative to the raw $\rho$. PASS if $\ge70\%$ retained.
+\item \textbf{Cross-corpus transfer.} Train on the other corpora, test held out.
+PASS $\rho\ge0.50$, $p<\alpha$.
+\item \textbf{Representation identifiability.} Macro one-vs-rest speaker-
+classification AUC of the representation the metric uses. PASS AUC $\le0.70$
+(chance $0.5$).
+\end{enumerate}
+
+% ===========================================================================
+\section{Design and API}
+\label{sec:design}
+% ===========================================================================
+A metric implements one required method, \texttt{predictive\_scores(views)},
+returning $\{\text{speaker}\rightarrow\text{score}\}$ with \emph{higher $=$ more
+severe}; the battery verifies speaker-disjointness and fails loudly otherwise.
+Two optional overrides unlock further controls: \texttt{loco\_scores} enables the
+leakage test (reference-based metrics), and a \texttt{has\_representation} flag
+exposes the metric's features to the transfer and identity probes. Corpus loaders
+yield per-speaker \emph{views} carrying pooled features, silence masks and energy,
+so the same metric can be audited on any corpus without change.
+
+The output is a plain JSON report card (one per metric $\times$ corpus): per
+control an outcome, a one-line headline with the load-bearing number, and the raw
+statistics; plus the threshold policy that produced the verdicts. Cards are
+diff-able in version control, so a metric's validity can be tracked as it evolves.
+
+% ===========================================================================
+\section{Report Cards}
+\label{sec:cards}
+% ===========================================================================
+We audit four metrics on TORGO~\cite{rudzicz2012torgo} (15 speakers, graded
+severity), with IPVS~\cite{dimauro2017ipvs} (61) and
+EasyCall~\cite{turrisi2021easycall} (55) as cross-corpus references. All use frozen
+WavLM-Large; seed 42; speaker-disjoint throughout. The metrics are: a
+trajectory-distance reference metric at a mid layer (\textbf{ATD-L9}) and an early
+layer (\textbf{ATD-L1}); a fairly-tuned pooled-embedding Ridge \textbf{probe}; and
+\textbf{phono-subspace}, our independent reimplementation, \emph{from the published
+description and not the authors' code}, of the phonological-subspace $d'$
+metric~\cite{frozenssl2026a,frozenssl2026b} (phone-level embeddings via MFA;
+contrast directions for nasality, voicing, stridency, sonorance and continuancy
+estimated on healthy controls only; score $=-\overline{d'}$).
+
+\begin{table}[t]
+\centering
+\caption{VERITAS-Bench report cards on TORGO ($n{=}15$, real, seed 42). Every
+metric passes predictive validity, yet each fails at least one control.}
+\label{tab:cards}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Control & ATD-L9 & ATD-L1 & Probe & \textbf{Phono-sub.}\\
+\midrule
+predictive validity     & PASS $.77$ & PASS $.69$ & PASS $.74$ & PASS $.74$\\
+leakage (LOCO $\Delta$) & PASS $.00$ & \textbf{WARN} $.09$ & N/A & PASS $.00$\\
+silence (kept)          & \textbf{FAIL} $24\%$ & --- & WARN $100\%$ & WARN $100\%$\\
+energy (kept)           & PASS $96\%$ & --- & PASS $80\%$ & PASS $88\%$\\
+cross-corpus            & \textbf{FAIL} \ns & --- & \textbf{FAIL} \ns & \textbf{FAIL} \ns\\
+identity AUC            & \textbf{FAIL} $.996$ & --- & \textbf{FAIL} $.996$ & \textbf{FAIL} $.999$\\
+\midrule
+\textbf{overall}        & \textbf{FAIL} & \textbf{WARN} & \textbf{FAIL} & \textbf{FAIL}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{The battery discriminates.} This is the central result. All four metrics
+report a respectable headline correlation ($\rho{=}0.74$--$0.77$) and would, on the
+usual evidence, be declared successful. The card separates them:
+
+\emph{Silence.} The trajectory-distance metric loses $76\%$ of its severity signal
+when silence is removed (retention $24\%$, FAIL): it is substantially measuring
+\emph{pausing}. The phonological-subspace metric retains $100\%$---it is
+silence-free by construction, since it only reads frames inside aligned phone
+intervals. A benchmark that returned FAIL for everything would be useless; this one
+certifies a good design where the design is good.
+
+\emph{Leakage.} The early-layer reference metric is inflated by $\Delta{=}0.089$
+under a naive reference (WARN). The phonological-subspace metric's contrast
+directions are fitted on the control pool, so a control speaker is scored against
+directions containing its own data; re-fitting the directions without that speaker
+shifts its raw score, but near-uniformly across controls, so the severity
+\emph{ranking} survives ($\Delta{=}0.000$, PASS). This is a genuine robustness
+result for that design, obtained by testing a confound its authors do not report
+checking.
+
+\emph{Energy.} All metrics retain $80$--$96\%$ of their correlation after
+partialling out mean speech energy (PASS).
+
+\emph{Identity.} Every representation is near-perfectly speaker-identifiable (AUC
+$0.996$--$0.999$). Because this holds \emph{across all four metrics}, it is not a
+defect of any one of them but a \textbf{systemic property of the frozen SSL
+representation}: any reference-based clinical metric built on these features
+inherits a strong identity-leakage risk, whether or not it manifests as rank
+inflation on a given corpus. We are not aware of a published training-free clinical
+metric that reports measuring this.
+
+\emph{Cross-corpus.} All four fail to transfer significantly to the graded corpus
+($\rho{=}0.43$--$0.47$, $p{\approx}0.08$--$0.11$). We state plainly that this is an
+\textbf{underpowered null}: at $n{=}15$ the critical value is $\rho{\approx}0.52$.
+The phonological-subspace work demonstrates transfer at
+$n{\approx}3{,}374$~\cite{frozenssl2026b}; our battery reports what the available
+graded data can support, and labels the limit rather than overclaiming.
+
+% ===========================================================================
+\section{Discussion and Limitations}
+% ===========================================================================
+The report card is deliberately unflattering: no metric we tested, including the
+best published one, passes every control. That is the intended function. A single
+headline $\rho$ cannot distinguish a metric that measures articulation from one that
+measures pausing, loudness, or identity, and the community currently has no standard
+way to tell them apart. Six cheap controls do.
+
+\textbf{Limitations.} Graded severity is available for only $n{=}15$ speakers, so the
+cross-corpus control is underpowered and its FAIL verdicts must be read as ``not
+demonstrated,'' not ``disproved.'' Our phonological-subspace metric is a
+reimplementation and may differ from the authors' in detail; we therefore report it
+as evidence about the \emph{design}, not as a replication of their numbers. Thresholds
+are policy choices, stated explicitly and changeable in one place.
+
+% ===========================================================================
+\section{Conclusion}
+% ===========================================================================
+Frozen-SSL clinical-speech metrics are easy to build, easy to validate badly, and
+easy to fool. We release VERITAS-Bench so that a claimed clinical metric can be
+audited---by its authors, its reviewers, or its users---against the confounds that a
+single correlation cannot exclude. Code, thresholds, and all report cards are
+released for reproduction.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
