@@ -36,7 +36,7 @@
 \newcommand{\ns}{\emph{n.s.}}
 
 \title{\bfseries When Frozen SSL Speech Metrics Don't Measure What They
-Claim:\\ A Systematic Negative-Results Study on Dysarthric Speech}
+Claim:\\ A Validity Audit and Test-Suite for Dysarthric-Speech Severity}
 
 \author{Anonymous Submission\\ \small Paper ID XXXX \\
 \small\itshape Double-blind draft --- de-anonymize for camera-ready.}
@@ -74,8 +74,9 @@ kinematics are artifacts (EMA-grounding $\rho{=}0.39$ \ns; a ``significant''
 severity correlation of $+0.52$ is in the clinically \emph{wrong} direction). We
 also document that \emph{public dysarthric articulatory (EMA) ground truth is
 effectively} $n{\approx}2$---a hard ceiling for validating pathological
-inversion. We release a reproducible harness, the leakage/silence/energy
-diagnostics, and a working real-time articulatory-visualisation demo. Our
+inversion. We release \textbf{VERITAS-Bench}---a validity test-suite that runs these
+controls on any per-speaker metric and emits a PASS/WARN/FAIL report card---plus
+the diagnostics and a working real-time articulatory-visualisation demo. Our
 recommendation: frozen-SSL clinical metrics must be validated with LOCO
 references, silence controls, cross-corpus tests, and---where possible---real
 articulatory ground truth, or they report confounds rather than pathology.
@@ -109,8 +110,24 @@ languages).
 (ii)~Five reproducible negative findings, each with a concrete diagnostic.
 (iii)~A leave-one-control-out (LOCO) reference protocol that removes
 speaker-identity leakage from reference-based severity metrics.
-(iv)~A real-time, audio-only articulatory-visualisation demo, released as a
-working artifact.
+(iv)~\textbf{VERITAS-Bench}: a released validity test-suite that runs the six
+controls above on \emph{any} per-speaker metric and emits a PASS/WARN/FAIL
+report card.
+(v)~A real-time, audio-only articulatory-visualisation demo.
+
+\noindent\textbf{Relation to recent training-free work.} A concurrent line of
+work reports that a \emph{phonological-subspace} metric (d$'$ separations along
+phonological-feature directions estimated from healthy controls in frozen
+HuBERT) recovers severity across up to 3{,}374 speakers, 12 languages and five
+aetiologies, transferring under leave-one-corpus-out~\cite{frozenssl2026a,frozenssl2026b}.
+That result is strong and \emph{complementary} to ours: it shows a well-designed
+frozen-SSL metric \emph{can} generalise. Our contribution is orthogonal---we show
+that \emph{other} popular families (trajectory-distance, cycle-consistency,
+inversion-kinematics) do \emph{not} survive the same controls, and we package the
+controls as a reusable audit. Notably, that phonological-subspace method---while
+it thoroughly controls token count and alignment quality---is not reported to
+control the \emph{speaker-identity leakage} or \emph{energy} confounds our battery
+flags, so VERITAS-Bench complements rather than competes with it.
 
 % =============================================================================
 \section{Data}
@@ -151,8 +168,12 @@ only \emph{graded}-severity corpus, TORGO ($\rho{=}0.43$, $p{=}0.11$); at
 $n{=}15$ the critical value is $\rho{\approx}0.52$, so this is an
 \emph{underpowered null, not a proven absence}. The honest claim is narrow:
 \emph{graded} cross-corpus severity is established on exactly one small corpus
-and is not yet shown to transfer---a failure mode invisible to single-corpus
-evaluation.\footnote{\texttt{results/veritas/cross\_corpus\_severity.json}}
+and is not yet shown to transfer for \emph{this} metric family. Transfer is
+moreover \emph{metric-dependent}: a phonological-subspace metric transfers across
+many corpora at large $n$~\cite{frozenssl2026b}, while the trajectory-distance and
+pooled-probe metrics here do not at $n{=}15$. The lesson is not that frozen-SSL
+severity \emph{cannot} transfer, but that transfer must be \emph{demonstrated per
+metric}, not assumed---a failure mode invisible to single-corpus evaluation.\footnote{\texttt{results/veritas/cross\_corpus\_severity.json}}
 
 \begin{table}[t]
 \centering
@@ -268,6 +289,47 @@ data.\footnote{\texttt{results/veritas/m2\_articulatory\_kinematics.json},
 \texttt{h1\_dysarthric\_inversion.json}}
 
 % =============================================================================
+\section{VERITAS-Bench: the confounds as a reusable audit}
+\label{sec:bench}
+% =============================================================================
+The five findings above are not one-off observations; they are \emph{validity
+controls} any frozen-SSL clinical metric should pass. We package them as
+VERITAS-Bench: feed it any per-speaker metric and a corpus and it runs six
+tests---predictive validity, speaker-identity leakage (LOCO), silence, energy,
+cross-corpus transfer, and representation-level identity AUC---emitting a
+PASS/WARN/FAIL report card against documented thresholds. Applied to the paper's
+own metrics on TORGO (Table~\ref{tab:bench}) it reproduces every committed number
+and, crucially, \emph{discriminates}: the trajectory-distance metric fails on
+silence (24\% retained) and identity (AUC 0.996), whereas a pooled-embedding probe
+is silence-robust (100\% retained) yet still fails cross-corpus transfer and
+identity. \textbf{No metric passes every control}---precisely the point: a single
+headline $\rho$ (0.74--0.77 here, all ``PASS'' on predictive validity) hides the
+confound a deployment would hit.
+
+\begin{table}[t]
+\centering
+\caption{VERITAS-Bench report card on TORGO (real, seed 42;
+\texttt{results/veritas/veritas\_bench\_report.json}). Every metric ``passes''
+predictive validity yet fails $\ge 1$ confound control.}
+\label{tab:bench}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Control & ATD-L9 & ATD-L1 & Probe\\
+\midrule
+predictive validity      & PASS $.77$ & PASS $.69$ & PASS $.74$\\
+leakage (LOCO $\Delta$)  & PASS $.00$ & \textbf{WARN} $.09$ & N/A\\
+silence (kept)           & \textbf{FAIL} $24\%$ & --- & WARN $100\%$\\
+energy (kept)            & PASS $96\%$ & --- & PASS $80\%$\\
+cross-corpus             & \textbf{FAIL} n.s. & --- & \textbf{FAIL} n.s.\\
+identity AUC             & \textbf{FAIL} $.996$ & --- & \textbf{FAIL} $.996$\\
+\midrule
+\textbf{overall}         & \textbf{FAIL} & \textbf{WARN} & \textbf{FAIL}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =============================================================================
 \section{A working artifact: the real-time articulatory Mirror}
 % =============================================================================
 Independently of the (failed) metrics, frozen-SSL inversion
@@ -275,7 +337,13 @@ Independently of the (failed) metrics, frozen-SSL inversion
 animated midsagittal vocal tract driven by audio-only inversion, with an
 explicitly-labelled \textbf{experimental} reliability overlay (Finding~4 shows
 the overlay is unvalidated). Released as a Gradio app. This separates what works
-(engineering on frozen models) from what does not (the reliability claim).
+(engineering on frozen models) from what does not (the reliability claim). In the
+same spirit, a downstream articulatory-bottleneck \emph{clarifier} (encode
+dysarthric audio to the SPARC code, project toward the healthy manifold,
+resynthesise) was evaluated honestly and found \emph{null}: it moves speech no
+closer to the healthy manifold than plain resynthesis (typicality
+$\Delta{=}{-}0.74$), reinforcing that naive manipulation of frozen-SSL articulatory
+codes neither measures nor repairs pathology.
 
 % =============================================================================
 \section{Recommendations}
