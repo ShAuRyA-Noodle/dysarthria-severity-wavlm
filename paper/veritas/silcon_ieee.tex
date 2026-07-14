@@ -1,18 +1,18 @@
 % =============================================================================
-% IEEE SILCON 2026 submission — IEEEtran conference format, max 6 pages.
+% IEEE SPMB 2026 submission (Paper A -- the validity audit).
+% IEEEtran conference format, two-column.
 %
-% HOW TO COMPILE (Overleaf):
-%   New Project -> Templates -> "IEEE Conference" (or upload this file +
-%   refs.bib + the figures/ folder). Compiler: pdfLaTeX.
-%   Overleaf already ships IEEEtran.cls, so this compiles as-is.
+% COMPILE (Overleaf): New Project -> upload this .tex + the figures/ folder ->
+% Compiler = pdfLaTeX -> Recompile. Self-contained (manual thebibliography), so
+% NO refs.bib and NO BibTeX pass are needed -- one .tex + 2 figures is enough.
 %
 % BEFORE SUBMITTING:
-%   1. Fill in the \author{} block below (name / affiliation / email).
-%      SILCON does not state double-blind; standard IEEE conference practice
-%      is names-on. If you confirm otherwise with silcon2026@nitmanipur.ac.in,
-%      replace the author block with "Anonymous Submission".
-%   2. Keep the paper <= 6 pages INCLUDING references.
-%   3. Submit at https://cmt3.research.microsoft.com/IEEESILCON2026/Submission/Index
+%   * Confirm SPMB's exact page limit (historically ~4-6 pp) via the CFP/e-mail
+%     and trim if needed. This paper is ~4-5 pp.
+%   * SPMB is single-blind (author names on); confirm on the CFP. If it is
+%     double-blind, replace the author block with "Anonymous Submission".
+%   * For the IEEE Xplore camera-ready, run the final PDF through IEEE PDF eXpress
+%     (creates the Xplore-compatible PDF with embedded fonts).
 %
 % Every numeric value here is verified against a committed results/*.json file.
 % =============================================================================
@@ -33,9 +33,6 @@
 \title{When Frozen Self-Supervised Speech Metrics Don't Measure What They Claim:\\
 A Validity Audit and Test-Suite for Dysarthric-Speech Severity}
 
-% ---------------------------------------------------------------------------
-% TODO: fill in your name, affiliation and email.
-% ---------------------------------------------------------------------------
 \author{\IEEEauthorblockN{Shaurya Punj}
 \IEEEauthorblockA{\textit{Thapar Institute of Engineering and Technology} \\
 Patiala, Punjab, India \\
@@ -174,8 +171,9 @@ becomes non-significant.}
 Reference-based metrics leak speaker identity when the reference contains the test
 speaker's own data. On TORGO a naive per-word reference gives an early-layer
 (L1) score of $\rho{=}0.775$; under a strict \emph{leave-one-control-out} (LOCO)
-reference it falls to $0.687$ ($\Delta{=}{-}0.089$). The mid-network layer (L9) is
-leakage-robust ($0.756{\to}0.756$). Early SSL layers encode speaker
+reference it falls to $0.687$---a leakage inflation of
+$\Delta{=}\rho_\text{naive}-\rho_\text{LOCO}{=}0.089$. The mid-network layer (L9)
+is leakage-robust ($0.756{\to}0.756$, $\Delta{=}0.000$). Early SSL layers encode speaker
 identity~\cite{zhu2024wavrx}; we contribute the LOCO reference construction and
 quantify the inflation it removes. The layer used for our other results (L9) is
 unaffected, so leakage is a hazard specifically for \emph{early-layer} reference
@@ -256,9 +254,10 @@ identity AUC            & \textbf{FAIL} $.996$ & --- & \textbf{FAIL} $.996$\\
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig2_leakage.pdf}
-\caption{Reference-based severity on TORGO. The early layer (L1) drops
-$\Delta{=}{-}0.089$ from a naive to a leave-one-control-out reference---speaker
-leakage---while the mid layer (L9) is unchanged.}
+\caption{Reference-based severity on TORGO. From a naive to a leave-one-control-out
+reference the early layer (L1) drops by a leakage inflation of
+$\Delta{=}\rho_\text{naive}-\rho_\text{LOCO}{=}0.089$, while the mid layer (L9) is
+unchanged ($\Delta{=}0.000$).}
 \label{fig:leak}
 \end{figure}
 
@@ -296,7 +295,17 @@ IPVS/EasyCall are binary detection arms), so the graded cross-corpus result is a
 underpowered null rather than a proven absence. All headline numbers map to
 committed result files; seed 42; frozen weights; speaker-disjoint splits.
 
-\bibliographystyle{IEEEtran}
-\bibliography{refs}
+\begin{thebibliography}{00}
+\bibitem{chen2022wavlm} S. Chen \emph{et al.}, ``WavLM: Large-scale self-supervised pre-training for full stack speech processing,'' \emph{IEEE J. Sel. Topics Signal Process.}, vol.~16, no.~6, pp.~1505--1518, 2022.
+\bibitem{hsu2021hubert} W.-N. Hsu \emph{et al.}, ``HuBERT: Self-supervised speech representation learning by masked prediction of hidden units,'' \emph{IEEE/ACM Trans. Audio, Speech, Language Process.}, vol.~29, pp.~3451--3460, 2021.
+\bibitem{rudzicz2012torgo} F. Rudzicz, A. K. Namasivayam, and T. Wolff, ``The TORGO database of acoustic and articulatory speech from speakers with dysarthria,'' \emph{Lang. Resources Eval.}, vol.~46, no.~4, pp.~523--541, 2012.
+\bibitem{dimauro2017ipvs} G. Dimauro \emph{et al.}, ``Assessment of speech intelligibility in Parkinson's disease using a speech-to-text system,'' \emph{IEEE Access}, vol.~5, pp.~22199--22208, 2017.
+\bibitem{turrisi2021easycall} R. Turrisi \emph{et al.}, ``EasyCall corpus: A dysarthric speech dataset,'' in \emph{Proc. Interspeech}, 2021, pp.~41--45.
+\bibitem{frozenssl2026a} B. Muller, A. A. Ortiz Barra\~n\'on, and L. Roberts, ``Training-free cross-lingual dysarthria severity assessment via phonological subspace analysis in self-supervised speech representations,'' \emph{arXiv:2604.10123}, 2026.
+\bibitem{frozenssl2026b} B. Muller, A. A. Ortiz Barra\~n\'on, and L. Roberts, ``Phonological subspace collapse is aetiology-specific and cross-lingually stable: Evidence from 3,374 speakers,'' \emph{arXiv:2604.21706}, 2026.
+\bibitem{zhu2024wavrx} Y. Zhu and T. H. Falk, ``WavRx: A disease-agnostic, generalizable, and privacy-preserving speech health diagnostic model,'' \emph{arXiv:2406.18731}, 2024.
+\bibitem{mcauliffe2017mfa} M. McAuliffe \emph{et al.}, ``Montreal Forced Aligner: Trainable text-speech alignment using Kaldi,'' in \emph{Proc. Interspeech}, 2017, pp.~498--502.
+\bibitem{cho2024sparc} C. J. Cho, P. Lee, A. Mohamed, and G. K. Anumanchipalli, ``Coding speech through vocal tract kinematics (SPARC),'' \emph{arXiv:2406.12998}, 2024.
+\end{thebibliography}
 
 \end{document}
