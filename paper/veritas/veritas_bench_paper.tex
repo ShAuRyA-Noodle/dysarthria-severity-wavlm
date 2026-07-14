@@ -24,6 +24,9 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, fit, backgrounds}
+\graphicspath{{figures/}{./}{./figures/}}
 
 \newcommand{\ns}{\emph{n.s.}}
 
@@ -220,7 +223,79 @@ identity AUC            & \textbf{FAIL} $.996$ & --- & \textbf{FAIL} $.996$ & \t
 \end{tabular}
 \end{table}
 
-\textbf{The battery discriminates.} This is the central result. All four metrics
+\begin{figure*}[t]
+\centering
+\resizebox{0.86\textwidth}{!}{%
+\begin{tikzpicture}[font=\small, arrow/.style={-{Latex}, thick},
+    box/.style={rectangle, rounded corners, draw, align=center, minimum height=1cm, minimum width=3.0cm},
+    ctrl/.style={rectangle, rounded corners, draw, align=center, minimum height=0.9cm, minimum width=3.0cm, fill=orange!18},
+    group/.style={rectangle, draw, dashed, rounded corners, inner sep=0.35cm}]
+\node[box, fill=blue!15] (metric) {Any per-speaker metric\\\texttt{predictive\_scores}};
+\node[box, fill=blue!15, below=0.7cm of metric] (corpus) {Corpus adapter\\(views: feats, energy, label)};
+\node[ctrl, right=2.6cm of metric, yshift=1.2cm] (c1) {Predictive validity};
+\node[ctrl, below=0.35cm of c1] (c2) {Leakage (LOCO)};
+\node[ctrl, below=0.35cm of c2] (c3) {Silence confound};
+\node[ctrl, below=0.35cm of c3] (c4) {Energy confound};
+\node[ctrl, below=0.35cm of c4] (c5) {Cross-corpus transfer};
+\node[ctrl, below=0.35cm of c5] (c6) {Identity AUC};
+\node[box, fill=yellow!22, right=2.6cm of c3, yshift=0.6cm] (thr) {Threshold\\policy};
+\node[box, fill=green!18, below=0.9cm of thr] (card) {PASS/WARN/FAIL\\report card (JSON)};
+\draw[arrow] (metric) -- (c1.west);
+\draw[arrow] (corpus) -- (c3.west);
+\foreach \c in {c1,c2,c3,c4,c5,c6}{\draw[arrow] (\c.east) -- (thr.west);}
+\draw[arrow] (thr) -- (card);
+\node[group, fit=(metric)(corpus), label=above:{\textbf{Inputs}}] {};
+\node[group, fit=(c1)(c2)(c3)(c4)(c5)(c6), label=above:{\textbf{Six-control battery}}] {};
+\node[group, fit=(thr)(card), label=above:{\textbf{Verdict}}] {};
+\end{tikzpicture}}
+\caption{VERITAS-Bench architecture: any per-speaker metric and any corpus adapter
+feed a six-control validity battery whose outcomes combine under a documented
+threshold policy into a PASS/WARN/FAIL report card.}
+\label{fig:arch}
+\end{figure*}
+
+\begin{figure}[t]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[font=\small, >={Latex},
+    st/.style={rectangle, rounded corners=3pt, draw=black!70, very thick, align=center, minimum width=2.9cm, minimum height=0.9cm},
+    naive/.style={st, fill=red!15}, loco/.style={st, fill=green!18}, sc/.style={st, fill=blue!12}, arrow/.style={->, thick}]
+\node[sc] (pool) {Healthy-control\\pool};
+\node[naive, above right=0.25cm and 2.0cm of pool] (naiveref) {Naive ref\\(incl.\ $c_i$)};
+\node[loco, below right=0.25cm and 2.0cm of pool] (locoref) {LOCO ref\\(excl.\ $c_i$)};
+\node[st, fill=orange!22, right=2.2cm of pool, yshift=-1.7cm] (delta) {$\Delta=\rho_\text{naive}{-}\rho_\text{LOCO}$};
+\draw[arrow] (pool) -- (naiveref);
+\draw[arrow] (pool) -- (locoref);
+\draw[arrow] (naiveref) -- (delta);
+\draw[arrow] (locoref) -- (delta);
+\end{tikzpicture}}
+\caption{The leave-one-control-out (LOCO) leakage test: scoring a control $c_i$
+against a reference containing its own data leaks identity; rebuilding the
+reference without $c_i$ isolates the inflation $\Delta$.}
+\label{fig:loco1}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig1_within_vs_loco.pdf}
+\caption{Within-corpus severity prediction is strong for all three corpora, but
+leave-one-corpus-out transfer degrades and, for the only graded corpus (TORGO),
+becomes non-significant.}
+\label{fig:xc1}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig3_cycle_consistency.pdf}
+\caption{A cycle-consistency reliability metric fails validation: its raw
+association with real inversion error ($+0.129$) vanishes to $-0.001$ once speech
+energy is partialled out.}
+\label{fig:cyc1}
+\end{figure}
+
+\textbf{The battery discriminates.} This is the central result (the pipeline is
+shown in Fig.~\ref{fig:arch}, the leakage test in Fig.~\ref{fig:loco1}, and two of
+the flagged confounds in Figs.~\ref{fig:xc1} and~\ref{fig:cyc1}). All four metrics
 report a respectable headline correlation ($\rho{=}0.74$--$0.77$) and would, on the
 usual evidence, be declared successful. The card separates them:
 
