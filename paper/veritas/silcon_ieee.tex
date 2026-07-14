@@ -42,9 +42,10 @@ spunj\_be23@thapar.edu}
 \maketitle
 
 \begin{abstract}
-Frozen self-supervised (SSL) speech models are increasingly used to build
-\emph{training-free} clinical-speech metrics for dysarthria. We ask whether such
-metrics measure the disorder or a confound. Auditing four popular metric families
+Scoring a patient's frozen self-supervised (SSL) speech embeddings against
+healthy-control references has become a popular \emph{label-free} route to
+dysarthria-severity estimation. We ask whether the resulting score tracks the
+disorder itself or a coincidental confound. Auditing four popular metric families
 on real dysarthric speech (TORGO, $n{=}15$ graded, with AG500 electromagnetic
 articulography), Parkinsonian speech (IPVS, $n{=}61$) and Italian dysarthria
 (EasyCall, $n{=}55$), we find that every metric that ``passes'' a headline
@@ -69,10 +70,10 @@ benchmark, validity, confounds, articulatory inversion
 % ===========================================================================
 \section{Introduction}
 % ===========================================================================
-Frozen SSL representations (WavLM~\cite{chen2022wavlm}, HuBERT~\cite{hsu2021hubert})
-encode rich phonetic and articulatory structure, motivating a wave of
-\emph{training-free} clinical-speech metrics: pooled-embedding severity probes,
-reference-distance scores, and articulatory-inversion analyses. Their appeal is
+Since frozen SSL encoders (WavLM~\cite{chen2022wavlm}, HuBERT~\cite{hsu2021hubert})
+already expose phonetic and articulatory structure, a patient can be scored against
+healthy controls without any training---a recipe that has produced pooled-embedding
+severity probes, reference-distance scores, and articulatory-inversion analyses. Their appeal is
 obvious---no labels, no fine-tuning, apparently interpretable geometry. We ask a
 blunt question: \textbf{do these metrics measure the disorder, or do they measure
 confounds that happen to correlate with it on a single corpus?}
@@ -292,9 +293,10 @@ WavLM-L9 mean-pool with Ridge/LinearSVR, and both beat an MFCC baseline
 % ===========================================================================
 \section{Conclusion}
 % ===========================================================================
-Frozen-SSL clinical-speech metrics are easy to build and easy to fool. Across four
-metric families and real articulatory ground truth, the apparent signal is
-repeatedly \emph{entangled} with a confound---speaker identity, silence/pausing,
+A frozen-SSL clinical-speech metric is cheap to build and, as we have shown, cheap
+to fool. Across four metric families measured against real articulatory ground
+truth, the apparent severity signal is repeatedly \emph{entangled} with a
+confound---speaker identity, silence/pausing,
 energy, or corpus overfitting---and the residual genuine signal, once those are
 controlled, is real but \emph{smaller and narrower} than single-corpus numbers
 imply. We release the harness, the diagnostics, and VERITAS-Bench so that these
