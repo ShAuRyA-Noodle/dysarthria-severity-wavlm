@@ -256,18 +256,18 @@ threshold policy into a PASS/WARN/FAIL report card.}
 
 \begin{figure}[t]
 \centering
-\resizebox{\columnwidth}{!}{%
-\begin{tikzpicture}[font=\small, >={Latex},
-    st/.style={rectangle, rounded corners=3pt, draw=black!70, very thick, align=center, minimum width=2.9cm, minimum height=0.9cm},
-    naive/.style={st, fill=red!15}, loco/.style={st, fill=green!18}, sc/.style={st, fill=blue!12}, arrow/.style={->, thick}]
-\node[sc] (pool) {Healthy-control\\pool};
-\node[naive, above right=0.25cm and 2.0cm of pool] (naiveref) {Naive ref\\(incl.\ $c_i$)};
-\node[loco, below right=0.25cm and 2.0cm of pool] (locoref) {LOCO ref\\(excl.\ $c_i$)};
-\node[st, fill=orange!22, right=2.2cm of pool, yshift=-1.7cm] (delta) {$\Delta=\rho_\text{naive}{-}\rho_\text{LOCO}$};
-\draw[arrow] (pool) -- (naiveref);
-\draw[arrow] (pool) -- (locoref);
-\draw[arrow] (naiveref) -- (delta);
-\draw[arrow] (locoref) -- (delta);
+\resizebox{0.9\columnwidth}{!}{%
+\begin{tikzpicture}[font=\footnotesize, >={Latex},
+    st/.style={rectangle, rounded corners=2pt, draw=black!70, thick, align=center, minimum width=2.2cm, minimum height=0.85cm},
+    arrow/.style={->, thick}]
+\node[st, fill=blue!12] (pool) {Control pool\\$\{c_1,\dots,c_k\}$};
+\node[st, fill=red!15, below left=1.0cm and 0.05cm of pool] (naive) {Naive ref\\(incl.\ $c_i$)};
+\node[st, fill=green!18, below right=1.0cm and 0.05cm of pool] (loco) {LOCO ref\\(excl.\ $c_i$)};
+\node[st, fill=orange!25, below=2.7cm of pool] (delta) {$\Delta=\rho_\text{naive}-\rho_\text{LOCO}$\\(leakage)};
+\draw[arrow] (pool) -- (naive);
+\draw[arrow] (pool) -- (loco);
+\draw[arrow] (naive) -- (delta);
+\draw[arrow] (loco) -- (delta);
 \end{tikzpicture}}
 \caption{The leave-one-control-out (LOCO) leakage test: scoring a control $c_i$
 against a reference containing its own data leaks identity; rebuilding the
