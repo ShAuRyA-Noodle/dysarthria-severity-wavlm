@@ -198,7 +198,17 @@ the raw pooled Spearman is $+0.129$ but is a \emph{speech-energy artifact}
 ($\rho_{\text{faith,energy}}{=}{-}0.468$); the \emph{energy-controlled partial
 Spearman} is $-0.001$. A healthy-manifold-centered variant is $+0.39$---the
 \emph{wrong sign}. Either way the metric carries no usable information about real
-inversion error.
+inversion error (Fig.~\ref{fig:cyc}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig3_cycle_consistency.pdf}
+\caption{The raw faithfulness-versus-error association ($+0.129$) vanishes to
+$-0.001$ once speech energy is partialled out, because both faithfulness and
+inversion error are themselves driven by energy. Per-frame, TORGO controls,
+$n{=}5$ / $22{,}854$ frames.}
+\label{fig:cyc}
+\end{figure}
 
 \subsection{Inversion is unstable on disordered input}
 Kinematic features (tongue range, velocity) derived from SSL inversion do
