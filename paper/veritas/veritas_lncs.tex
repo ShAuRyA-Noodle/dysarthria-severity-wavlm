@@ -39,7 +39,7 @@ Self-Supervised Dysarthric-Speech Severity Metrics}
 % ---------------------------------------------------------------------------
 \author{Shaurya Punj}
 \institute{Thapar Institute of Engineering and Technology, Patiala, Punjab, India \\
-\email{shauryapunj@thapar.edu}}
+\email{spunj\_be23@thapar.edu}}
 
 \maketitle
 
@@ -449,6 +449,12 @@ becomes non-significant.}
 \end{figure}
 
 \subsection{The Confound Findings}
+The five confounds below motivate the six controls and are summarised here for
+self-containedness; a fuller empirical treatment, including the full
+articulatory-inversion and kinematics analysis, appears in a companion
+audit~\cite{companion}. This paper's contribution is the released test-suite and
+the audit of the state-of-the-art metric, not the confound findings in isolation.
+
 \textbf{Speaker-identity leakage.} On TORGO a naive per-word reference gives an
 early-layer (L1) score of $\rho{=}0.775$; under a strict LOCO reference it falls to
 $0.687$ ($\Delta{=}0.089$). The mid-network layer (L9) is leakage-robust
@@ -748,6 +754,10 @@ Transformers for Language Understanding. In: Proc. NAACL-HLT, pp. 4171--4186 (20
 Radford, A., Kim, J.W., Xu, T., Brockman, G., McLeavey, C., Sutskever, I.: Robust Speech
 Recognition via Large-Scale Weak Supervision. In: Proc. International Conference on Machine
 Learning, pp. 28492--28518 (2023).
+
+\bibitem{companion}
+Punj, S.: When Frozen SSL Speech Metrics Don't Measure What They Claim: A Validity Audit
+for Dysarthric-Speech Severity. arXiv preprint (2026). Companion empirical audit.
 
 \end{thebibliography}
 
