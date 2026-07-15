@@ -30,8 +30,15 @@ async function j<T>(p: Promise<Response>): Promise<T> {
   return r.json();
 }
 
+export interface Summary {
+  n_metrics: number; n_pass_all: number;
+  rho_min: number; rho_max: number; auc_min: number; auc_max: number;
+  atd_silence_lost_pct: number; atd_identity_auc: number; atd_transfer_outcome: string;
+}
+
 export const getReportCards = () => j<{ cards: any[]; corpus: string; seed: number }>(fetch(`${BASE}/api/report-cards`));
 export const getFindings = () => j<{ findings: any[] }>(fetch(`${BASE}/api/findings`));
+export const getSummary = () => j<Summary>(fetch(`${BASE}/api/summary`));
 export const runAudit = (body: AuditInput) =>
   j<AuditResult>(fetch(`${BASE}/api/audit`, {
     method: "POST",

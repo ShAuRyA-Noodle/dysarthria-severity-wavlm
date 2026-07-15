@@ -1,8 +1,10 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import Scene from "./components/Scene";
 import ReportCards from "./components/ReportCards";
 import AuditConsole from "./components/AuditConsole";
+import Findings from "./components/Findings";
+import { getSummary, type Summary } from "./api";
 
 function Reveal({ children }: { children: ReactNode }) {
   return (
@@ -48,17 +50,12 @@ const CONTROLS = [
   ["06", "Representation identifiability", "Speaker-classification AUC of the features the metric uses. High identifiability is a leakage risk.", "PASS AUC ≤ 0.70"],
 ];
 
-const FINDINGS = [
-  ["−0.001", "Cycle-consistency isn't reliability", "Energy-controlled partial Spearman vs measured EMA inversion error over 22,854 frames.", "h1_faithfulness_vs_inversion_error.json"],
-  ["0.775", "Pausing, not articulation", "Silence frames alone reproduce the full metric's severity correlation. Real signal (0.644) only survives silence-trim + de-leak.", "silence_confound.json"],
-  ["0.089", "Early layers leak identity", "A naive early-layer reference drops by this much under a leave-one-control-out reference. Mid-network layers are robust.", "deleak_report_fast.json"],
-  ["0.39", "Inversion is unstable on disordered input", "SSL-inversion kinematics don't track measured EMA (n.s.); the 'significant' severity correlation points the clinically wrong way.", "m2_articulatory_kinematics.json"],
-  ["n ≈ 2", "The ground truth barely exists", "Usable dysarthric electromagnetic articulography sessions in public data — a hard ceiling on validating pathological inversion.", "h1_dysarthric_inversion.json"],
-  ["metric-dependent", "Transfer must be shown, not assumed", "A well-designed metric transfers at scale; naive trajectory-distance at n=15 does not. Never assume generalisation.", "cross_corpus_severity.json"],
-];
-
 export default function App() {
   const [theme, setTheme] = useState<string>(() => document.documentElement.getAttribute("data-theme") || "dark");
+  const [sum, setSum] = useState<Summary | null>(null);
+  useEffect(() => { getSummary().then(setSum).catch(() => setSum(null)); }, []);
+  // strip the leading 0 from a decimal (0.996 -> .996); show a placeholder while loading
+  const d = (n: number | null | undefined) => (n == null ? "…" : String(n).replace(/^0(?=\.)/, ""));
   function toggle() {
     const next = theme === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
@@ -87,10 +84,10 @@ export default function App() {
       </header>
 
       <div className="strip">
-        <div className="cell"><div className="k">4</div><div className="l">metric families audited on real dysarthric speech</div></div>
-        <div className="cell"><div className="k fail">0</div><div className="l">pass all six validity controls</div></div>
-        <div className="cell"><div className="k sig num">.74–.77</div><div className="l">headline Spearman ρ — all look successful</div></div>
-        <div className="cell"><div className="k num">.996–.999</div><div className="l">speaker-identity AUC — every metric</div></div>
+        <div className="cell"><div className="k num">{sum ? sum.n_metrics : "…"}</div><div className="l">metric families audited on real dysarthric speech</div></div>
+        <div className="cell"><div className="k fail num">{sum ? sum.n_pass_all : "…"}</div><div className="l">pass all six validity controls</div></div>
+        <div className="cell"><div className="k sig num">{sum ? `${d(sum.rho_min)}–${d(sum.rho_max)}` : "…"}</div><div className="l">headline Spearman ρ — all look successful</div></div>
+        <div className="cell"><div className="k num">{sum ? `${d(sum.auc_min)}–${d(sum.auc_max)}` : "…"}</div><div className="l">speaker-identity AUC — every metric</div></div>
       </div>
 
       <section id="problem">
@@ -103,9 +100,9 @@ export default function App() {
             </div>
           </Reveal>
           <div className="grid3">
-            <Reveal><div className="card"><div className="h">Silence</div><div className="big fail">76%</div><p>of the severity signal disappears when silence is removed. The metric measures <em>pausing</em>, not articulation.</p></div></Reveal>
-            <Reveal><div className="card"><div className="h">Identity</div><div className="big fail">0.996</div><p>speaker-classification AUC (chance 0.5). A score that encodes <em>who</em> the speaker is tracks any speaker-correlated label.</p></div></Reveal>
-            <Reveal><div className="card"><div className="h">Transfer</div><div className="big warn">n.s.</div><p>graded cross-corpus transfer is an underpowered null at n = 15 — not proof of absence, but not generalisation either.</p></div></Reveal>
+            <Reveal><div className="card"><div className="h">Silence</div><div className="big fail num">{sum ? `${sum.atd_silence_lost_pct}%` : "…"}</div><p>of the severity signal disappears when silence is removed. The metric measures <em>pausing</em>, not articulation.</p></div></Reveal>
+            <Reveal><div className="card"><div className="h">Identity</div><div className="big fail num">{sum ? d(sum.atd_identity_auc) : "…"}</div><p>speaker-classification AUC (chance 0.5). A score that encodes <em>who</em> the speaker is tracks any speaker-correlated label.</p></div></Reveal>
+            <Reveal><div className="card"><div className="h">Transfer</div><div className="big warn">{sum ? (sum.atd_transfer_outcome === "FAIL" ? "n.s." : sum.atd_transfer_outcome) : "…"}</div><p>graded cross-corpus transfer is an underpowered null at n = 15 — not proof of absence, but not generalisation either.</p></div></Reveal>
           </div>
         </div>
       </section>
@@ -141,11 +138,7 @@ export default function App() {
       <section id="findings">
         <div className="wrap">
           <Reveal><div className="head"><div className="eyebrow">Grounded in measurement</div><h2>Findings, each with a real diagnostic.</h2></div></Reveal>
-          <div className="findings">
-            {FINDINGS.map(([stat, h, p, src]) => (
-              <Reveal key={h as string}><div className="finding"><div className="fstat num">{stat}</div><h3>{h}</h3><p>{p}</p><div className="src">{src}</div></div></Reveal>
-            ))}
-          </div>
+          <Reveal><Findings /></Reveal>
         </div>
       </section>
 

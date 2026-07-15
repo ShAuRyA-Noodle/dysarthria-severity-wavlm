@@ -76,6 +76,32 @@ def report_cards():
     return {"corpus": "TORGO", "seed": 42, "n_speakers": 15, "cards": cards}
 
 
+@app.get("/api/summary")
+def summary():
+    """Headline numbers computed live from the committed report cards — so the
+    frontend hard-codes nothing; every figure is derived from real results."""
+    cards = report_cards()["cards"]
+
+    def stat(card, ctrl, key):
+        return ((card or {}).get("tests", {}).get(ctrl) or {}).get("stats", {}).get(key)
+
+    rhos = [r for c in cards if (r := stat(c, "predictive_validity", "rho")) is not None]
+    aucs = [a for c in cards if (a := stat(c, "leakage_by_layer", "speaker_identity_auc")) is not None]
+    atd = next((c for c in cards if c.get("metric_name") == "atd_wavlm_l9"), None)
+    sil = stat(atd, "silence_confound", "retention")
+    return {
+        "n_metrics": len(cards),
+        "n_pass_all": sum(1 for c in cards if c.get("overall") == "PASS"),
+        "rho_min": round(min(rhos), 2) if rhos else None,
+        "rho_max": round(max(rhos), 2) if rhos else None,
+        "auc_min": round(min(aucs), 3) if aucs else None,
+        "auc_max": round(max(aucs), 3) if aucs else None,
+        "atd_silence_lost_pct": round((1 - sil) * 100) if sil is not None else None,
+        "atd_identity_auc": stat(atd, "leakage_by_layer", "speaker_identity_auc") if atd else None,
+        "atd_transfer_outcome": ((atd or {}).get("tests", {}).get("cross_corpus_transfer") or {}).get("outcome"),
+    }
+
+
 @app.get("/api/findings")
 def findings():
     """Curated real findings, each tracing to a committed result file."""
