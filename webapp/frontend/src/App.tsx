@@ -149,6 +149,23 @@ export default function App() {
         </div>
       </section>
 
+      <section id="explainer">
+        <div className="wrap">
+          <Reveal>
+            <div className="head" style={{ marginBottom: 26 }}>
+              <div className="eyebrow">Never seen any of this before?</div>
+              <h2>The whole project, explained like you're ten.</h2>
+              <p>Every piece — how it started, what's new, the novelty, and how each part was coded — in the simplest words, with lots of examples. And nothing here is mocked: every number traces to a committed <span className="mono">results/</span> file, and the Audit Console above runs the actual <span className="mono">thresholds.py</span> code, live.</p>
+            </div>
+          </Reveal>
+          <Reveal>
+            <a className="btn primary" href="https://claude.ai/code/artifact/b1ae4d1e-8857-47fc-8223-9df047197fbb" target="_blank" rel="noreferrer" style={{ textDecoration: "none", display: "inline-block" }}>
+              Read the baby-step explainer →
+            </a>
+          </Reveal>
+        </div>
+      </section>
+
       <section id="papers">
         <div className="wrap">
           <Reveal><div className="head"><div className="eyebrow">Outputs</div><h2>Two papers, one released instrument.</h2><p>Every number traces to a committed result file. Seed 42; frozen weights; speaker-disjoint splits.</p></div></Reveal>
