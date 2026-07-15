@@ -1,36 +1,42 @@
-% Target ~180 words. Updated 2026-05-11 to reflect honest findings.
+% Target 200--220 words. Hard cap 250. Updated 2026-05-11 per audit
+% reframe: drop "zero-shot cross-corpus", lead with Bayesian credible
+% interval, name the IPVS zero-shot failure, pivot to within-corpus
+% calibration as the deployable mode.
 
-We propose Articulatory Trajectory Deviation (ATD), a zero-shot metric
-for dysarthric speech severity that exploits the geometric structure of
-frozen self-supervised speech representations. Pre-trained on 94k hours
-of neurotypical speech, WavLM-Large implicitly learns a manifold of
-typical articulatory execution; dysarthric speakers trace deviated
-trajectories through this manifold. ATD measures the per-utterance
-dynamic-time-warping distance between the speaker's WavLM trajectory
-and a per-word reference built by DTW-barycentre averaging of seven
-control speakers, in a shared 64-dimensional PCA subspace and length-
-normalised to isolate execution quality from speaking rate. Without
-fine-tuning, ATD attains speaker-level Spearman $\rho{=}0.775$ on TORGO
-at WavLM Layer~1 ($p{=}0.0007$, $n{=}15$, 10k bootstrap CI
-$[0.38,\,0.92]$), correctly ranks 7 of 8 dysarthric speakers under
-LOSO, and reduces RMSE by 16.3\% over MFCC + SVR. A controlled-
-perturbation study at Layer~1 confirms specificity: ATD beats MFCC
-trajectory DTW on formant-shift, partial-muting, reverberation, and
-time-stretch slopes (all positive differences), tying only on pink-
-noise. Phoneme-level DTW-path decomposition (68945 tokens, Montreal
-Forced Aligner) yields $\rho \approx 0.63$ on both vowels and
-consonants. Cross-language transfer: on Italian Parkinsonian voice
-(IPVS, XLS-R-300m Layer~1, sustained vowels), all five vowel-specific
-binary HC-vs-PD tests survive BH-FDR correction at $q{=}0.05$, with
-/i/ and /o/ also passing Bonferroni. A 4-corpus pooled analysis
-(28{,}082 utterances, 164 speakers) shows ATD is specific to
-dysarthric pathology, not pronunciation deviation in general:
-across 24 L2-ARCTIC speakers (6 native-language backgrounds), the
-correlation between mean ATD and ground-truth phone-error rate is
-$\rho{=}0.041$ ($p{=}0.85$, NS), and across 110 VCTK speakers
-spanning 13 native English regional accents, Kruskal--Wallis is
-$p{=}0.075$ (NS). The dysarthric-vs-healthy contrast on the pooled
-4-corpus dataset (with VCTK + L2-ARCTIC acting as accented-healthy
-distractors) is highly significant ($\hat{\beta}{=}0.75$ z-units,
-$p{=}8.9{\times}10^{-5}$). Streaming variant achieves
-$91\,\mu$s per-frame ATD update (Pearson $r{=}0.81$ vs offline).
+We propose Articulatory Trajectory Deviation (ATD), a frozen-SSL
+articulatory probe with within-corpus calibration for dysarthric
+severity estimation. Without fine-tuning the backbone, ATD measures
+the per-utterance dynamic-time-warping distance between a speaker's
+WavLM-Large~\cite{Chen2022WavLM} trajectory and a per-word reference
+built by DTW-barycentre averaging of seven control speakers, in a
+shared 64-dimensional PCA subspace, length-normalised to isolate
+execution quality from speaking rate.
+On TORGO~\cite{Rudzicz2012TORGO}, ATD attains speaker-level Spearman
+$\rho = 0.756$ at WavLM Layer~9 ($p = 0.0011$, $n = 15$), with a
+weakly-informative Beta(8,\,2) Bayesian credible interval of
+$[0.41,\,0.88]$ and a leave-one-speaker-out percentile bracket of
+$[0.724,\,0.855]$. ATD does not win on accuracy: a fairly-tuned
+mean-pooled WavLM Layer-9 probe, trained per leave-one-speaker-out fold,
+matches or slightly exceeds it (Ridge $\rho = 0.760$, LinearSVR $0.775$
+vs.\ ATD $0.756$; RMSE $0.581$ vs.\ $0.671$). ATD's value is reaching
+comparable accuracy \emph{zero-shot} --- no training, no labels --- while
+beating a tuned MFCC baseline ($\rho = 0.609$).
+
+Genuine zero-shot transfer across corpora failed: TORGO-fit references
+applied to Italian Parkinsonian voice (IPVS) gave $\rho = 0.18$
+($p = 0.17$, NS). The deployable mode is therefore within-corpus
+calibration: an IPVS-internal PCA refit (explicitly not zero-shot)
+recovers vowel-specific HC-vs-PD separation surviving BH-FDR at
+$q = 0.05$ for all five Italian vowels.
+A 4-corpus specificity check (28{,}082 utterances; 164 speakers across
+TORGO, UASpeech~\cite{Kim2008UASpeech}, L2-ARCTIC~\cite{Zhao2018L2Arctic}, VCTK~\cite{Veaux2017VCTK})
+shows ATD tracks dysarthric pathology rather than pronunciation
+deviation in general: phone-error correlation across 24 L2 speakers
+is $\rho = 0.041$ ($p = 0.85$), and the L1-background Kruskal--Wallis
+test on L2-ARCTIC is $p = 0.031$ (not significant after Bonferroni,
+$p_{\text{adj}} = 0.09$); the native-accent test on VCTK is $p = 0.075$.
+The dysarthric-vs-accented-healthy contrast
+is highly significant ($\hat{\beta} = 0.75$ z-units,
+$p = 8.9 \times 10^{-5}$). A streaming variant achieves
+$132\,\mu$s median per-frame update with exact parity to the offline
+metric ($r = 1.0$, max relative error $<10^{-15}$).

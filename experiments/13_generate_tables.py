@@ -13,6 +13,7 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 
 def generate_paper_numbers() -> dict:
@@ -365,6 +366,7 @@ def verify_phase8():
 
 
 def main():
+    set_global_seed(42)
     generate_paper_numbers()
     generate_latex_tables()
     verify_phase8()

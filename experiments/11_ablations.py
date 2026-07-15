@@ -20,6 +20,7 @@ from sklearn.decomposition import PCA
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.atd_metric import TORGO_SEVERITY, LAYER_POSITION_MAP
 
@@ -356,6 +357,7 @@ def ablation_6_mfcc_trajectory():
 
 
 def main():
+    set_global_seed(42)
     print("=" * 60)
     print("  Ablation Study — ATD Components")
     print("=" * 60)

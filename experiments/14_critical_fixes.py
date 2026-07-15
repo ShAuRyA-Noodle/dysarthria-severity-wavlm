@@ -23,6 +23,7 @@ from tqdm import tqdm
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 RANDOM_SEED = 42
 np.random.seed(RANDOM_SEED)
@@ -352,6 +353,7 @@ def update_paper_numbers(
 # ═══════════════════════════════════════════════════════════════
 
 def main():
+    set_global_seed(42)
     print("=" * 60)
     print("  EXPERIMENT 14: CRITICAL FIXES")
     print("=" * 60)

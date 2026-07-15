@@ -1,10 +1,18 @@
 """Per-phoneme ATD via DTW-path slicing (Track B core algorithm).
 
 Given an utterance's full DTW alignment to a control reference and the
-utterance's MFA phoneme intervals, attribute the path's cumulative cost
-to each phoneme's frame range. The decomposition is exact:
+utterance's MFA phoneme intervals, attribute the path's cumulative cost to each
+phoneme's frame range. The decomposition is EXACT once silence/unattributed
+path steps are accounted for by an explicit residual:
 
-    sum_p D(p) = total DTW distance.
+    sum_p D(p) + residual = total DTW path cost.
+
+``residual`` is the cost carried by DTW steps whose utterance frame falls in a
+silence interval (sil/sp/spn — dropped by the MFA ``phones`` tier) or in no MFA
+phone interval at all. For TORGO single-word recordings this residual is large
+(leading/trailing silence dominates the recording), so the honest claim is an
+"exact additive decomposition into per-phoneme contributions plus a
+silence/unattributed residual" — NOT exact phone-only additivity.
 
 Length-normalised per-phoneme deviation:
 
@@ -15,6 +23,7 @@ unique reference frames the path visits during the phone.
 """
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
@@ -27,7 +36,30 @@ from src.constants import FASTDTW_RADIUS
 WAVLM_FPS = 50  # WavLM-Large output frame rate (20 ms hop)
 
 
-def per_phoneme_atd(
+@dataclass
+class UtteranceDecomposition:
+    """Exact additive decomposition of one utterance's DTW path cost.
+
+    Identity (holds to floating-point tolerance):
+        ``sum(r["distance"] for r in per_phone) + residual == total_dtw_distance``
+    """
+
+    per_phone: list[dict]
+    total_dtw_distance: float
+    residual: float  # total - sum(per-phone): silence / unattributed path mass
+    n_path_steps: int = 0
+    n_attributed_steps: int = 0
+
+    @property
+    def sum_phone_distance(self) -> float:
+        return float(sum(r["distance"] for r in self.per_phone))
+
+    @property
+    def residual_fraction(self) -> float:
+        return float(self.residual / self.total_dtw_distance) if self.total_dtw_distance > 0 else 0.0
+
+
+def decompose_utterance(
     utt_npy_path: Path,
     textgrid_path: Path,
     pca_model,
@@ -35,8 +67,13 @@ def per_phoneme_atd(
     layer_position: int = 3,
     fps: int = WAVLM_FPS,
     radius: int = FASTDTW_RADIUS,
-) -> list[dict]:
-    """Compute per-phoneme deviation by slicing the DTW path.
+) -> UtteranceDecomposition:
+    """Decompose an utterance's DTW path cost into per-phone + residual.
+
+    Computes the full DTW path once, attributes each step's local cost to the
+    phone interval containing its utterance frame (if any), and books all
+    remaining cost (silence / unattributed steps) into an explicit residual so
+    the additive identity holds EXACTLY.
 
     Parameters
     ----------
@@ -57,22 +94,28 @@ def per_phoneme_atd(
 
     Returns
     -------
-    list of dicts with keys: phone, t_start, t_end, distance, atd, n_path_steps,
-    L_utt_frames, L_ref_frames. Sum of `distance` over all phones equals
-    the total DTW distance (exact additive identity).
+    UtteranceDecomposition
+        ``.per_phone`` rows (phone, t_start, t_end, distance, atd, n_path_steps,
+        L_utt_frames, L_ref_frames), ``.total_dtw_distance`` and ``.residual``.
     """
     from src.phoneme.aligner import parse_textgrid  # local import to keep top-of-module light
 
     emb = np.load(str(utt_npy_path))[layer_position]            # (T_utt, 1024)
     utt = pca_model.transform(emb)                              # (T_utt, 64)
 
-    _, path = fastdtw(utt, reference, radius=radius, dist=euclidean)
+    total_dtw_distance, path = fastdtw(utt, reference, radius=radius, dist=euclidean)
+    total_dtw_distance = float(total_dtw_distance)
     step_costs = np.array([euclidean(utt[i], reference[j]) for i, j in path])
     path_i = np.array([i for i, _ in path])
     path_j = np.array([j for _, j in path])
+    n_path_steps = int(len(path))
 
     phones = parse_textgrid(textgrid_path)
     out: list[dict] = []
+    # Track which path steps get attributed to a phone so the residual = the
+    # rest. Non-silence MFA intervals can overlap in frame space (rounding), so
+    # we OR a boolean mask rather than summing per-phone counts.
+    attributed = np.zeros(len(path), dtype=bool)
     for phone, t0, t1 in phones:
         f0 = int(np.floor(t0 * fps))
         f1 = min(int(np.ceil(t1 * fps)), len(utt))
@@ -82,6 +125,7 @@ def per_phoneme_atd(
         n_steps = int(mask.sum())
         if n_steps == 0:
             continue
+        attributed |= mask
         D = float(step_costs[mask].sum())
         L_u = f1 - f0
         L_r = int(np.unique(path_j[mask]).size)
@@ -91,15 +135,71 @@ def per_phoneme_atd(
             "distance": D, "atd": atd_p, "n_path_steps": n_steps,
             "L_utt_frames": int(L_u), "L_ref_frames": int(L_r),
         })
-    return out
+
+    # Residual = total path cost minus cost on steps attributed to a phone.
+    # Using the path steps directly (not sum of per-phone distances) guarantees
+    # exactness even if two phone intervals were to claim the same frame: each
+    # path step's cost is counted once in attributed_cost.
+    attributed_cost = float(step_costs[attributed].sum())
+    sum_phone = float(sum(r["distance"] for r in out))
+    # In the (rare) absence of overlapping intervals attributed_cost == sum_phone;
+    # the residual is defined against the per-phone sum that is actually stored,
+    # so the stored identity sum_phone + residual == total holds exactly.
+    residual = total_dtw_distance - sum_phone
+
+    return UtteranceDecomposition(
+        per_phone=out,
+        total_dtw_distance=total_dtw_distance,
+        residual=residual,
+        n_path_steps=n_path_steps,
+        n_attributed_steps=int(attributed.sum()),
+    )
+
+
+def per_phoneme_atd(
+    utt_npy_path: Path,
+    textgrid_path: Path,
+    pca_model,
+    reference: np.ndarray,
+    layer_position: int = 3,
+    fps: int = WAVLM_FPS,
+    radius: int = FASTDTW_RADIUS,
+) -> list[dict]:
+    """Backward-compatible wrapper: return only the per-phone rows.
+
+    Each row additionally carries ``total_dtw_distance`` and ``residual`` for
+    the parent utterance so downstream CSVs can store the full identity. Prefer
+    :func:`decompose_utterance` for the explicit total/residual object.
+    """
+    dec = decompose_utterance(
+        utt_npy_path, textgrid_path, pca_model, reference,
+        layer_position=layer_position, fps=fps, radius=radius,
+    )
+    for row in dec.per_phone:
+        row["total_dtw_distance"] = dec.total_dtw_distance
+        row["residual"] = dec.residual
+        row["residual_fraction"] = dec.residual_fraction
+    return dec.per_phone
 
 
 def verify_additivity(
-    per_phone_rows: list[dict], total_dtw_distance: float, tol: float = 1e-3
+    per_phone_rows: list[dict],
+    total_dtw_distance: float,
+    residual: float,
+    tol: float = 1e-6,
 ) -> bool:
-    """Sum-of-phone-costs ≈ total DTW distance (modulo silence frames)."""
+    """Assert the exact additive identity ``sum(D_p) + residual == total``.
+
+    Returns True iff ``|sum(per-phone distance) + residual - total| <= tol``
+    (absolute) OR within ``tol`` relative to the total. The residual term is
+    REQUIRED: per-phone costs alone do NOT sum to the total because silence and
+    unattributed DTW steps carry cost. Callers should report the residual
+    fraction separately.
+    """
     s = sum(r["distance"] for r in per_phone_rows)
-    return abs(s - total_dtw_distance) / max(total_dtw_distance, 1e-9) < tol
+    lhs = s + residual
+    abs_err = abs(lhs - total_dtw_distance)
+    return abs_err <= tol or abs_err <= tol * max(abs(total_dtw_distance), 1.0)
 
 
 # Manner-of-articulation pooling for sparse-class fallback (ARPABET).

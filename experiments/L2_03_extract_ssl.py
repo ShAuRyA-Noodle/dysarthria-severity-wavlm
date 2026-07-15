@@ -28,6 +28,7 @@ from tqdm import tqdm
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.ssl_extractor import SSLExtractor
 
@@ -54,6 +55,7 @@ def _load_resample(wav_path: Path) -> np.ndarray:
 
 
 def main() -> None:
+    set_global_seed(42)
     md_path = PROJECT_ROOT / "data/processed/metadata/metadata_l2arctic.csv"
     md = pd.read_csv(md_path)
     sub = md[md["has_annotation"]].copy()

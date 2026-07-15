@@ -1,0 +1,659 @@
+{
+  "wavlm_l9_meanpool_ridge_loso": {
+    "n": 15,
+    "rho": 0.7599439985633026,
+    "rho_p": 0.001010003049834709,
+    "pearson_r": 0.7623707771906814,
+    "rmse": 0.5809638055793672,
+    "mae": 0.4695815016825994,
+    "rank_accuracy_dys_over_ctrl": 0.9464285714285714,
+    "speakers": [
+      "F01",
+      "F03",
+      "F04",
+      "FC01",
+      "FC02",
+      "FC03",
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "MC01",
+      "MC02",
+      "MC03",
+      "MC04"
+    ],
+    "y_true_speaker": [
+      2.0,
+      1.0,
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      2.0,
+      1.0,
+      2.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "y_pred_speaker": [
+      2.0264148712158203,
+      0.7059215307235718,
+      0.5631555914878845,
+      0.43268370628356934,
+      0.33472657203674316,
+      0.6092151403427124,
+      1.3372477293014526,
+      1.493620753288269,
+      1.079096794128418,
+      1.4318439960479736,
+      1.462536334991455,
+      0.29049500823020935,
+      0.3158774971961975,
+      -0.1294192522764206,
+      0.8950469493865967
+    ],
+    "per_fold_selected_hyperparams": [
+      {
+        "held_out_speaker": "F01",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.3205853557973614,
+        "n_test_utts": 132
+      },
+      {
+        "held_out_speaker": "F03",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.35828536971759944,
+        "n_test_utts": 577
+      },
+      {
+        "held_out_speaker": "F04",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.19876891002824562,
+        "n_test_utts": 250
+      },
+      {
+        "held_out_speaker": "FC01",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.3158171776585859,
+        "n_test_utts": 164
+      },
+      {
+        "held_out_speaker": "FC02",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.4157383872467313,
+        "n_test_utts": 1000
+      },
+      {
+        "held_out_speaker": "FC03",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.3400424830105122,
+        "n_test_utts": 1002
+      },
+      {
+        "held_out_speaker": "M01",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.3447554751313958,
+        "n_test_utts": 386
+      },
+      {
+        "held_out_speaker": "M02",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.3252677541669874,
+        "n_test_utts": 409
+      },
+      {
+        "held_out_speaker": "M03",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.338174069186597,
+        "n_test_utts": 421
+      },
+      {
+        "held_out_speaker": "M04",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.35079869105233313,
+        "n_test_utts": 298
+      },
+      {
+        "held_out_speaker": "M05",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.33902091564169334,
+        "n_test_utts": 503
+      },
+      {
+        "held_out_speaker": "MC01",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.361568158675486,
+        "n_test_utts": 1108
+      },
+      {
+        "held_out_speaker": "MC02",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.33726260474920444,
+        "n_test_utts": 464
+      },
+      {
+        "held_out_speaker": "MC03",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.3122106790379937,
+        "n_test_utts": 828
+      },
+      {
+        "held_out_speaker": "MC04",
+        "selected": {
+          "alpha": 1000.0
+        },
+        "inner_cv_mse": 0.3085523166750942,
+        "n_test_utts": 654
+      }
+    ]
+  },
+  "wavlm_l9_meanpool_linsvr_loso": {
+    "n": 15,
+    "rho": 0.7753743335595117,
+    "rho_p": 0.0006828894411368989,
+    "pearson_r": 0.7155389368286371,
+    "rmse": 0.6230689756688815,
+    "mae": 0.5044220613473176,
+    "rank_accuracy_dys_over_ctrl": 0.9464285714285714,
+    "speakers": [
+      "F01",
+      "F03",
+      "F04",
+      "FC01",
+      "FC02",
+      "FC03",
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "MC01",
+      "MC02",
+      "MC03",
+      "MC04"
+    ],
+    "y_true_speaker": [
+      2.0,
+      1.0,
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      2.0,
+      1.0,
+      2.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "y_pred_speaker": [
+      2.0229300683323985,
+      0.7256896303540474,
+      0.5195626106009905,
+      0.5169130705157736,
+      0.442168598520097,
+      0.6650381683349456,
+      1.2247326766964812,
+      1.4840663580335711,
+      1.112097316430669,
+      1.437210864327155,
+      1.4183440652012047,
+      0.33097302243209986,
+      0.31354442240519137,
+      -0.1059457680199764,
+      1.0296385600296531
+    ],
+    "per_fold_selected_hyperparams": [
+      {
+        "held_out_speaker": "F01",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.3696071234553059,
+        "n_test_utts": 132
+      },
+      {
+        "held_out_speaker": "F03",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.43111690373396067,
+        "n_test_utts": 577
+      },
+      {
+        "held_out_speaker": "F04",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.21320556218917464,
+        "n_test_utts": 250
+      },
+      {
+        "held_out_speaker": "FC01",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.36462467108561325,
+        "n_test_utts": 164
+      },
+      {
+        "held_out_speaker": "FC02",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.4882798285308402,
+        "n_test_utts": 1000
+      },
+      {
+        "held_out_speaker": "FC03",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.39807709724071294,
+        "n_test_utts": 1002
+      },
+      {
+        "held_out_speaker": "M01",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.4067045197014926,
+        "n_test_utts": 386
+      },
+      {
+        "held_out_speaker": "M02",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.39383146372836747,
+        "n_test_utts": 409
+      },
+      {
+        "held_out_speaker": "M03",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.39707712484593,
+        "n_test_utts": 421
+      },
+      {
+        "held_out_speaker": "M04",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.41130673283969166,
+        "n_test_utts": 298
+      },
+      {
+        "held_out_speaker": "M05",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.4162279987920228,
+        "n_test_utts": 503
+      },
+      {
+        "held_out_speaker": "MC01",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.42878523969772575,
+        "n_test_utts": 1108
+      },
+      {
+        "held_out_speaker": "MC02",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.3967745792311738,
+        "n_test_utts": 464
+      },
+      {
+        "held_out_speaker": "MC03",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.36280590367801724,
+        "n_test_utts": 828
+      },
+      {
+        "held_out_speaker": "MC04",
+        "selected": {
+          "C": 0.01
+        },
+        "inner_cv_mse": 0.3442520606269438,
+        "n_test_utts": 654
+      }
+    ]
+  },
+  "mfcc_svr_rbf_loso": {
+    "n": 15,
+    "rho": 0.6094982323502629,
+    "rho_p": 0.015857942071992114,
+    "pearson_r": 0.6434418311846528,
+    "rmse": 0.7434106172418791,
+    "mae": 0.5827291116594033,
+    "rank_accuracy_dys_over_ctrl": 0.8214285714285714,
+    "speakers": [
+      "F01",
+      "F03",
+      "F04",
+      "FC01",
+      "FC02",
+      "FC03",
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "MC01",
+      "MC02",
+      "MC03",
+      "MC04"
+    ],
+    "y_true_speaker": [
+      2.0,
+      1.0,
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      2.0,
+      1.0,
+      2.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "y_pred_speaker": [
+      1.21735405385013,
+      0.1580095836871197,
+      0.29741445745605427,
+      0.10235602051156044,
+      0.3184312141172104,
+      0.4314168363133032,
+      1.167254650678869,
+      1.2098318701210946,
+      0.7123749577666323,
+      0.8535278274344484,
+      1.0010004125068035,
+      0.42660832577791935,
+      0.10110209057135193,
+      0.04723724559459446,
+      0.9285519304926565
+    ],
+    "per_fold_selected_hyperparams": [
+      {
+        "held_out_speaker": "F01",
+        "selected": {
+          "C": 0.1,
+          "gamma": 0.01
+        },
+        "inner_cv_mse": 0.4116422055953361,
+        "n_test_utts": 132
+      },
+      {
+        "held_out_speaker": "F03",
+        "selected": {
+          "C": 10.0,
+          "gamma": 0.001
+        },
+        "inner_cv_mse": 0.37892170534688285,
+        "n_test_utts": 577
+      },
+      {
+        "held_out_speaker": "F04",
+        "selected": {
+          "C": 0.1,
+          "gamma": 0.01
+        },
+        "inner_cv_mse": 0.32921403193358595,
+        "n_test_utts": 250
+      },
+      {
+        "held_out_speaker": "FC01",
+        "selected": {
+          "C": 0.1,
+          "gamma": 0.01
+        },
+        "inner_cv_mse": 0.4106374277704604,
+        "n_test_utts": 164
+      },
+      {
+        "held_out_speaker": "FC02",
+        "selected": {
+          "C": 1.0,
+          "gamma": 0.001
+        },
+        "inner_cv_mse": 0.49341163508534713,
+        "n_test_utts": 1000
+      },
+      {
+        "held_out_speaker": "FC03",
+        "selected": {
+          "C": 0.1,
+          "gamma": 0.001
+        },
+        "inner_cv_mse": 0.4757046881836834,
+        "n_test_utts": 1002
+      },
+      {
+        "held_out_speaker": "M01",
+        "selected": {
+          "C": 0.1,
+          "gamma": 0.01
+        },
+        "inner_cv_mse": 0.44913088285050956,
+        "n_test_utts": 386
+      },
+      {
+        "held_out_speaker": "M02",
+        "selected": {
+          "C": 0.1,
+          "gamma": 0.01
+        },
+        "inner_cv_mse": 0.48614643754825143,
+        "n_test_utts": 409
+      },
+      {
+        "held_out_speaker": "M03",
+        "selected": {
+          "C": 1.0,
+          "gamma": 0.001
+        },
+        "inner_cv_mse": 0.45558339839858186,
+        "n_test_utts": 421
+      },
+      {
+        "held_out_speaker": "M04",
+        "selected": {
+          "C": 1.0,
+          "gamma": 0.001
+        },
+        "inner_cv_mse": 0.40285557087942925,
+        "n_test_utts": 298
+      },
+      {
+        "held_out_speaker": "M05",
+        "selected": {
+          "C": 1.0,
+          "gamma": 0.001
+        },
+        "inner_cv_mse": 0.4588040950488212,
+        "n_test_utts": 491
+      },
+      {
+        "held_out_speaker": "MC01",
+        "selected": {
+          "C": 0.1,
+          "gamma": 0.001
+        },
+        "inner_cv_mse": 0.4695313144759384,
+        "n_test_utts": 1108
+      },
+      {
+        "held_out_speaker": "MC02",
+        "selected": {
+          "C": 0.1,
+          "gamma": 0.01
+        },
+        "inner_cv_mse": 0.47311938490559313,
+        "n_test_utts": 464
+      },
+      {
+        "held_out_speaker": "MC03",
+        "selected": {
+          "C": 1.0,
+          "gamma": 0.001
+        },
+        "inner_cv_mse": 0.44244582810176,
+        "n_test_utts": 828
+      },
+      {
+        "held_out_speaker": "MC04",
+        "selected": {
+          "C": 0.1,
+          "gamma": 0.01
+        },
+        "inner_cv_mse": 0.3788902809125389,
+        "n_test_utts": 652
+      }
+    ]
+  },
+  "atd_zero_shot_for_reference": {
+    "n": 15,
+    "rho": 0.7560864148142503,
+    "rho_p": 0.0011089540064018154,
+    "pearson_r": 0.766868832690165,
+    "rmse": 82.66985180625475,
+    "mae": 81.26351993685908,
+    "rank_accuracy_dys_over_ctrl": 0.9285714285714286,
+    "speakers": [
+      "F01",
+      "F03",
+      "F04",
+      "FC01",
+      "FC02",
+      "FC03",
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "MC01",
+      "MC02",
+      "MC03",
+      "MC04"
+    ],
+    "y_true_speaker": [
+      2.0,
+      1.0,
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      2.0,
+      1.0,
+      2.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "y_pred_speaker": [
+      111.01496668864785,
+      83.74467979393783,
+      72.90392677900013,
+      61.75976017828142,
+      57.55489578655282,
+      69.14820946605452,
+      101.83648782797638,
+      102.80879399461588,
+      75.34018709088691,
+      97.39139395092506,
+      97.96253369102888,
+      67.47176446132895,
+      72.6233605742064,
+      79.44387551444989,
+      80.94796325499351
+    ],
+    "note": "ATD is zero-shot (no training, no model). LOSO is equivalent to the full-set evaluation because each speaker's ATD is computed against reference embeddings from disjoint control speakers. Note that the ATD scale (mean reference-distance) is not in the {0,1,2} severity space, so RMSE/MAE are scale-mismatched and meaningful only for rho/rank-accuracy comparison."
+  },
+  "method_notes": "Frozen WavLM-Large; utterance feature = mean-pool of transformer layer 9 (1024-d). Regression head trained per-fold under leave-one-speaker-out across the 15 TORGO speakers. For each LOSO fold, hyperparameters were tuned by 5-fold group-CV on the 14 training speakers (Ridge alpha in {0.1,1,10,100,1000}; LinearSVR C in {0.01,0.1,1,10}). Per-utterance severity predictions were averaged to a single speaker-level prediction; metrics are reported on the n=15 speaker-level predictions. This frozen-backbone + classifier-head reproduction follows Hernandez et al. (2020) and Schu et al. (2023) in spirit; full backbone fine-tuning is degenerate at n=15 speakers. ATD is included for apples-to-apples comparison and is zero-shot (no training), so its LOSO and full-set metrics are equivalent.",
+  "config": {
+    "backbone": "microsoft/wavlm-large (frozen)",
+    "feature_layer": 9,
+    "pooling": "mean over time",
+    "ssl_regression_heads": [
+      "sklearn.linear_model.Ridge",
+      "sklearn.svm.LinearSVR (squared_epsilon_insensitive)"
+    ],
+    "mfcc_baseline": "58-d MFCC/acoustic features (src.baselines.extract_mfcc_features) + RBF SVR; C in {0.1,1,10,100}, gamma in {scale,1e-3,1e-2,1e-1} selected by nested GroupKFold CV per LOSO fold",
+    "cv_for_hp": "<=5-fold GroupKFold by speaker on the training fold; StandardScaler fit on inner-train split only (nested)",
+    "loso_speakers": [
+      "F01",
+      "F03",
+      "F04",
+      "FC01",
+      "FC02",
+      "FC03",
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "MC01",
+      "MC02",
+      "MC03",
+      "MC04"
+    ],
+    "n_utterances_wavlm": 8196,
+    "n_utterances_mfcc": 8182,
+    "per_fold_hyperparams_in": "each *_loso block's per_fold_selected_hyperparams",
+    "random_seed": 42,
+    "seeded_via": "src.seed_utils.set_global_seed(42)",
+    "reproduce_all_note": "Should be wired into reproduce_all.py orchestrator (separate agent owns that file)."
+  }
+}

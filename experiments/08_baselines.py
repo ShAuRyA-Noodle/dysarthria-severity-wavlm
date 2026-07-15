@@ -25,6 +25,7 @@ from scipy.stats import spearmanr
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.baselines import (
     TORGO_SEVERITY,
@@ -216,6 +217,7 @@ def run_split_b_evaluation(
 
 def main() -> None:
     """Run all baselines."""
+    set_global_seed(42)
     print(f"{'='*60}")
     print(f"  Baseline Evaluation — Phase 5")
     print(f"{'='*60}\n")

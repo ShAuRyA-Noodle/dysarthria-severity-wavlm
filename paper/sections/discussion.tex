@@ -9,31 +9,40 @@ The implicit articulatory manifold learned during 94k hours of
 neurotypical pre-training is sufficient to expose dysarthric
 deviation as off-manifold travel. Replacing DTW with mean-pool L2
 collapses $\rho$ by 40\%, and replacing WavLM with MFCC trajectories
-yields higher in-corpus $\rho$ but the worst LOSO transfer
-($-50\%$) of any variant tested. These two ablations bracket the
-contribution of \emph{trajectory structure} and of \emph{pre-trained
-SSL geometry} respectively.
+yields a higher in-corpus global $\rho$ but a lower dysarthric-subgroup
+$\rho$ ($0.282$ vs $0.394$; both $n = 8$, non-significant, read as
+directional only). These two ablations bracket the contribution of
+\emph{trajectory structure} and of \emph{pre-trained SSL geometry}
+respectively.
 
-\subsection{Layer choice is load-bearing}
-The same perturbation protocol at Layer~9 partially \emph{falsified}
-our pre-registered specificity prediction: pink-noise dominated
-($\rho{=}0.77$), reverberation responded almost as strongly
-($\rho{=}0.67$), and time-stretch leaked through length-normalisation.
-At Layer~1, however, the picture inverts. Formant shift slope rises
-to $\rho{=}0.395$ ($+0.22$ vs L9), partial muting to $\rho{=}0.776$
-($+0.37$ vs L9), and reverberation \emph{drops} to $\rho{=}0.383$
-($-0.29$ vs L9). Layer~1 features yield a 43\% smaller reverb slope
-than Layer~9 while gaining articulatory sensitivity. The same layer-
-choice signal recurs in IPVS: Layer~9 within-corpus PD-vs-HC is null
-($\rho{=}-0.21$, NS), Layer~1 recovers significance ($\rho{=}+0.28$,
-$p{=}0.030$), and Layer~1 sustained-vowel discrimination passes BH-
-FDR at $q{=}0.05$ on all five vowels. We interpret this as
-evidence that Layer~1 is the universal-articulator layer in both
-WavLM-Large and XLS-R-300m, while Layer~9 carries language-phonemic
-content that improves within-corpus TORGO but degrades cross-language
-generalisation and channel invariance. Deployment recommendations
-therefore favour Layer~1; we report headline TORGO numbers at both
-Layer~1 ($\rho{=}0.775$) and the historical Layer~9 ($\rho{=}0.756$).
+A trained linear probe on mean-pooled WavLM attains comparable accuracy
+(LOSO $\rho = 0.760$--$0.775$, RMSE $0.581$ vs.\ ATD's $0.756$/$0.671$;
+Table~\ref{tab:main}); ATD's contribution is therefore \emph{not} higher
+accuracy but label-free zero-shot operation, per-phoneme
+interpretability, and real-time deployment.
+
+\subsection{Layer choice and the falsified specificity hypothesis}
+Layer~9 is the primary layer because it is robust to early-layer
+speaker-identity leakage: under leave-one-control-out references the
+Layer-9 headline is unchanged ($0.756 \to 0.756$) whereas Layer~1
+inflates ($0.775 \to 0.687$). The pre-registered controlled-perturbation
+study does \emph{not} support an articulatory-specificity claim at either
+layer: pink noise outranks formant shift at Layer~9
+($0.77$ vs $0.17$) \emph{and} at Layer~1 ($0.83$ vs $0.40$), which is
+exactly the locked falsification condition (criterion~\#2). We therefore
+report Track~C as a falsified hypothesis (Limitations) and do not use the
+perturbation profile to recommend a layer. The one robust positive from
+the perturbation sweep is that the trajectory metric detects partial
+muting (frame dropout) far better than pooled MFCC
+($\Delta\rho{=}+0.25$), i.e.\ it uses temporal structure MFCC discards ---
+but that is a statement about trajectories, not about formant-level
+articulatory selectivity. A separate, corpus-specific observation on IPVS
+(XLS-R-300m) is that the within-corpus PD-vs-HC signal there is carried by
+the acoustic-near Layer~1 rather than Layer~9; we flag this as
+backbone- and corpus-specific, subject to the same early-layer leakage
+caveat, and not a general layer recommendation. The headline TORGO number
+is reported at Layer~9 ($\rho{=}0.756$), the leakage-robust primary
+layer.
 
 \subsection{Trajectory-length regime}
 Direct cross-corpus transfer to UASpeech fails ($\rho{=}{-}0.22$,
@@ -56,7 +65,7 @@ intelligibility loss.
 
 \subsection{Cross-disorder and clinical anchoring}
 We extend the analysis to Italian Parkinsonian speech (IPVS,
-$n{=}28$ PD + $n{=}37$ HC) using XLS-R-300m features and per-corpus
+$n{=}24$ PD + $n{=}37$ HC) using XLS-R-300m features and per-corpus
 CMVN with a TORGO-fit shared PCA basis. The within-corpus binary
 discrimination (PD vs HC) provides a falsifiable test of the
 cross-disorder claim. Partial Spearman of ATD vs UASpeech 3-listener

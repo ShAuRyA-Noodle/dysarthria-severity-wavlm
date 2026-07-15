@@ -19,6 +19,7 @@ from scipy.stats import spearmanr
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.atd_metric import TORGO_SEVERITY, compute_all_atd_scores, aggregate_speaker_atd, LAYER_POSITION_MAP
 
@@ -27,6 +28,7 @@ CONTROLS = ["FC01", "FC02", "FC03", "MC01", "MC02", "MC03", "MC04"]
 
 
 def main():
+    set_global_seed(42)
     print("=" * 60)
     print("  LOSO Validation — ATD on Dysarthric Speakers")
     print("=" * 60)

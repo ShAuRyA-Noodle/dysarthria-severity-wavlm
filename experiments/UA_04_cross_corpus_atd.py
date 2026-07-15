@@ -32,6 +32,7 @@ if hasattr(sys.stderr, "reconfigure"):
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.reference_builder import build_all_references, LAYER_IDX_MAP  # noqa: E402
 from src.atd_metric import (  # noqa: E402
@@ -286,6 +287,7 @@ def statistical_validation(speaker_atd: pd.DataFrame, layer_idx: int) -> dict:
 # ─────────────────────────────────────────────────────────────────────
 
 def main() -> None:
+    set_global_seed(42)
     start_time = time.time()
 
     # Best layer from TORGO analysis

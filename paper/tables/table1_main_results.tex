@@ -1,17 +1,30 @@
 \begin{table}[t]
 \centering
-\caption{Severity prediction performance on TORGO. LOSO = Leave-One-Speaker-Out
-across 8 dysarthric speakers. $\rho$ = Spearman rank correlation. Best results \textbf{bolded}.}
-\label{tab:main_results}
-\begin{tabular}{lcccc}
+\caption{Severity prediction on TORGO ($n=15$ speakers). $\rho$ =
+speaker-level Spearman vs.\ severity. For the trained heads this is a
+leave-one-speaker-out (LOSO) score with the regression head \emph{and} its
+hyperparameters refit inside each fold by nested group-CV; for ATD it is
+\emph{zero-shot} (no training, no labels), where LOSO equals the full-set
+score because each speaker's ATD is measured against disjoint control
+references. RMSE is on the $0$--$1$ normalised severity scale
+($\downarrow$ better); ATD's raw reference-distance units are
+scale-mismatched, so its RMSE is via a per-fold Ridge map onto the
+severity scale. Best per column \textbf{bolded}. The pooled-WavLM heads
+are a \emph{trained} upper reference that ATD matches without any training:
+a fairly-tuned linear probe on mean-pooled WavLM matches or slightly
+exceeds ATD's accuracy and attains a lower RMSE, while ATD reaches
+comparable accuracy zero-shot and beats the tuned MFCC baseline. Source:
+\texttt{results/finetuned\_ssl\_baseline.json}.}
+\label{tab:main_results}\label{tab:main}
+\begin{tabular}{llcc}
 \toprule
-Method & RMSE$\downarrow$ & $\rho_\text{global}\uparrow$ & $\rho_\text{LOSO}\uparrow$ & Within-1$\uparrow$ \\
+Method & Training & $\rho$ ($n{=}15$)$\uparrow$ & RMSE$\downarrow$ \\
 \midrule
-MFCC + SVR & 0.802 & \textbf{0.787} & 0.056 & \textbf{87.5\%} \\
-WavLM Pool + Ridge & 0.795 & $-$0.795 & $-$0.056 & 75.0\% \\
+MFCC + RBF-SVR            & trained (LOSO) & $0.609$ & $0.743$ \\
+WavLM-L9 pool + Ridge     & trained (LOSO) & $0.760$ & $\mathbf{0.581}$ \\
+WavLM-L9 pool + LinearSVR & trained (LOSO) & $\mathbf{0.775}$ & $0.623$ \\
 \midrule
-ATD-L\textit{k} + Ridge (ours) & 0.721 & 0.756 & 0.282 & \textbf{87.5\%} \\
-ATD-All + Ridge (ours) & \textbf{0.671} & 0.756 & \textbf{0.394} & \textbf{87.5\%} \\
+ATD (ours)               & zero-shot      & $0.756$ & $0.671$ \\
 \bottomrule
 \end{tabular}
 \end{table}

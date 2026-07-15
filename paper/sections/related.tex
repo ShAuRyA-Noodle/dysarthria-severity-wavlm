@@ -15,20 +15,32 @@ classification or regression
 heads~\cite{Hernandez2020SSLDysarthria,Joshi2021IndianDysarthria,Schu2023SSLDys}.
 Fine-tuning yields strong in-distribution accuracy but destroys the
 pre-trained geometry, requires labels at training time, and tends to
-overfit speaker-specific spectral idiosyncrasies (we observe this directly
-in our LOSO comparison: MFCC trajectory DTW achieves the highest global
-$\rho$ but the worst LOSO $\rho$).
+overfit speaker-specific spectral idiosyncrasies (consistent with our
+ablations, where MFCC trajectory DTW achieves the highest global $\rho$
+but a lower dysarthric-subgroup $\rho$ than SSL features; both are $n = 8$
+non-significant and read as directional only).
 
 \paragraph{Frozen SSL probes.} Recent perceptual-quality work demonstrates
 that frozen SSL representations can be probed with simple distance metrics
 and recover useful speech-quality
-signals~\cite{Millet2022SSLPerceptual,Janbakhshi2021PCADys}. Our
-contribution is the trajectory-geometric framing: rather than mean-pooling
-or training a classifier head, we treat the per-frame embedding sequence
-as a curve in a manifold and measure deviation from a reference curve via
-DTW. To our knowledge, this is the first dysarthria severity metric that
-operates at frame-level trajectory geometry in a frozen SSL latent space
-without any task-specific training.
+signals~\cite{Millet2022SSLPerceptual,Janbakhshi2021PCADys}. The closest
+methodological ancestor is the subspace-distance line of Janbakhshi et
+al.~\cite{Janbakhshi2019Subspace,Janbakhshi2021PCADys}, which measures the
+distance of a dysarthric utterance to a healthy-reference subspace; very
+recent training-free work extends this idea to frozen SSL representations
+at scale, including cross-lingual phonological-subspace analysis over
+hundreds to thousands of
+speakers~\cite{Muller2026TrainingFree,Subspace2026Collapse}. Relative to
+these, our contribution is narrow and specific: rather than a
+\emph{pooled} or \emph{subspace} distance computed offline, we treat the
+per-frame embedding sequence as a \emph{curve} and measure its frame-level
+DTW \emph{trajectory} geometry against a reference curve, add an exact
+per-phoneme path attribution (with an explicit silence/unattributed
+residual), and provide an exact-parity real-time streaming variant. We do
+\emph{not} claim to be the first to use frozen SSL representations or
+healthy-reference distances for dysarthria; the delta is frame-level
+trajectory geometry plus path-level attribution plus streaming, versus the
+pooled/subspace $d'$ offline metrics of prior work.
 
 \paragraph{Trajectory-based methods in atypical speech.} Dynamic time
 warping has long been used in dysarthric ASR to handle the 2--3$\times$

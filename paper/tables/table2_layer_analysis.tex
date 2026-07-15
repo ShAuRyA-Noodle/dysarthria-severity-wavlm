@@ -1,21 +1,27 @@
 \begin{table}[t]
 \centering
 \caption{Speaker-level Spearman $\rho$ between ATD and severity score across
-WavLM-Large transformer layers ($n=15$ speakers). All correlations significant at $p < 0.01$.}
-\label{tab:layer_analysis}
-\begin{tabular}{ccc}
+WavLM-Large transformer layers ($n=15$ speakers). All correlations significant
+at $p < 0.01$ and all within bootstrap noise of one another. The naive
+single-reference sweep marginally favours Layer~1, but that edge is an
+early-layer speaker-identity leakage artifact: under leave-one-control-out
+(LOCO) references Layer~1 deflates to $\rho = 0.687$ while \textbf{Layer~9}
+(our primary, bolded) is unchanged at $0.756$ (see Results, leakage-control
+subsection). The last column reports the LOCO-corrected $\rho$ where measured.}
+\label{tab:layer_analysis}\label{tab:layers}
+\begin{tabular}{cccc}
 \toprule
-Layer & Spearman $\rho$ & $p$-value \\
+Layer & Spearman $\rho$ & $p$-value & LOCO $\rho$ \\
 \midrule
-1 & \textbf{0.775} & 0.0007 \\
-3 & 0.683 & 0.0050 \\
-6 & 0.702 & 0.0035 \\
-9 & 0.756 & 0.0011 \\
-12 & 0.756 & 0.0011 \\
-15 & 0.771 & 0.0008 \\
-18 & 0.756 & 0.0011 \\
-21 & 0.702 & 0.0035 \\
-23 & 0.756 & 0.0011 \\
+1 & 0.775 & 0.0007 & 0.687 \\
+3 & 0.683 & 0.0050 & --- \\
+6 & 0.702 & 0.0035 & --- \\
+\textbf{9} & \textbf{0.756} & \textbf{0.0011} & \textbf{0.756} \\
+12 & 0.756 & 0.0011 & --- \\
+15 & 0.771 & 0.0008 & --- \\
+18 & 0.756 & 0.0011 & --- \\
+21 & 0.702 & 0.0035 & --- \\
+23 & 0.756 & 0.0011 & --- \\
 \bottomrule
 \end{tabular}
 \end{table}

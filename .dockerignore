@@ -23,3 +23,8 @@ __pycache__/
 # OS noise.
 Thumbs.db
 .DS_Store
+
+# Secrets — never bake API keys (.env holds live Groq/Gemini/HF keys) into an image.
+.env
+*.env
+.env.*

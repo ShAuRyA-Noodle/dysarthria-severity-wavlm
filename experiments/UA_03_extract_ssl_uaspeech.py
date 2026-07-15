@@ -35,6 +35,7 @@ if hasattr(sys.stderr, "reconfigure"):
 # ── Project root ───────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.ssl_extractor import (  # noqa: E402
     SSLExtractor,
@@ -450,6 +451,7 @@ def run_verification() -> bool:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    set_global_seed(42)
     parser = argparse.ArgumentParser(
         description="Extract WavLM-Large SSL embeddings for UA-Speech"
     )

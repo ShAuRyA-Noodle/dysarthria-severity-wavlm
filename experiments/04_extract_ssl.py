@@ -24,6 +24,7 @@ import torch
 # ── Project root ───────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.ssl_extractor import (
     SSLExtractor,
@@ -224,7 +225,7 @@ def run_sanity_checks(
 
     # CHECK 4: Disk space
     import shutil
-    total, used, free = shutil.disk_usage("C:\\")
+    total, used, free = shutil.disk_usage(PROJECT_ROOT)
     gb_free = free / (2**30)
     ok = gb_free > 20
     icon = "✅" if ok else "⚠️"
@@ -248,6 +249,7 @@ def run_sanity_checks(
 
 def main() -> None:
     """Main entry point for SSL extraction."""
+    set_global_seed(42)
     parser = argparse.ArgumentParser(
         description="Extract SSL embeddings from frozen WavLM-Large"
     )

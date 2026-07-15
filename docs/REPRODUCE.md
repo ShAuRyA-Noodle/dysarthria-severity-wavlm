@@ -12,7 +12,7 @@ cd ShAuRyA_Dysar
 cat results/paper_numbers.json | jq .
 ```
 
-All 24 sections of `paper_numbers.json` are regenerated from the
+All 37 sections of `paper_numbers.json` are regenerated from the
 on-disk JSON + CSV files by `experiments/21_consolidate_paper_numbers.py`.
 
 ## Tier 2 — re-run analysis from pre-extracted embeddings (30–60 minutes, CPU OK)
@@ -75,17 +75,20 @@ python reproduce_all.py --force --include-uaspeech --include-cross-corpus
 python -m pytest tests/ -q
 ```
 
-Expected: 40 passed, 1 skipped.
+Expected: 46 tests collected (`pytest --collect-only -q`); pass/skip depends on optional extras — install requirements-core + requirements-llm + requirements-demo for the full suite.
 
 ## What is reproducible vs. not
 
 | Artifact | Reproducible? | Note |
 |---|---|---|
-| TORGO speaker ρ (=0.756 / 0.775) | ✓ deterministic post-extraction | FP16 cudnn benchmark off |
-| TORGO ablation table | ✓ | fixes the 0.3944-everywhere bug noted in commit `3c37779` |
+| TORGO speaker ρ (Layer 9 = 0.756, primary) | ✓ deterministic post-extraction | FP16 cudnn benchmark off |
+| Fair-tuned baselines (LOSO) | ✓ seeded | `results/finetuned_ssl_baseline.json`: WavLM-pool Ridge ρ=0.760/RMSE=0.581, LinearSVR ρ=0.775/0.623, MFCC-RBF ρ=0.609/0.743 vs ATD ρ=0.756 (zero-shot). Trained probe matches ATD; the old ρ=−0.795 pooled-WavLM figure was an α=1 artifact and is retracted |
+| Leakage control (LOCO de-leak) | ✓ | `results/deleak_report_fast.json`: L9 0.756→0.756, L1 0.775→0.687, seed 42 |
+| TORGO ablation table | ✓ | fixes the 0.3944-everywhere bug; No-PCA subgroup ρ = −0.0563, see `results/tables/table2_ablations.csv` |
 | TORGO bootstrap CI | ✓ | 10k resamples seeded |
-| Phoneme decomposition | ✓ | requires MFA alignment first |
-| Track C perturbation slopes | ✓ | LOCO refs deterministic |
-| IPVS Layer-1 vowel BH-FDR | ✓ | XLS-R-300m frozen, seeded |
-| Streaming latency p50/p99 | ⚠ machine-dependent | varies with CPU |
+| Phoneme decomposition (+ silence residual) | ✓ | requires MFA alignment first; per-utterance residual ≈ 0.70–0.76 of path cost on TORGO single-word audio |
+| Track C perturbation slopes | ✓ | LOCO refs deterministic; **pre-registered specificity hypothesis falsified** (pink noise > formant shift at both layers) |
+| IPVS Layer-1 vowel BH-FDR | ✓ | XLS-R-300m frozen, seeded; corpus-specific within-corpus finding, not a general layer recommendation |
+| Streaming exact parity (r = 1.0) | ✓ | `results/streaming_dtw_correctness.json`; online == offline DTW, max rel err < 1e-15 |
+| Streaming latency p50 (132 µs) | ⚠ machine-dependent | varies with CPU |
 | SSL feature embeddings | ⚠ FP16 minor drift | pre-extracted files preferred |

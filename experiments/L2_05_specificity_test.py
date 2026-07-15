@@ -31,6 +31,7 @@ from scipy.stats import spearmanr, pearsonr, kruskal, mannwhitneyu
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ def _cohens_d(x: np.ndarray, y: np.ndarray) -> float:
 
 
 def main() -> None:
+    set_global_seed(42)
     spk_df = pd.read_csv(PROJECT_ROOT / "results/l2arctic_speaker_atd.csv")
     logger.info("L2-ARCTIC speakers: %d", len(spk_df))
 

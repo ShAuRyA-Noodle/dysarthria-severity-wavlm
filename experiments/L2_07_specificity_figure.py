@@ -19,6 +19,7 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger(__name__)
@@ -73,6 +74,7 @@ def _load_all() -> pd.DataFrame:
 
 
 def main() -> None:
+    set_global_seed(42)
     df = _load_all()
     logger.info("n_obs=%d, populations=%s", len(df), df["population"].value_counts().to_dict())
 

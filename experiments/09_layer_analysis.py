@@ -20,6 +20,7 @@ from tqdm import tqdm
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.atd_metric import compute_all_atd_scores, aggregate_speaker_atd, LAYER_POSITION_MAP
 
@@ -31,6 +32,7 @@ TARGET_LAYERS = [1, 3, 6, 9, 12, 15, 18, 21, 23]
 
 def main() -> None:
     """Run layer analysis."""
+    set_global_seed(42)
     print(f"{'='*60}")
     print(f"  Layer Analysis — ATD across 9 WavLM layers")
     print(f"{'='*60}\n")

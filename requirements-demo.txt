@@ -1,0 +1,8 @@
+# Interactive demo + Praat alignment + streaming-schema validation.
+#   gradio   -> space/app.py (HF Space) and realtime_demo
+#   praatio  -> src/phoneme/aligner.py, src/l2arctic_parser.py (TextGrid I/O)
+#   pydantic -> src/streaming/schemas.py (request/response models)
+# Optional: only needed for the live demo / phoneme-alignment / streaming paths.
+gradio==5.30.0
+praatio==6.2.0
+pydantic==2.7.1

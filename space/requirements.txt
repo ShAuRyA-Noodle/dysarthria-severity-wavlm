@@ -8,6 +8,11 @@ librosa>=0.10.2
 soundfile>=0.12.1
 numpy>=1.26.0,<2.3
 scipy>=1.13.0
-scikit-learn>=1.4.0
+# Pinned EXACTLY: the references/*.pkl PCA-64 bundles were created with
+# scikit-learn 1.4.2. sklearn pickles are version-fragile -- a newer
+# minor (e.g. 1.6+) can fail to unpickle or silently mis-transform.
+scikit-learn==1.4.2
 fastdtw==0.3.4
 matplotlib>=3.8.0
+# Hub-download fallback in app.py when the LFS-tracked pkls are absent.
+huggingface_hub>=0.23.0

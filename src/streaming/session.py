@@ -8,7 +8,7 @@ from typing import Optional
 
 import numpy as np
 
-from src.constants import FASTDTW_RADIUS, TARGET_SAMPLE_RATE
+from src.constants import TARGET_SAMPLE_RATE
 from src.streaming.online_dtw import OnlineSubseqDTW
 from src.streaming.reference_cache import ReferenceCache
 from src.streaming.ring_buffer import AudioRingBuffer
@@ -48,7 +48,9 @@ class StreamingSession:
         ref = self.cache.get(self.word)
         if ref is None:
             raise ValueError(f"no reference for word {self.word!r}")
-        self.dtw = OnlineSubseqDTW(ref["reference"], radius=FASTDTW_RADIUS)
+        # radius=None -> exact classic DTW, equal to the offline ATD metric.
+        # (A finite Sakoe-Chiba band would only approximate it; see online_dtw.)
+        self.dtw = OnlineSubseqDTW(ref["reference"], radius=None)
         self._pca = ref["pca_model"]
 
     def consume_chunk(self, samples: np.ndarray) -> list[float]:

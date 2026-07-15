@@ -1,0 +1,62 @@
+{
+  "description": "Silence-confound test: does the ATD severity signal survive removing leading/trailing + sp/sil silence?",
+  "frame_rate_fps": 50,
+  "frame_rate_assumption": "WavLM-Large 50 fps (20 ms hop); f0=floor(onset*fps), f1=ceil(offset*fps), clip[0,T]",
+  "layer": 9,
+  "model": "wavlm_large",
+  "pca_n": 64,
+  "dtw_radius": 1,
+  "n_bootstrap": 10000,
+  "seed": 42,
+  "speech_span": "[onset of first non-silence MFA phone, offset of last non-silence phone]",
+  "full_atd_rho": {
+    "rho": 0.7560864148142503,
+    "p": 0.0011089540064018154,
+    "ci95": [
+      0.3822763244267563,
+      0.9212138348773308
+    ],
+    "n_boot_valid": 10000,
+    "n_utts": 7826,
+    "n_skipped": 0,
+    "n_speakers": 15,
+    "source": "atd_scores_layer9.csv"
+  },
+  "speech_only_rho": {
+    "rho": 0.18130643620545797,
+    "p": 0.5178440458355975,
+    "ci95": [
+      -0.3594283449023797,
+      0.6592824499065636
+    ],
+    "n_boot_valid": 10000,
+    "n_utts": 7717,
+    "n_skipped": 501,
+    "n_speakers": 15
+  },
+  "speech_only_loco_rho": {
+    "rho": 0.6442164860917335,
+    "p": 0.00953728459302088,
+    "ci95": [
+      0.23828888205958193,
+      0.8625166539643627
+    ],
+    "n_boot_valid": 10000,
+    "n_utts": 7531,
+    "n_skipped": 687,
+    "n_speakers": 15
+  },
+  "silence_only_rho": {
+    "rho": 0.7753743335595117,
+    "p": 0.0006828894411368989,
+    "ci95": [
+      0.4187609732643726,
+      0.9333506177640752
+    ],
+    "n_boot_valid": 10000,
+    "n_utts": 7715,
+    "n_skipped": 503,
+    "n_speakers": 15
+  },
+  "headline_published_rho": 0.7560864148142503
+}

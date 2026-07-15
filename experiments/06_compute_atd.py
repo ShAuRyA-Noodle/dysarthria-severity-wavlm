@@ -16,6 +16,7 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.atd_metric import (
     compute_all_atd_scores,
@@ -40,6 +41,7 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     """Run ATD computation and validation."""
+    set_global_seed(42)
     parser = argparse.ArgumentParser(description="Compute ATD scores")
     parser.add_argument("--layer", type=int, default=9, help="Transformer layer (default: 9)")
     parser.add_argument("--model", type=str, default="wavlm_large")

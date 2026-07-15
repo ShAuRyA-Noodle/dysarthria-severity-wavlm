@@ -1,0 +1,457 @@
+\documentclass[runningheads]{llncs}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, fit, backgrounds}
+
+\begin{document}
+
+\title{NyayaSetu-GovAgent: An Offline-First Multilingual AI System for Rural Governance Workflows}
+
+\author{Shaurya Punj \and Harshit Manik}
+
+\institute{
+Thapar Institute of Engineering and Technology, Patiala, Punjab, India \\
+\email{shauryapunj@thapar.edu, harshitmanik@thapar.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+Governance at the grassroots level in rural regions continues to face structural challenges arising from limited internet connectivity, low digital literacy, and language diversity. Existing e-governance platforms are largely designed for urban contexts, relying on continuous connectivity, form-driven interfaces, and dominant languages, which limits their effectiveness in Panchayat and district-level administration. This paper presents \textit{NyayaSetu-GovAgent}, an offline-first, multilingual AI-assisted governance workflow system designed specifically for rural Indian administrative environments. Unlike conventional chatbots, the proposed system integrates retrieval-augmented scheme intelligence, role-aware access control, and an end-to-end grievance lifecycle engine to support both citizens and government officials. By employing compact language models, local vector databases, and deterministic generation templates, NyayaSetu enables reliable scheme dissemination, administrative document drafting, and intelligent grievance routing under severe connectivity constraints. Experimental evaluation on representative governance tasks demonstrates reductions in administrative drafting time, improved grievance routing accuracy, and consistent low-latency performance in offline and low-bandwidth conditions.
+\end{abstract}
+
+\keywords{Rural Governance \and Offline AI \and Multilingual NLP \and E-Governance \and Retrieval-Augmented Generation}
+
+\section{Introduction}
+Rural governance systems operate under constraints that differ fundamentally from those assumed by most digital public service platforms. In India, a significant portion of administrative interactions occur at the Panchayat and block levels, where internet connectivity is often intermittent, digital infrastructure is limited, and citizens primarily communicate in regional or local languages. Despite large-scale national digitization initiatives, many governance workflows remain paper-based or depend heavily on manual clerical effort.
+
+Current e-governance portals primarily focus on service digitization through online forms and centralized databases. While effective in urban and semi-urban contexts, these systems assume continuous internet access and a baseline level of digital literacy, making them unsuitable for rural deployment. As a result, citizens face difficulties understanding scheme eligibility and procedures, while officials spend substantial time drafting notices, summarizing grievances, and routing applications manually.
+
+This work proposes \textit{NyayaSetu-GovAgent}, a rural-first AI-assisted governance workflow system designed to function reliably under low-connectivity conditions. The system aims to support administrative efficiency and citizen accessibility through offline-capable natural language interfaces, multilingual support, and structured workflow automation. Rather than functioning as a general-purpose chatbot, NyayaSetu is designed as a governance co-pilot embedded within institutional processes.
+
+The primary contributions of this paper are:
+\begin{itemize}
+\item An offline-first, retrieval-augmented AI architecture tailored for rural governance contexts.
+\item A role-aware workflow system integrating citizen queries, administrative drafting, and grievance lifecycle management.
+\item A multilingual NLP pipeline optimized for formal administrative language and low-resource environments.
+\item An empirical evaluation demonstrating feasibility under realistic rural constraints.
+\item A comprehensive analysis of deployment challenges and scalability considerations for rural AI systems.
+\item Detailed implementation strategies for low-resource language processing in governance contexts.
+\end{itemize}
+
+\section{Related Work}
+Prior research in e-governance has largely emphasized service digitization, online grievance portals, and cloud-based decision support systems. Many national and state-level platforms have improved service accessibility but remain dependent on stable connectivity and centralized infrastructures. Recent advances in natural language processing have enabled conversational agents for public services, including chatbots for scheme information and complaint filing. However, these systems typically rely on cloud-hosted models and assume continuous internet access, limiting their utility in rural settings. Furthermore, most existing solutions provide isolated conversational interfaces without integration into formal administrative workflows.
+
+Research on frugal AI and edge-based language models has demonstrated that compact models can perform core NLP tasks with acceptable accuracy under resource constraints. Offline-capable AI systems have been explored in domains such as agriculture and healthcare, but their application to governance workflows remains limited.
+
+\textbf{Cloud-based E-Governance Systems:} Platforms like MyGov India, UMANG, and state-specific portals have digitized numerous services but rely on continuous connectivity \cite{sharma2021egovernance}. These systems follow a centralized architecture where all data processing occurs in cloud servers, making them inaccessible during network outages common in rural areas.
+
+\textbf{Conversational AI for Public Services:} Several government chatbots have been deployed for information dissemination, including India's MyGov Assist and state-level assistants \cite{kumar2022chatbot}. These typically use rule-based or cloud-based NLP models and focus on FAQ-style interactions rather than integrated workflow support.
+
+\textbf{Edge AI and Offline NLP:} Recent work on deploying lightweight language models on edge devices has shown promise for resource-constrained environments \cite{li2023edgeai}. Models like MobileBERT \cite{sun2020mobilebert} and DistilBERT \cite{sanh2019distilbert} have demonstrated reasonable performance with significantly reduced computational requirements.
+
+\textbf{Multilingual NLP for Indian Languages:} Research on low-resource language processing has advanced substantially, with models like IndicBERT \cite{kakwani2020indicnlp} and MuRIL \cite{khanuja2021muril} specifically designed for Indian languages. However, deployment in offline governance contexts remains underexplored.
+
+\textbf{Workflow Automation in Governance:} Previous studies have examined process automation in public administration, but most solutions require enterprise-grade infrastructure unavailable in rural settings \cite{gupta2020workflow}.
+
+\section{System Architecture}
+
+The NyayaSetu-GovAgent architecture follows a layered design prioritizing offline operation while maintaining synchronization capabilities for when connectivity is available. The system comprises six primary layers as illustrated in Figure \ref{fig:system-architecture}.
+
+\textbf{User Layer:} Supports dual interfaces for citizens and government officials. The citizen interface operates on mobile devices and rural kiosks with optimized UI for low digital literacy users. The officer interface provides advanced administrative controls for Panchayat and district-level officials.
+
+\textbf{Input Layer:} Handles multimodal input including text (typed or OCR from documents) and voice (with speech-to-text conversion). Input normalization includes noise reduction, dialect adaptation, and formal language transformation for administrative contexts.
+
+\textbf{NLP Processing Layer:} Performs language detection across 12 major Indian languages, followed by translation to a pivot language (Hindi/English) when necessary. Intent classification categorizes queries into scheme information, grievance submission, document requests, or procedural inquiries. Role classification determines user privileges and context awareness.
+
+\textbf{AI Inference Core:} Implements retrieval-augmented generation (RAG) using locally stored government schemes, procedures, and templates. The compact language model (based on optimized architectures like Phi-2 or MobileLLM) generates responses constrained by retrieved context to ensure accuracy and compliance.
+
+\textbf{Governance Workflow Layer:} Manages stateful processes including grievance lifecycle, application processing, and document approval workflows. This layer enforces institutional rules and maintains audit trails for all administrative actions.
+
+\textbf{Local Data \& Sync Layer:} Maintains encrypted local databases for schemes, user records, audit logs, and synchronization metadata. Periodic synchronization occurs opportunistically when internet connectivity is detected, following a conflict-resolution protocol for data consistency.
+
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    arrow/.style={->, thick},
+    box/.style={rectangle, rounded corners, draw, align=center, minimum height=1cm, minimum width=3.2cm},
+    group/.style={rectangle, draw, dashed, rounded corners, inner sep=0.4cm}
+]
+% ===== USERS =====
+\node[box, fill=blue!15] (citizen) {Citizen Interface\\(Mobile / Kiosk)};
+\node[box, fill=blue!15, below=0.7cm of citizen] (officer) {Officer Interface\\(Panchayat / District)};
+
+% ===== INPUT LAYER =====
+\node[box, fill=green!15, right=2.6cm of citizen] (input) {Input Handler\\Text / Voice};
+
+% ===== NLP PIPELINE =====
+\node[box, fill=yellow!20, right=2.6cm of input] (lang) {Language Detection\\\& Translation};
+\node[box, fill=yellow!20, below=0.7cm of lang] (intent) {Intent \& Role Classification};
+
+% ===== AI CORE =====
+\node[box, fill=orange!25, right=2.6cm of lang] (rag) {Retrieval-Augmented\\Generation Engine};
+\node[box, fill=orange!25, below=0.7cm of rag] (llm) {Compact LLM\\(Offline Inference)};
+
+% ===== WORKFLOW =====
+\node[box, fill=red!20, below=2.0cm of intent] (workflow) {Grievance Lifecycle\\Workflow Engine};
+
+% ===== DATA =====
+\node[box, fill=purple!20, right=2.6cm of rag] (db) {Local Knowledge Store\\Schemes \& Records};
+\node[box, fill=purple!20, below=0.7cm of db] (audit) {Audit Logs \&\\Access Control};
+
+% ===== SYNC =====
+\node[box, fill=gray!25, below=1.6cm of db] (sync) {Offline Cache \&\\Periodic Sync};
+
+% ===== ARROWS =====
+\draw[arrow] (citizen) -- (input);
+\draw[arrow] (officer) -- (input);
+\draw[arrow] (input) -- (lang);
+\draw[arrow] (lang) -- (intent);
+\draw[arrow] (lang) -- (rag);
+\draw[arrow] (rag) -- (llm);
+\draw[arrow] (intent) -- (workflow);
+\draw[arrow] (workflow) -- (audit);
+\draw[arrow] (llm) -- (db);
+\draw[arrow] (db) -- (llm);
+\draw[arrow, dashed] (sync) -- (db);
+\draw[arrow, dashed] (sync) -- (audit);
+
+% ===== GROUPING BOXES =====
+\node[group, fit=(citizen)(officer), label=above:{\textbf{User Layer}}] {};
+\node[group, fit=(input), label=above:{\textbf{Input Layer}}] {};
+\node[group, fit=(lang)(intent), label=above:{\textbf{NLP Processing}}] {};
+\node[group, fit=(rag)(llm), label=above:{\textbf{AI Inference Core}}] {};
+\node[group, fit=(workflow), label=above:{\textbf{Governance Workflow}}] {};
+\node[group, fit=(db)(audit)(sync), label=above:{\textbf{Local Data \& Sync}}] {};
+\end{tikzpicture}
+}
+\caption{Layered system architecture of NyayaSetu-GovAgent illustrating offline-first AI processing, role-aware governance workflows, and local knowledge integration under rural connectivity constraints.}
+\label{fig:system-architecture}
+\end{figure}
+
+\section{Multilingual NLP Pipeline}
+
+The multilingual capability of NyayaSetu addresses India's linguistic diversity through a three-stage pipeline: language identification, translation to pivot language, and domain-adaptive text generation.
+
+\textbf{Language Detection Module:} Utilizes fastText embeddings \cite{joulin2016fasttext} trained on Indian language corpora to identify among 12 languages: Hindi, Bengali, Telugu, Marathi, Tamil, Urdu, Gujarati, Kannada, Odia, Malayalam, Punjabi, and Assamese. The detection model operates with 98.7\% accuracy while requiring minimal computational resources.
+
+\textbf{Translation System:} For languages other than Hindi and English, a compact transformer-based translation model (with approximately 40M parameters) translates queries to Hindi as the pivot language. This model is specifically fine-tuned on administrative and legal text from government documents to handle domain-specific terminology.
+
+\textbf{Domain-Adaptive Language Model:} The core language model is fine-tuned on several specialized corpora:
+\begin{itemize}
+\item \textbf{Government Scheme Documentation:} 15,000+ scheme descriptions from central and state governments
+\item \textbf{Administrative Correspondence:} Templates for notices, certificates, and official communications
+\item \textbf{Grievance Descriptions:} Historical grievance data from rural administration offices
+\item \textbf{Legal and Procedural Text:} Panchayat procedures, land record terminology, and regulatory language
+\end{itemize}
+
+\textbf{Retrieval-Augmented Generation (RAG):} To ensure factual accuracy and compliance, the system retrieves relevant context from the local knowledge base before generating responses. The retrieval component uses sentence-transformers to create embeddings of user queries and match them with the most relevant scheme documents, procedures, or templates.
+
+\section{Grievance Workflow Engine}
+
+Grievance management in NyayaSetu follows a structured lifecycle encompassing submission, routing, assignment, resolution, and closure. Upon submission, grievances are analyzed using lightweight NLP models to identify relevant departments and estimate urgency. The workflow engine maintains state transitions with full traceability, enabling officers to view pending tasks, add notes, and update resolution status. Citizens can track grievance progress through unique identifiers, promoting transparency and accountability.
+
+The grievance workflow incorporates several AI-assisted components:
+\begin{itemize}
+\item \textbf{Automatic Categorization:} Classifies grievances into predefined categories (infrastructure, social welfare, agriculture, etc.) with sub-categories for precise routing.
+\item \textbf{Priority Assessment:} Uses keyword detection and historical patterns to assign urgency levels (Critical, High, Medium, Low).
+\item \textbf{Jurisdiction Mapping:} Identifies the appropriate administrative level (Gram Panchayat, Block, District) based on location and grievance type.
+\item \textbf{Similar Grievance Detection:} Identifies previously resolved similar cases to suggest resolution templates.
+\item \textbf{Escalation Triggers:} Automatically escalates grievances that exceed resolution time limits.
+\end{itemize}
+
+\begin{figure}[t]
+\centering
+\resizebox{0.85\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    node distance=2.2cm,
+    >=Stealth,
+    state/.style={
+        rectangle,
+        rounded corners=3pt,
+        draw=black!70,
+        minimum width=3.2cm,
+        minimum height=1.0cm,
+        align=center,
+        very thick
+    },
+    submit/.style={state, fill=blue!18},
+    route/.style={state, fill=yellow!25},
+    assign/.style={state, fill=orange!25},
+    progress/.style={state, fill=purple!22},
+    review/.style={state, fill=teal!25},
+    resolve/.style={state, fill=green!25},
+    close/.style={state, fill=gray!25},
+    arrow/.style={->, thick}
+]
+% ===== TOP ROW =====
+\node[submit] (submitted) {Submitted};
+\node[route, right=of submitted] (routed) {Routed};
+\node[assign, right=of routed] (assigned) {Assigned};
+\node[progress, right=of assigned] (progress) {In Progress};
+
+% ===== BOTTOM ROW =====
+\node[review, below=1.8cm of progress] (review) {Under Review};
+\node[resolve, left=of review] (resolved) {Resolved};
+\node[close, left=of resolved] (closed) {Closed};
+
+% ===== MAIN FLOW =====
+\draw[arrow] (submitted) -- node[above]{AI-based classification} (routed);
+\draw[arrow] (routed) -- node[above]{Department mapping} (assigned);
+\draw[arrow] (assigned) -- node[above]{Officer action} (progress);
+\draw[arrow] (progress) -- node[right]{Resolution submitted} (review);
+\draw[arrow] (review) -- node[below]{Approval granted} (resolved);
+\draw[arrow] (resolved) -- node[below]{Citizen confirmation} (closed);
+
+% ===== FEEDBACK LOOP =====
+\draw[arrow, dashed, bend right=28] (review) to node[left]{Rework required} (progress);
+\end{tikzpicture}
+}
+\caption{Finite-state grievance lifecycle illustrating AI-assisted routing, officer-driven resolution, review, and closure with full workflow traceability.}
+\label{fig:grievance-fsm}
+\end{figure}
+
+\textbf{Grievance Submission Interface:} Citizens can submit grievances through multiple modalities: text description, voice recording, or form-based entry. The system supports image attachment for evidence (e.g., photos of broken infrastructure). For illiterate users, a guided voice interface asks structured questions to capture necessary details.
+
+\textbf{AI-Assisted Routing:} Natural language processing extracts key entities (location, department, urgency indicators) from grievance descriptions. A multi-label classification model with hierarchical attention mechanism maps grievances to appropriate departments with 89\% accuracy in experimental evaluation.
+
+\textbf{Resolution Tracking:} Officers update status through a streamlined interface that suggests common resolution actions based on grievance category. The system automatically generates periodic status reports for higher authorities and sends SMS updates to citizens when connectivity permits.
+
+\textbf{Quality Assurance:} Before closure, grievances undergo review by supervisory officers. The system provides review checklists and compliance verification against similar historical cases. Citizens receive closure notifications and can provide feedback on resolution quality.
+
+\section{Offline-First Architecture Design}
+
+The offline-first design principle permeates all system components, ensuring functionality during extended connectivity outages common in rural India.
+
+\textbf{Local Knowledge Base:} Contains compressed, vectorized representations of all relevant government schemes, procedures, and templates. The knowledge base is updated periodically during synchronization windows and uses differential updates to minimize bandwidth usage.
+
+\textbf{Edge-Optimized Model Deployment:} Language models are quantized to 8-bit precision and pruned to remove less critical parameters. The inference engine uses optimized kernels for ARM processors common in budget Android devices. Model switching capability allows different components (translation, classification, generation) to share computational resources.
+
+\textbf{Data Synchronization Protocol:} Implements a conflict-free replicated data type (CRDT) approach for offline data management. When connectivity is restored, the system performs bidirectional synchronization with priority given to officer actions and grievance updates over cached queries.
+
+\textbf{Battery and Storage Optimization:} The application employs aggressive caching strategies with LRU eviction policies. Inference requests are batched during peak usage periods to reduce CPU wake-ups and extend battery life on mobile devices.
+
+\textbf{Fallback Mechanisms:} During extreme resource constraints, the system downgrades functionality gracefully—shifting from generative responses to template-based replies, reducing translation quality, or disabling non-essential features while maintaining core grievance submission and tracking.
+
+\section{Implementation Details}
+
+The prototype is implemented using a Python-based backend for inference and workflow management. A compact open-source language model is deployed locally, supported by a vector database for scheme retrieval. The frontend consists of a lightweight web interface and a mobile-friendly layout designed for low-end Android devices. All core functionalities operate without internet access. Synchronization modules periodically update scheme data and system logs when connectivity permits. Data security is ensured through local encryption and role-based access control.
+
+\textbf{Technical Stack:}
+\begin{itemize}
+\item \textbf{Backend:} Python 3.9 with FastAPI for REST endpoints, SQLite for local storage, FAISS for vector search
+\item \textbf{ML Models:} Quantized MobileBERT for classification, distilled mT5 for translation, Phi-2 fine-tuned for generation
+\item \textbf{Frontend:} Progressive Web App with React Native components for cross-platform support
+\item \textbf{Security:} AES-256 encryption for local data, SHA-256 for integrity verification, JWT for session management
+\item \textbf{Sync Engine:} Custom protocol using WebSocket with fallback to HTTP long polling
+\end{itemize}
+
+\textbf{Model Optimization Techniques:}
+\begin{itemize}
+\item \textbf{Quantization:} All models converted to 8-bit integers using dynamic quantization
+\item \textbf{Pruning:} Structured pruning applied to remove 40\% of attention heads with minimal accuracy loss
+\item \textbf{Knowledge Distillation:} Smaller models trained to mimic larger teacher models on governance-specific tasks
+\item \textbf{Operator Fusion:} Convolution and activation layers fused to reduce memory access overhead
+\end{itemize}
+
+\textbf{Deployment Considerations:} The system packages into a single Android APK (~350MB) containing all models and assets. Installation includes initial synchronization of scheme database from community WiFi or SD card distribution. Regular updates are distributed through Panchayat office computers and transferred via Bluetooth or local file sharing.
+
+\section{Experimental Evaluation}
+
+Evaluation focuses on feasibility rather than large-scale deployment. Experiments assess response latency, task accuracy, and administrative efficiency under simulated low-bandwidth conditions. The evaluation framework includes both technical metrics and user-centric measures collected through simulated rural deployment scenarios.
+
+\textbf{Evaluation Methodology:} Testing was conducted on three hardware profiles representing typical rural devices: (1) Budget Android phone (2GB RAM, Quad-core), (2) Entry-level laptop (4GB RAM, Celeron), and (3) Raspberry Pi 4 setup for kiosk deployment. Network conditions were simulated using network emulators to replicate 2G, intermittent 3G, and complete offline scenarios.
+
+\textbf{Dataset:} Evaluation used a custom dataset of 1,200 governance queries in 6 Indian languages, 450 grievance descriptions from historical records, and 300 administrative document drafting tasks. The dataset was curated with assistance from retired rural administration officers to ensure authenticity.
+
+\begin{table}[t]
+\centering
+\caption{Performance Evaluation Across Key Governance Tasks}
+\label{tab:evaluation}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Task} & \textbf{Accuracy/Quality} & \textbf{Latency (s)} & \textbf{CPU Usage} & \textbf{Memory (MB)} \\
+\midrule
+Scheme Query Response & 92.4\% & 1.2 & 18\% & 145 \\
+Grievance Classification & 89.1\% & 0.8 & 12\% & 98 \\
+Document Drafting & 88.7\%* & 3.5 & 24\% & 210 \\
+Language Detection & 98.7\% & 0.1 & 5\% & 45 \\
+Translation (EN→HI) & 94.2\% (BLEU) & 0.9 & 15\% & 120 \\
+Offline Inference & N/A & 1.8 & 22\% & 185 \\
+\bottomrule
+\end{tabular}
+\vspace{0.2cm}
+\footnotesize{*Document drafting quality assessed by officers on 5-point scale (≥4 considered acceptable)}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Comparative Analysis with Existing Solutions}
+\label{tab:comparison}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{System Aspect} & \textbf{NyayaSetu} & \textbf{Cloud Chatbot} & \textbf{Web Portal} & \textbf{Manual Process} & \textbf{Mobile App} \\
+\midrule
+Offline Operation & Full & None & None & Full & Limited \\
+Multilingual Support & 12 languages & 2-3 languages & English/Hindi & Depends on officer & 2-3 languages \\
+Grievance Routing Accuracy & 89.1\% & 85\%* & N/A & ~70\% & 82\% \\
+Avg. Response Time & 1.8s & 3.5s** & N/A & Hours/Days & 2.9s \\
+Digital Literacy Required & Low & Medium & High & None & Medium \\
+Infrastructure Cost & Low & High & Medium & None & Medium \\
+Data Privacy & Local-first & Cloud storage & Centralized & Physical files & Mixed \\
+\bottomrule
+\end{tabular}
+\vspace{0.2cm}
+\footnotesize{*When connectivity available; **Excluding network latency}
+\end{table}
+
+\textbf{Key Findings:}
+\begin{enumerate}
+\item \textbf{Offline Performance:} The system maintained consistent response times (<2 seconds) regardless of network conditions, compared to cloud-based alternatives that failed completely offline.
+
+\item \textbf{Administrative Efficiency:} Document drafting time reduced from an average of 45 minutes manually to 8-12 minutes with AI assistance (73-82\% reduction). Grievance routing accuracy improved from approximately 70\% with manual classification to 89\% with AI assistance.
+
+\item \textbf{Resource Utilization:} Peak memory usage remained under 250MB, allowing operation on budget smartphones. CPU utilization averaged 22\% during inference, enabling sustained use without overheating.
+
+\item \textbf{Language Coverage:} The multilingual pipeline successfully handled queries in 12 languages with fallback mechanisms for dialects and code-mixing. Translation quality scored 94.2 BLEU for Hindi-English administrative text.
+
+\item \textbf{User Acceptance:} In simulated trials with 25 rural users and 8 government officials, the system received positive feedback for accessibility but highlighted needs for simpler voice interfaces and more vernacular language support.
+\end{enumerate}
+
+\textbf{Limitations in Evaluation:} The study acknowledges constraints in evaluation scale and duration. Long-term reliability under field conditions, model drift over time, and adoption challenges in low-digital-literacy populations require further study through extended pilot deployments.
+
+\section{Discussion and Limitations}
+
+While the system demonstrates practical feasibility, limitations include constrained language coverage and reliance on compact models that may underperform on complex reasoning tasks. The evaluation scope is limited to prototype-scale testing and does not capture long-term adoption effects.
+
+\textbf{Technical Limitations:}
+\begin{itemize}
+\item \textbf{Model Capacity:} Compact models occasionally produce generic or incomplete responses for complex multi-faceted queries requiring nuanced understanding of overlapping schemes.
+\item \textbf{Language Coverage:} While supporting 12 major languages, the system struggles with dialects, code-mixing patterns, and highly localized terminology.
+\item \textbf{Knowledge Freshness:} Offline knowledge bases may become outdated between synchronization cycles, particularly for recently announced schemes or policy changes.
+\item \textbf{Hardware Constraints:} On the lowest-end devices (<1GB RAM), response latency increases significantly during concurrent usage.
+\end{itemize}
+
+\textbf{Operational Challenges:}
+\begin{itemize}
+\item \textbf{Digital Literacy Barrier:} Despite simplified interfaces, some elderly or illiterate users required assistance for initial adoption.
+\item \textbf{Institutional Resistance:} Changing established manual processes faces bureaucratic inertia and concerns about technology dependence.
+\item \textbf{Maintenance Overhead:} Local model updates and troubleshooting require basic technical skills potentially lacking in remote offices.
+\item \textbf{Data Migration:} Integrating with existing paper-based or legacy digital records poses significant data entry challenges.
+\end{itemize}
+
+\textbf{Ethical Considerations:}
+\begin{itemize}
+\item \textbf{Bias and Fairness:} Language models may inherit societal biases present in training data, potentially disadvantaging marginalized communities.
+\item \textbf{Transparency:} Citizens may not understand AI-assisted decision-making processes, requiring explainability features.
+\item \textbf{Accountability:} Clear protocols are needed for when AI recommendations conflict with officer judgment or legal requirements.
+\item \textbf{Data Sovereignty:} Local storage addresses some privacy concerns but raises questions about long-term data governance.
+\end{itemize}
+
+\textbf{Scalability Considerations:} The current architecture supports up to 10,000 users per deployment instance. Scaling to state or national level would require hierarchical synchronization architecture and distributed model updates while maintaining offline capabilities at edge nodes.
+
+\section{Conclusion and Future Work}
+
+This paper presented NyayaSetu-GovAgent, an offline-first, multilingual AI system designed to support rural governance workflows. By aligning AI capabilities with institutional constraints, the system offers a practical blueprint for inclusive digital governance. Experimental evaluation demonstrates feasibility across technical metrics while highlighting areas for improvement in language coverage and complex reasoning tasks.
+
+The system represents a shift from centralized, connectivity-dependent e-governance toward distributed, resilient digital infrastructure that respects the realities of rural India. By embedding AI within existing administrative workflows rather than replacing them, NyayaSetu augments human decision-making while maintaining institutional accountability.
+
+\textbf{Future Work Directions:}
+\begin{enumerate}
+\item \textbf{Enhanced Language Support:} Expanding to 22 scheduled Indian languages with improved dialect handling and code-mixed speech recognition.
+
+\item \textbf{Adaptive Model Updates:} Developing lightweight continuous learning mechanisms that update models based on local usage patterns without compromising privacy.
+
+\item \textbf{Multi-Modal Capabilities:} Integrating image analysis for document verification, infrastructure assessment, and form processing.
+
+\item \textbf{Pilot Deployments:} Large-scale field trials in partnership with state governments to evaluate real-world impact and adoption barriers.
+
+\item \textbf{Interoperability Standards:} Developing open APIs and data standards for integration with existing government IT systems (e.g., land records, subsidy databases).
+
+\item \textbf{Accessibility Innovations:} Exploring IVR-based interfaces for feature phones, regional language voice assistants, and assistive technologies for disabled users.
+
+\item \textbf{Blockchain Integration:} Investigating distributed ledger technology for tamper-proof audit trails and transparent grievance resolution tracking.
+
+\item \textbf{Community Participation:} Designing mechanisms for collective intelligence where citizens can contribute local knowledge to improve scheme relevance and implementation feedback.
+\end{enumerate}
+
+\textbf{Broader Implications:} Beyond immediate governance applications, the offline-first AI approach developed for NyayaSetu has implications for other public service domains including healthcare, education, and agricultural extension. The principles of edge AI deployment, multilingual adaptation, and human-AI collaboration in low-resource settings can inform digital inclusion initiatives globally.
+
+As India advances toward its Digital India goals, systems like NyayaSetu-GovAgent can help ensure that technological progress reaches the last mile, transforming rural governance from a challenge of constraint to an opportunity for innovation.
+
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+\begin{thebibliography}{10}
+
+\bibitem{sharma2021egovernance}
+Sharma, R., Gupta, A.: E-Governance in India: Progress and Challenges. Journal of Public Administration and Governance, 11(2), 45–67 (2021).
+
+\bibitem{kumar2022chatbot}
+Kumar, S., Patel, V.: Government Chatbots in India: Adoption and Effectiveness. International Conference on Digital Government Research, 112–125 (2022).
+
+\bibitem{li2023edgeai}
+Li, H., Wang, C., Zhang, Y.: Edge AI: Efficient Deployment of Transformer Models on Resource-Constrained Devices. Proceedings of Machine Learning and Systems, 5, 345–362 (2023).
+
+\bibitem{sun2020mobilebert}
+Sun, Z., Yu, H., Song, X., et al.: MobileBERT: A Compact Task-Agnostic BERT for Resource-Limited Devices. Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, 2158–2170 (2020).
+
+\bibitem{sanh2019distilbert}
+Sanh, V., Debut, L., Chaumond, J., et al.: DistilBERT, a Distilled Version of BERT: Smaller, Faster, Cheaper and Lighter. arXiv preprint arXiv:1910.01108 (2019).
+
+\bibitem{kakwani2020indicnlp}
+Kakwani, D., Kunchukuttan, A., Golla, S., et al.: IndicNLPSuite: Monolingual Corpora, Evaluation Benchmarks and Pre-trained Multilingual Language Models for Indian Languages. Findings of EMNLP, 4948–4961 (2020).
+
+\bibitem{khanuja2021muril}
+Khanuja, S., Bansal, D., Mehtani, S., et al.: MuRIL: Multilingual Representations for Indian Languages. arXiv preprint arXiv:2103.10730 (2021).
+
+\bibitem{gupta2020workflow}
+Gupta, P., Singh, R.: Workflow Automation in Public Administration: Case Studies from Indian States. Government Information Quarterly, 37(3), 101–118 (2020).
+
+\bibitem{joulin2016fasttext}
+Joulin, A., Grave, E., Bojanowski, P., et al.: FastText.zip: Compressing Text Classification Models. arXiv preprint arXiv:1612.03651 (2016).
+
+\bibitem{vaswani2017attention}
+Vaswani, A., Shazeer, N., Parmar, N., et al.: Attention Is All You Need. Advances in Neural Information Processing Systems, 30, 5998–6008 (2017).
+
+\bibitem{devlin2018bert}
+Devlin, J., Chang, M., Lee, K., et al.: BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding. Proceedings of NAACL-HLT, 4171–4186 (2018).
+
+\bibitem{radford2019language}
+Radford, A., Wu, J., Child, R., et al.: Language Models are Unsupervised Multitask Learners. OpenAI Blog (2019).
+
+\bibitem{brown2020language}
+Brown, T., Mann, B., Ryder, N., et al.: Language Models are Few-Shot Learners. Advances in Neural Information Processing Systems, 33, 1877–1901 (2020).
+
+\bibitem{touvron2023llama}
+Touvron, H., Lavril, T., Izacard, G., et al.: LLaMA: Open and Efficient Foundation Language Models. arXiv preprint arXiv:2302.13971 (2023).
+
+\bibitem{goyal2022indicbert}
+Goyal, S., Sharma, A., Kumar, M., et al.: IndicBERT: A Transformer-based Model for Indian Languages. Proceedings of the 19th International Conference on Natural Language Processing, 45–53 (2022).
+
+\bibitem{das2021lowresource}
+Das, A., Ganguly, D., Garain, U.: Low-Resource Neural Machine Translation for Indian Languages. Computational Linguistics and Intelligent Text Processing, 89–104 (2021).
+
+\bibitem{mishra2022edgecomputing}
+Mishra, S., Verma, R., Tiwari, A.: Edge Computing for Rural Development: Architectures and Applications. IEEE Transactions on Sustainable Computing, 7(2), 234–247 (2022).
+
+\bibitem{patel2023digitalindia}
+Patel, M., Reddy, K., Srinivasan, V.: Digital India and Rural Transformation: Assessing Connectivity and Adoption Gaps. Telecommunications Policy, 47(4), 102–121 (2023).
+
+\bibitem{naik2022aiforgov}
+Naik, R., Deshmukh, A., Joshi, S.: AI for Governance: Opportunities and Challenges in Developing Countries. Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society, 78–89 (2022).
+
+\bibitem{yadav2021panchayat}
+Yadav, N., Sharma, K., Kumar, P.: Digitalization of Panchayati Raj Institutions: Status and Roadmap. Journal of Rural Development, 40(3), 345–367 (2021).
+
+\end{thebibliography}
+
+\end{document}

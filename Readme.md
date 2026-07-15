@@ -1,5 +1,5 @@
 # Articulatory Trajectory Deviation (ATD)
-### Zero-Shot Dysarthric Speech Severity Estimation via Frozen SSL Latent Space Geometry
+### Dysarthric Speech Severity Estimation via Frozen SSL Latent Space Geometry (Within-Corpus Calibration)
 
 <p align="center">
   <img src="results/figures/fig2_atd_trajectories.png" width="800" alt="ATD Trajectories"/>
@@ -16,8 +16,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/INTERSPEECH-2026-blue?style=flat-square"/>
   <img src="https://img.shields.io/badge/Spearman%20ρ-0.756-brightgreen?style=flat-square"/>
-  <img src="https://img.shields.io/badge/RMSE%20Improvement-16.3%25-brightgreen?style=flat-square"/>
-  <img src="https://img.shields.io/badge/Zero--Shot-No%20Fine--Tuning-orange?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Label--free-Zero--Shot%20(matches%20trained%20probe)-orange?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Backbone-Frozen%20WavLM-orange?style=flat-square"/>
   <img src="https://img.shields.io/badge/Dataset-TORGO-lightgrey?style=flat-square"/>
   <img src="https://img.shields.io/badge/Python-3.11-blue?style=flat-square"/>
   <img src="https://img.shields.io/badge/PyTorch-2.2.2-red?style=flat-square"/>
@@ -29,7 +29,7 @@
 
 Dysarthria is a motor speech disorder — caused by cerebral palsy, ALS, stroke, or traumatic brain injury — that affects millions of people worldwide. Assessing its severity currently requires a trained Speech-Language Pathologist: expensive, scarce, and subjective.
 
-**We propose ATD (Articulatory Trajectory Deviation):** a zero-shot metric that estimates dysarthric severity directly from raw audio — with no labeled training data and no fine-tuning of any model.
+**We propose ATD (Articulatory Trajectory Deviation):** a frozen-SSL articulatory metric that estimates dysarthric severity directly from raw audio — with no labeled severity ratings and no fine-tuning of any model. The control reference trajectories are built *within* the target corpus, so the deployable mode is within-corpus calibration; genuine zero-shot cross-corpus transfer did not hold (see Limitations).
 
 ### The Core Insight
 
@@ -41,32 +41,33 @@ Large SSL models like WavLM-Large, pre-trained on 94,000 hours of neurotypical s
 
 ## Key Results
 
-<p align="center">
-  <img src="results/figures/fig5_results_comparison.png" width="750" alt="Results Comparison"/>
-</p>
+<!-- NOTE: fig5_results_comparison.png was rendered from the earlier, under-tuned
+     baseline run (strawman MFCC 0.802 and the retracted ρ=−0.795 pooled-WavLM bar)
+     and is intentionally NOT embedded here until regenerated from
+     results/finetuned_ssl_baseline.json. The table below is the source of truth. -->
 
-| Method | RMSE ↓ | Spearman ρ (Global) ↑ | Spearman ρ (LOSO) ↑ | Fine-tuning? |
-|---|---|---|---|---|
-| MFCC + SVR | 0.802 | 0.787 | 0.056 | No |
-| WavLM Pool + Ridge | 0.795 | −0.795 | −0.056 | No |
-| **ATD-L9 + Ridge (ours)** | 0.721 | **0.756** | 0.282 | **No** |
-| **ATD-All + Ridge (ours)** | **0.671** | **0.756** | **0.394**[^loso-ci] | **No** |
+**ATD does not beat a fairly-tuned probe on accuracy — and we say so.** All trained heads below are tuned fairly: the regression head *and* its hyperparameters are refit inside each leave-one-speaker-out (LOSO) fold by nested group-CV. ATD is zero-shot (no training, no labels), so its LOSO score equals its full-set score. ρ is speaker-level Spearman vs severity (n = 15); RMSE is on the 0–1 severity scale (ATD's raw units are scale-mismatched, so its RMSE is via a per-fold Ridge map). Source: `results/finetuned_ssl_baseline.json`.
 
-[^loso-ci]: LOSO ρ = 0.394 has 95% bootstrap CI [−0.29, 0.90] (p = 0.33, n = 8 dysarthric folds). Reported here as a directional indicator of speaker-generalization, not as a strong significance claim. See `results/paper_numbers.json` `bootstrap_confidence_intervals.dysarthric_only`.
+| Method | Training | Spearman ρ (n=15) | RMSE ↓ |
+|---|---|---|---|
+| MFCC + RBF-SVR | trained (LOSO) | 0.609 | 0.743 |
+| WavLM-L9 pool + Ridge | trained (LOSO) | 0.760 | **0.581** |
+| WavLM-L9 pool + LinearSVR | trained (LOSO) | **0.775** | 0.623 |
+| **ATD (ours)** | **zero-shot** | 0.756 | 0.671 |
 
-**LOSO = Leave-One-Speaker-Out** across 8 dysarthric speakers — tests generalization to completely unseen speakers.
+A fairly-tuned linear probe on mean-pooled WavLM **matches or slightly exceeds** ATD (Ridge 0.760 / LinearSVR 0.775 vs ATD 0.756) and beats it on RMSE (0.581 vs 0.671). **ATD's value is not superior accuracy** — it is that it reaches *comparable* accuracy **zero-shot** (no training data, no labels), plus per-phoneme interpretability and real-time operation. ATD does beat the classical tuned MFCC baseline (0.756 vs 0.609).
 
-> **Note on the WavLM Pool baseline.** Mean-pooling WavLM-Large across time gives a Ridge model that achieves comparable RMSE but *negative* Spearman correlation with severity. This is a real result, not a sign error: pooled features collapse trajectory information, and Ridge fits a direction that flips on this dataset. We report the negative ρ honestly and use it as motivation for trajectory-based features.
+> **⚠ Retraction (integrity).** An earlier version of this table reported the pooled-WavLM Ridge probe with a *negative* Spearman ρ = −0.795 and described it as "a real result, not a sign error." **That was wrong.** It was an under-regularization artifact (Ridge α = 1). A fair hyperparameter search selects α = 1000 on every LOSO fold and yields ρ = **0.760**. The negative figure is retracted; the pooled-WavLM baseline is in fact a strong trained reference that ATD matches without training.
 
 ### Headline Numbers
 
-- **Speaker-level Spearman ρ = 0.756** (p = 0.0011, n = 15 speakers; 95% bootstrap CI [0.40, 0.92])
-- **16.3% RMSE improvement** over MFCC baseline
-- **LOSO Spearman 0.394 vs MFCC 0.056** — 7× higher; non-significant on n=8 dysarthric folds (p=0.33, CI [−0.29, 0.90])
-- **87.5% LOSO rank accuracy** — 7/8 dysarthric speakers correctly ranked
-- **Cohen's d = 1.488** (large effect) between control and severe groups (utterance-level)
-- **ATD-duration correlation r = 0.105** — ATD is NOT a proxy for speaking rate
-- **Zero fine-tuning** — WavLM is permanently frozen
+- **Speaker-level Spearman ρ = 0.756** at WavLM **Layer 9** (p = 0.0011, n = 15 speakers; 95% bootstrap CI [0.40, 0.92]). **Robust to leakage:** unchanged (0.756 → 0.756) under leave-one-control-out references; the early Layer 1 alternative inflates (0.775 → 0.687). See `results/deleak_report_fast.json`.
+- **Matches a trained frozen-WavLM probe, zero-shot.** A fairly-tuned mean-pooled WavLM-L9 probe (Ridge ρ = 0.760, LinearSVR ρ = 0.775, refit per LOSO fold) matches/slightly exceeds ATD (0.756) and beats it on RMSE (0.581 vs 0.671). ATD is **not** more accurate — its edge is label-free zero-shot operation. `results/finetuned_ssl_baseline.json`.
+- **Beats the classical tuned MFCC baseline** (ρ = 0.756 vs 0.609). Mapped to the 0–1 severity scale via a per-fold Ridge, ATD's RMSE (0.671) is ~9.7% below the fairly-tuned MFCC (0.743). *(The old "16.3% vs MFCC" figure used an under-tuned MFCC and is superseded.)*
+- **Dysarthric-subgroup Spearman ρ = 0.394** (the rank correlation over the 8 dysarthric speakers, **not** a leave-one-speaker-out CV score): **non-significant** (n = 8, p = 0.33, 95% CI [−0.29, 0.90]). Directional indicator only; pairwise rank concordance ≈ 73%.
+- **Cohen's d = 1.488** (large effect) between control and severe groups — **utterance-level** (pseudo-replicated). The **speaker-level, de-leaked** effect size is **d = 2.63** (controls vs severe, Layer 9; `results/deleak_report_fast.json`).
+- **ATD-duration correlation r = 0.105** (Spearman −0.07) — ATD is NOT a proxy for speaking rate.
+- **No fine-tuning** — WavLM is permanently frozen.
 
 ---
 
@@ -76,9 +77,9 @@ Large SSL models like WavLM-Large, pre-trained on 94,000 hours of neurotypical s
   <img src="results/figures/fig1_layer_analysis.png" width="650" alt="Layer Analysis"/>
 </p>
 
-We analyzed all 9 sampled WavLM-Large layers. Every single layer achieves statistically significant correlation (p < 0.01).
+We analyzed all 9 sampled WavLM-Large layers. Every single layer achieves statistically significant correlation (p < 0.01), and **all 9 are comparable within bootstrap noise** (Δρ < 0.09, overlapping 95% CIs).
 
-**Novel finding:** Early transformer layers (Layer 1, ρ = 0.775) and middle layers (Layer 9, ρ = 0.756) both strongly encode dysarthric severity — suggesting that motor speech disruption manifests at both acoustic and articulatory levels of SSL representation.
+**Layer 9 is the primary, leakage-robust layer.** A naive single-reference sweep marginally favours Layer 1 (ρ = 0.775 vs 0.756), but that edge does **not** survive leakage control: under leave-one-control-out (LOCO) references, Layer 1 deflates to ρ = 0.687 while **Layer 9 is unchanged at 0.756**. Early SSL layers encode speaker identity, so a control speaker's own utterances inside its reference deflate its ATD and inflate the Layer-1 correlation; mid-network Layer 9 encodes articulation and is leakage-robust. We therefore report Layer 9 as the headline layer. (Source: `results/deleak_report_fast.json`.)
 
 ---
 
@@ -153,19 +154,21 @@ Where:
 
 Every design decision is empirically justified:
 
-| Variant | Spearman ρ (Global) | ρ (LOSO) | Interpretation |
+ρ (dys-subgroup) below is the n = 8 dysarthric-subgroup Spearman (non-significant; directional only). Values match `results/tables/table2_ablations.csv`.
+
+| Variant | Spearman ρ (Global) | ρ (dys-subgroup) | Interpretation |
 |---|---|---|---|
-| **Full ATD — Layer 1 (best)** | **0.775** | **0.394** | Best overall |
-| Full ATD — Layer 9 | 0.756 | 0.394 | Strong mid-network |
-| No DTW — Mean L2 | 0.471 | 0.394 | DTW critical (−40%) |
-| No PCA — 1024-dim DTW | 0.802 | 0.394 | PCA is safe speedup |
-| Mean-pool distance | 0.471 | 0.394 | Trajectory structure critical |
-| MFCC trajectory DTW | 0.849 | 0.282 | SSL generalizes better (LOSO) |
+| **Full ATD — Layer 9 (primary)** | 0.756 | 0.394 | Leakage-robust headline layer |
+| Full ATD — Layer 1 | 0.775 | 0.394 | Inflated by leakage; LOCO ρ = 0.687 |
+| No DTW (pool-then-L2) | 0.471 | 0.394 | DTW critical (−40%); same computation as mean-pool |
+| No PCA — 1024-dim DTW | 0.802 | **−0.056** | Higher global ρ, but subgroup ρ collapses |
+| MFCC trajectory DTW | 0.849 | 0.282 | High global ρ, lower subgroup ρ |
+
+> **Note.** The "No DTW — Mean L2" and "Mean-pool distance" rows in earlier drafts were the *same* algebraic computation (pool the frames, take an L2 distance); they are collapsed into one row here.
 
 **Key findings:**
-- Removing DTW drops ρ by 40% — temporal alignment is essential
-- MFCC trajectories have high global ρ but collapse under LOSO (0.282 vs 0.394) — SSL representations generalize better to unseen speakers
-- PCA reduction to 64 dims is lossless — 16× speedup with no quality loss
+- Removing DTW drops global ρ by 40% — temporal alignment carries most of the signal.
+- The full-dimension (No-PCA) variant has a *higher* global ρ (0.802 > 0.756) but its dysarthric-subgroup ρ collapses to −0.056. **PCA-64 is therefore a speed/robustness trade-off, not a lossless step** — we attribute the global gap to n = 15 sampling noise, and the extra dimensions appear to encode speaker-specific rather than severity-relevant structure. (All subgroup numbers are n = 8, non-significant, directional only.)
 
 ---
 
@@ -314,9 +317,10 @@ dysarthria-atd/
 | Model state | **Frozen always** | Preserves pre-trained articulatory geometry |
 | Features | Frame-level | Trajectory structure, not mean-pooled averages |
 | Alignment | DTW (fastdtw) | Handles 2–3× slower dysarthric speech naturally |
-| Reduction | PCA → 64 dims | 16× speedup, <5% information loss |
+| Reduction | PCA → 64 dims | 16× DTW speedup (speed/robustness trade-off, not lossless) |
 | References | Control speakers only | True neurotypical articulation, not mild dysarthric |
-| Evaluation | LOSO | Only valid generalization test for 8-speaker dataset |
+| Reference protocol | Leave-one-control-out (LOCO) | Removes speaker-identity leakage; Layer 9 robust, Layer 1 inflates |
+| Headline correlation | All 15 speakers | Reported with dysarthric-subgroup (n = 8, NS) as a directional check |
 | Random seed | 42 everywhere | Full reproducibility |
 
 ---
@@ -324,12 +328,12 @@ dysarthria-atd/
 ## Why This Matters
 
 **For researchers:**
-- First characterization of frame-level trajectory geometry in frozen SSL space for dysarthric speech
-- Novel finding: early WavLM layers (Layer 1) encode severity as strongly as middle layers
-- Empirical proof that SSL representations generalize better than MFCC under LOSO (0.394 vs 0.282)
+- A narrow, specific contribution: frame-level DTW *trajectory* geometry in a *frozen* SSL latent space, plus exact per-phoneme path attribution (with a silence/unattributed residual) and an exact-parity real-time streaming variant. This builds on — and does not displace — the healthy-reference subspace-distance line (Janbakhshi et al. 2019/2021) and recent training-free frozen-SSL subspace work; we do **not** claim a paradigm first.
+- All 9 WavLM layers are comparable within bootstrap noise; Layer 9 is robust under leave-one-control-out references while Layer 1 is inflated by speaker-identity leakage.
+- An honest negative: the pre-registered articulatory-specificity perturbation test was *falsified* (additive noise perturbs ATD more than formant shift). Pathology-vs-accent specificity is instead supported by a separate 4-corpus analysis.
 
 **For clinicians:**
-- Zero-shot — no labeled data needed for new patients
+- No labeled severity ratings needed — references are built from a corpus's own control speakers (within-corpus calibration)
 - Interpretable — trajectory deviation has geometric meaning
 - Deployable — no retraining, no clinical infrastructure
 - Speaker-specific profiles reveal execution quality beyond categorical labels
@@ -342,7 +346,7 @@ dysarthria-atd/
 ## Limitations
 
 - **Cross-corpus result on UASpeech is null.** Direct application of TORGO-built reference trajectories to UASpeech yields ρ = −0.22 (p = 0.43, n = 15 dysarthric); pooled-corpus ρ = −0.07. We hypothesize that UASpeech's isolated-word stimuli (mean ≈ 127 frames) sit below the trajectory-length regime where DTW signal stabilizes (TORGO mean ≈ 155 frames). Cross-corpus extension is left to future work.
-- **Sample size.** n = 15 TORGO speakers. Bootstrap CIs are wide; LOSO on n = 8 dysarthric speakers is non-significant at α = 0.05.
+- **Sample size.** n = 15 TORGO speakers. Bootstrap CIs are wide; the dysarthric-subgroup Spearman (n = 8) is non-significant at α = 0.05 (p = 0.33) and is reported as a directional indicator, not a leave-one-speaker-out CV result.
 - **Single dataset for headline numbers.** Generalization to PD, ALS, post-stroke speech, and non-English dysarthria is open.
 - **F04 leverage.** Removing F04 alone shifts ρ from 0.756 → 0.855. Influence diagnostics across all speakers will be added in v2.
 - **Non-deterministic FP16 inference.** WavLM-Large embeddings are extracted in FP16; bit-exact reproduction across GPU drivers is not guaranteed. For paper-grade reproduction we ship the embeddings on Zenodo (forthcoming) rather than asking reviewers to re-extract.
@@ -357,7 +361,7 @@ dysarthria-atd/
 | Fig 2 | UMAP trajectory visualization: Control vs Mild vs Severe |
 | Fig 3 | Speaker-level ATD vs severity scatter with regression |
 | Fig 4 | ATD distribution violins with significance brackets |
-| Fig 5 | Results comparison: RMSE and LOSO Spearman bar charts |
+| Fig 5 | Results comparison: RMSE and dysarthric-subgroup Spearman bar charts |
 | Fig 6 | Per-speaker per-word ATD heatmap |
 
 ---
@@ -366,8 +370,9 @@ dysarthria-atd/
 
 ```bibtex
 @inproceedings{atd2026interspeech,
-  title     = {Articulatory Trajectory Deviation: Zero-Shot Dysarthric Speech 
-               Severity Estimation via Frozen {SSL} Latent Space Geometry},
+  title     = {Articulatory Trajectory Deviation: Dysarthric Speech 
+               Severity Estimation via Frozen {SSL} Latent Space Geometry
+               with Within-Corpus Calibration},
   author    = {Anonymous},
   booktitle = {Proc. INTERSPEECH 2026},
   year      = {2026},
@@ -381,6 +386,6 @@ dysarthria-atd/
 
 
 <p align="center">
-  <i>Built on real data. Real embeddings. Real science.</i><br>
-  <i>Spearman ρ = 0.756 · p = 0.0011 · Zero fine-tuning.</i>
+  <i>A narrow, honestly-scoped frozen-SSL trajectory metric — every number traces to a file in <code>results/</code>.</i><br>
+  <i>Spearman ρ = 0.756 (WavLM Layer 9, robust under leave-one-control-out) · p = 0.0011 · no fine-tuning.</i>
 </p>

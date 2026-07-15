@@ -45,45 +45,76 @@ Speaker $s$'s ATD score is the unweighted mean across all utterances
 $u \in \mathcal{U}_s$:
 \(\overline{\mathrm{ATD}}_s = |\mathcal{U}_s|^{-1} \sum_{u} \mathrm{ATD}(u, w_u, \ell)\).
 The headline correlation $\rho(\overline{\mathrm{ATD}}, \mathrm{severity})$
-is computed over the 15 TORGO speakers; the LOSO variant restricts to the
-8 dysarthric speakers, since controls (with severity 0) are by construction
-the reference builders and cannot be held out.
+is computed over the 15 TORGO speakers; we additionally report a
+\emph{dysarthric-subgroup} Spearman restricted to the 8 dysarthric
+speakers, since controls (with severity 0) are by construction the
+reference builders and cannot be held out. This subgroup correlation is a
+single $n = 8$ rank statistic, not a leave-one-speaker-out
+cross-validation score.
 
 \subsection{Layer selection and design choices}
 We sample 9 transformer layers $\ell \in \{1, 3, 6, 9, 12, 15, 18, 21, 23\}$
 to balance representational diversity against extraction cost. For each
 layer we compute Equation~\ref{eq:atd}; we report Bonferroni- and
-Benjamini--Hochberg-corrected $p$-values across the layer family. The
-PCA-64 reduction is empirically lossless against PCA-1024 within rounding
-($\Delta\rho < 0.05$) and yields a 16$\times$ DTW speedup. The
-median-length-template choice for the reference barycentre is robust to
-ties (selecting the first-encountered minimum is deterministic given a
-fixed metadata ordering and \texttt{RANDOM\_SEED = 42}).
+Benjamini--Hochberg-corrected $p$-values across the layer family. We adopt
+\textbf{Layer~9} as the primary articulatory layer: although a naive
+single-reference sweep marginally favours Layer~1, that edge is an
+early-layer speaker-identity leakage artifact that disappears under
+leave-one-control-out references, whereas Layer~9 is unchanged
+(Results~\S\ref{sec:deleak}). The PCA-64 reduction is a speed/robustness
+trade-off, not a lossless step: it yields a 16$\times$ DTW speedup, and
+while a full-dimension PCA-1024 variant gives a marginally higher
+\emph{global} $\rho$ on $n = 15$ speakers, its dysarthric-subgroup $\rho$
+collapses (Results~\S\ref{sec:main_results}), consistent with the extra
+dimensions encoding speaker-specific rather than severity-relevant
+structure. The median-length-template choice for the reference barycentre
+is robust to ties (selecting the first-encountered minimum is
+deterministic given a fixed metadata ordering and
+\texttt{RANDOM\_SEED = 42}).
 
 \subsection{Phoneme-level decomposition}
 For each utterance we additionally produce per-phoneme ATD by slicing the
 DTW path by Montreal-Forced-Aligner-derived phoneme boundaries and
 aggregating the path's cost contributions over each phoneme's frame range,
-length-normalised by the phoneme's local span. The decomposition is
-exact: $\sum_p D(p) = \mathrm{DTW}(\mathbf{Z}_u, \mathbf{R}_w)$, providing
-a principled attribution of utterance-level deviation to articulators.
-Per-phoneme distributions are z-scored against control-speaker tokens,
-with manner-class fallback when fewer than 30 control tokens are
-available for a specific phone.
+length-normalised by the phoneme's local span. The decomposition is an
+\emph{exact decomposition into per-phoneme contributions plus a
+silence/unattributed residual},
+\begin{equation}
+\sum_p D(p) \;+\; \mathrm{residual} \;=\; \mathrm{DTW}(\mathbf{Z}_u, \mathbf{R}_w),
+\end{equation}
+where the residual books all path cost falling in MFA silence intervals
+(\texttt{sil}/\texttt{sp}/\texttt{spn}) or in no phone interval. It is
+\emph{not} an exact phone-only additive identity. On TORGO single-word
+recordings the residual carries the \emph{majority} of the path cost
+(per-utterance residual fraction $\approx 0.70$--$0.76$, mean $\approx
+0.71$; \texttt{results/streaming\_dtw\_correctness.json} phoneme run),
+because leading and trailing silence dominate isolated-word audio.
+Per-phoneme attribution therefore covers a \emph{minority} of the total
+distance, and the same observation implies the headline utterance-level
+ATD itself may carry silence/pausing signal as well as articulation ---
+silence trimming before scoring is left to future work. Per-phoneme
+distributions are z-scored against control-speaker tokens, with
+manner-class fallback when fewer than 30 control tokens are available for
+a specific phone.
 
 \subsection{Streaming variant}
 For real-time deployment we replace the offline fastdtw call with an
-online subsequence-DTW recurrence~\cite{Mueller2007SubseqDTW,
+online DTW recurrence~\cite{Mueller2007SubseqDTW,
 Rakthanmanon2012UCRSuite} that updates the accumulated cost matrix
-column-by-column as new query frames arrive. Per-frame extension
+column-by-column as new query frames arrive. We use the classic
+closed-$(0,0)$-start recurrence whose path terminates at
+$(T_u{-}1, T_w{-}1)$, so the online variant computes the \emph{exact}
+offline DTW rather than a subsequence relaxation. Per-frame extension
 cost is $O(|\mathbf{R}_w|)$ regardless of cumulative utterance length;
-empirical per-frame latency is $91$\,$\mu$s (p50) and
-$402$\,$\mu$s (p99) on a single RTX~4080 thread. WavLM-Large forward
-($\approx 30$\,ms GPU on 250\,ms context) is the binding latency
-budget. SS-DTW's free initial column relaxes the offline (0,0) start
-constraint; on a 200-utterance parity test the online and offline ATD
-have Pearson $r{=}0.81$ with median absolute difference essentially
-zero ($1\!\times\!10^{-5}$).
+empirical per-frame latency is $132$\,$\mu$s (p50) on a single RTX~4080
+thread. WavLM-Large forward ($\approx 30$\,ms GPU on 250\,ms context)
+remains the binding latency budget. On a 200-utterance parity test the
+online and offline ATD are in exact agreement: Pearson $r = 1.0$, maximum
+relative error $< 10^{-15}$, validated against a full-matrix exact DP
+reference (\texttt{tests/test\_streaming\_dtw\_correctness.py};
+\texttt{results/streaming\_dtw\_correctness.json}). An earlier
+free-initial-column (subsequence) variant gave $r = 0.81$; that defect is
+fixed and guarded by a regression test.
 
 \subsection{Cross-corpus multilingual variant}
 For non-English corpora (IPVS Italian, PC-GITA Spanish, EasyCall

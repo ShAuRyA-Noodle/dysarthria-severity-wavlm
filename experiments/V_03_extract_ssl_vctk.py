@@ -25,6 +25,7 @@ from tqdm import tqdm
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.ssl_extractor import SSLExtractor
 
@@ -50,6 +51,7 @@ def _load_resample(p: Path) -> np.ndarray:
 
 
 def main() -> None:
+    set_global_seed(42)
     md = pd.read_csv(PROJECT_ROOT / "data/processed/metadata/metadata_vctk.csv")
     logger.info("VCTK utterances: %d (speakers=%d, sentences=%d)",
                 len(md), md["speaker_id"].nunique(), md["sentence_id"].nunique())

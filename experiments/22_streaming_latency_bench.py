@@ -96,8 +96,10 @@ def main() -> None:
         d_off, _ = fastdtw(utt_pca, reference, radius=FASTDTW_RADIUS, dist=euclidean)
         atd_offline = float(d_off / max(len(utt_pca), len(reference)))
 
-        # Online stream.
-        dtw = OnlineSubseqDTW(reference, radius=FASTDTW_RADIUS)
+        # Online stream. radius=None -> exact classic DTW = the offline quantity.
+        # (A finite Sakoe-Chiba band only APPROXIMATES offline ATD and can leave
+        # the reference-end cell unreachable when T_query << T_ref.)
+        dtw = OnlineSubseqDTW(reference, radius=None)
         for frame in utt_pca:
             t0 = time.perf_counter()
             dtw.extend(frame)

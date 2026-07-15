@@ -17,6 +17,7 @@ from tqdm import tqdm
 # Allow importing from src/ when run directly
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.data_pipeline import (  # noqa: E402
     build_torgo_metadata,
@@ -50,6 +51,7 @@ TARGET_DB = -20.0
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    set_global_seed(42)
     # ── Step 1: Build (or reload) raw metadata ────────────────────────────
     if META_RAW_CSV.exists():
         print(f"[load] Found existing {META_RAW_CSV.name} — loading.")

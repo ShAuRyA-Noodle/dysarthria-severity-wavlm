@@ -24,6 +24,7 @@ from tqdm import tqdm
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.uaspeech_parser import build_uaspeech_metadata  # noqa: E402
 from src.data_pipeline import resample_and_normalize       # noqa: E402
@@ -75,6 +76,7 @@ def find_fm_audio_dir() -> Path | None:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    set_global_seed(42)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     AUDIO_OUT_ROOT.mkdir(parents=True, exist_ok=True)
     META_DIR.mkdir(parents=True, exist_ok=True)

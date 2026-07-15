@@ -25,6 +25,7 @@ import sys
 import time
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 
@@ -32,7 +33,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.constants import LAYER_POSITION_MAP, RANDOM_SEED, TORGO_SEVERITY
-from src.phoneme.per_phoneme_atd import manner_class, per_phoneme_atd
+from src.phoneme.per_phoneme_atd import (
+    decompose_utterance,
+    manner_class,
+    verify_additivity,
+)
 from src.phoneme.phoneme_norms import fit_norms_from_dataframe, save_norms, write_norms_json
 from src.seed_utils import set_global_seed
 
@@ -87,6 +92,8 @@ def main() -> None:
     n_no_index = 0
     n_no_npy = 0
     n_exc = 0
+    n_additivity_fail = 0
+    residual_fracs: list[float] = []
     first_exc: Exception | None = None
     iter_meta = metadata.itertuples(index=False)
     if args.limit > 0:
@@ -115,7 +122,7 @@ def main() -> None:
             n_no_npy += 1
             continue
         try:
-            per_phone = per_phoneme_atd(
+            dec = decompose_utterance(
                 utt_npy_path=npy_path,
                 textgrid_path=tg_path,
                 pca_model=ref_data["pca_model"],
@@ -126,11 +133,21 @@ def main() -> None:
             n_exc += 1
             if first_exc is None:
                 first_exc = exc
-                logger.error("first per_phoneme_atd exception on %s: %r", utt_id, exc)
+                logger.error("first decompose_utterance exception on %s: %r", utt_id, exc)
             continue
+        # Exact additive identity: sum(per-phone) + residual == total DTW cost.
+        ok = verify_additivity(dec.per_phone, dec.total_dtw_distance, dec.residual)
+        assert ok, (
+            f"additivity violated for {utt_id}: "
+            f"sum_phone={dec.sum_phone_distance} + residual={dec.residual} "
+            f"!= total={dec.total_dtw_distance}"
+        )
+        if not ok:
+            n_additivity_fail += 1
+        residual_fracs.append(dec.residual_fraction)
         sev = TORGO_SEVERITY[spk]
         is_control = sev == 0
-        for p in per_phone:
+        for p in dec.per_phone:
             rows.append({
                 "utterance_id": utt_id,
                 "speaker_id": spk,
@@ -140,14 +157,21 @@ def main() -> None:
                 "layer": layer,
                 **p,
                 "manner": manner_class(p["phone"]),
+                "total_dtw_distance": dec.total_dtw_distance,
+                "residual": dec.residual,
+                "residual_fraction": dec.residual_fraction,
             })
         n_aligned += 1
         if n_aligned % 500 == 0:
             logger.info("aligned %d utts; rows so far %d", n_aligned, len(rows))
 
+    mean_resid_frac = float(np.mean(residual_fracs)) if residual_fracs else float("nan")
+    median_resid_frac = float(np.median(residual_fracs)) if residual_fracs else float("nan")
     logger.info(
-        "done. n_aligned=%d  rows=%d  no_textgrid=%d  no_ref=%d  no_index=%d  no_npy=%d  exc=%d  elapsed=%.1f min",
+        "done. n_aligned=%d  rows=%d  no_textgrid=%d  no_ref=%d  no_index=%d  no_npy=%d  exc=%d  "
+        "additivity_fail=%d  mean_residual_frac=%.4f  median_residual_frac=%.4f  elapsed=%.1f min",
         n_aligned, len(rows), n_no_textgrid, n_no_ref, n_no_index, n_no_npy, n_exc,
+        n_additivity_fail, mean_resid_frac, median_resid_frac,
         (time.time() - started) / 60,
     )
 
@@ -170,7 +194,17 @@ def main() -> None:
     logger.info("norms -> %s, %s", norms_pkl, norms_json)
 
     # Per-speaker manner-mean ATD vs severity (consonant vs vowel test).
-    summary: dict = {"layer": layer, "n_utterances": int(n_aligned), "n_rows": int(len(df))}
+    summary: dict = {
+        "layer": layer,
+        "n_utterances": int(n_aligned),
+        "n_rows": int(len(df)),
+        # Honest additive-decomposition accounting (DEFECT 2):
+        # sum(per-phone) + residual == total DTW cost, exactly. The residual is
+        # the silence/unattributed path mass; its fraction must be reported.
+        "additivity_failures": int(n_additivity_fail),
+        "mean_residual_fraction": mean_resid_frac,
+        "median_residual_fraction": median_resid_frac,
+    }
     for manner_filter, label in [
         (lambda m: m == "vowel", "vowels_only"),
         (lambda m: m != "vowel" and m != "other", "consonants_only"),

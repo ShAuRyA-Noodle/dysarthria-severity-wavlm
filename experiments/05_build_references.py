@@ -28,6 +28,7 @@ import pandas as pd
 # ── Project root ───────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.reference_builder import build_all_references
 
@@ -229,6 +230,7 @@ def run_verification(manifest_path: Path, output_lines: list) -> bool:
 
 def main() -> None:
     """Main entry point for reference building."""
+    set_global_seed(42)
     parser = argparse.ArgumentParser(
         description="Build reference trajectories from control speakers"
     )

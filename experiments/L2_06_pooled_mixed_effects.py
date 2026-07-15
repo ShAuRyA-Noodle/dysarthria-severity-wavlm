@@ -31,6 +31,7 @@ import statsmodels.formula.api as smf
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger(__name__)
@@ -161,6 +162,7 @@ def _fit_binary_dysarthric_model(df_all: pd.DataFrame) -> dict:
 
 
 def main() -> None:
+    set_global_seed(42)
     parts = [p for p in (_load_torgo(), _load_uaspeech(), _load_l2arctic(), _load_vctk())
              if p is not None]
     if not parts:

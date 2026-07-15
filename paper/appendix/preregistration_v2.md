@@ -92,8 +92,13 @@ The following are deviations recorded for honesty:
 
 - n=15 sample size for the primary endpoint
 - Lack of clinical co-author
-- Absence of a fine-tuned-SSL baseline (Hernandez/Schu reproductions
-  remain TODO)
+- Absence of a fine-tuned-SSL baseline at lock time. **Update (post-lock):**
+  a fairly-tuned frozen-WavLM probe (mean-pool L9 + Ridge/LinearSVR, head
+  and hyperparameters refit per LOSO fold) plus a tuned MFCC-RBF baseline
+  have since been added (`results/finetuned_ssl_baseline.json`). They show
+  the trained probe (rho = 0.760 / 0.775) matches ATD (0.756) — i.e. ATD's
+  contribution is label-free zero-shot operation, not superior accuracy.
+  Full backbone fine-tuning remains degenerate at n=15.
 - F04 leverage on the headline
 
 ## Signed

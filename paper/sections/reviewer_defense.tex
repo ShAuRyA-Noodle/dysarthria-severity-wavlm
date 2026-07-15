@@ -2,23 +2,28 @@
 % Not for inclusion in the main paper text — used as raw material for the
 % rebuttal letter / discussion section as needed.
 
-\paragraph{LOSO $\rho = 0.394$ non-significant ($p = 0.33$).}
-We report LOSO transparently as a directional indicator, not a significance
-claim. The 95\% bootstrap CI $[-0.29,\,0.90]$ correctly conveys uncertainty
-given $n = 8$ dysarthric folds. Rank-accuracy of $7/8$ ($87.5\%$) and the
-$7\times$ margin over MFCC ($0.056$) provide complementary evidence that the
-effect is not noise; a definitive LOSO test requires $n \geq 20$, which we
-propose as the explicit goal of the longitudinal pilot in Section~6.
+\paragraph{Dysarthric-subgroup $\rho = 0.394$ non-significant ($p = 0.33$).}
+The $\rho = 0.394$ figure is the dysarthric-subgroup Spearman (the rank
+correlation over the 8 dysarthric speakers), \emph{not} a
+leave-one-speaker-out cross-validation score. We report it transparently
+as a directional indicator only. The 95\% bootstrap CI $[-0.29,\,0.90]$
+correctly conveys the uncertainty at $n = 8$; pairwise rank concordance is
+$\approx 73\%$. We do not advance it as evidence of cross-speaker
+generalisation; a definitive cross-validated test requires $n \geq 20$,
+which we propose as the explicit goal of the longitudinal pilot in
+Section~6.
 
 \paragraph{MFCC trajectory $\rho$ exceeds ATD globally ($0.849$ vs $0.756$).}
-On global Spearman, MFCC--DTW marginally exceeds ATD; however, MFCC's LOSO
-$\rho$ collapses to $0.282$ versus ATD-All's $0.394$, indicating that MFCC
-overfits speaker-specific spectral idiosyncrasies. The contribution of ATD
-is generalisation across unseen speakers, the operationally relevant
-clinical setting, not within-corpus correlation. The causal-perturbation
-study (Section~5.4) further differentiates the two: ATD is invariant to
-time-stretch and reverberation while MFCC is not, indicating that ATD
-specifically tracks articulatory execution.
+On global Spearman, MFCC--DTW marginally exceeds ATD; the
+dysarthric-subgroup $\rho$ for MFCC ($0.282$) is lower than ATD-All's
+($0.394$), but both are $n = 8$ non-significant statistics and we read the
+difference as directional, not decisive. We do \emph{not} lean on the
+controlled-perturbation study to differentiate the two on articulatory
+grounds: that study's pre-registered specificity hypothesis was falsified
+(pink noise outranks formant shift; ATD does not beat MFCC on formant
+shift), and we say so in the Limitations section. The defensible
+distinction is that ATD detects frame dropout (partial muting) better than
+MFCC, i.e.\ it exploits temporal trajectory structure.
 
 \paragraph{UASpeech null result ($\rho = -0.22$, $p = 0.43$).}
 This is reported as a falsified hypothesis, not hidden. The

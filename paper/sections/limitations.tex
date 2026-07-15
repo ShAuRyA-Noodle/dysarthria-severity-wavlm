@@ -1,9 +1,30 @@
 % Target ~100 words.
 
 \paragraph{Sample size and statistical power.}
-$n = 15$ TORGO speakers (8 dysarthric) yields wide bootstrap CIs and
-non-significant LOSO at $\alpha = 0.05$ within the dysarthric subset
-alone. We report this transparently throughout.
+$n = 15$ TORGO speakers (8 dysarthric) yields wide bootstrap CIs. The
+dysarthric-subgroup Spearman ($n = 8$, $\rho = 0.394$, $p = 0.33$) is
+non-significant at $\alpha = 0.05$ and is reported as a directional
+indicator only, not as a leave-one-speaker-out cross-validation result.
+We report this transparently throughout.
+
+\paragraph{Pre-registered specificity hypothesis falsified (Track~C).}
+Our pre-registration (\texttt{paper/appendix/track\_c\_preregistration.md},
+locked \texttt{2026-05-08}) predicted that ATD would respond to
+articulatory distortions (formant shift, partial muting) more strongly
+than to acoustic distortions (pink noise, reverberation, time-stretch),
+and listed the falsifying condition explicitly. That condition (locked
+criterion~\#2, $\beta(\text{pink\_noise}) > \beta(\text{formant\_shift})$)
+is \emph{met} at both layers: pink-noise sensitivity exceeds formant-shift
+sensitivity at Layer~9 ($\rho = 0.766$ vs $0.170$) and at Layer~1
+($\rho = 0.832$ vs $0.395$). ATD also does not beat MFCC on formant shift
+($\rho_{\text{ATD}} - \rho_{\text{MFCC}} = -0.055$ at Layer~9). As the
+pre-registration requires, we report this here as a failed hypothesis: the
+perturbation study does \emph{not} establish articulatory specificity, and
+we make no specificity claim from it. The one surviving positive ---
+better detection of frame dropout (partial muting) than MFCC,
+$\Delta\rho = +0.25$ --- speaks to ATD's use of temporal structure, not to
+formant-level selectivity. The accent-specificity evidence
+(\S\ref{sec:specificity}) is a separate, independently supported argument.
 
 \paragraph{Single-corpus headline.}
 The 0.756 figure is on TORGO only. Cross-corpus generalisation to

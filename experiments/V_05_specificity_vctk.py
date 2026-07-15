@@ -19,12 +19,14 @@ from scipy.stats import kruskal, spearmanr
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger(__name__)
 
 
 def main() -> None:
+    set_global_seed(42)
     df = pd.read_csv(PROJECT_ROOT / "results/vctk_speaker_atd.csv")
     logger.info("VCTK speakers: %d", len(df))
 

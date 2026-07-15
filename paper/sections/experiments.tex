@@ -20,22 +20,38 @@ per utterance peak). Pre-extracted embeddings are stored as
 \texttt{data/embeddings/wavlm\_large/<speaker>/}.
 
 \subsection{Baselines}
-\textbf{MFCC + SVR}: 13-coefficient MFCC + delta + delta-delta, mean-pooled
-per utterance, fed to a Support Vector Regressor on severity. \textbf{WavLM
-Pool + Ridge}: WavLM layer-9 mean-pooled embedding into Ridge regression.
-\textbf{MFCC trajectory DTW}: same DTW pipeline as ATD but with MFCCs
-replacing SSL features, included as the most informative ablation.
+All trained baselines are tuned fairly: the regression head \emph{and} its
+hyperparameters are selected by nested group-CV (by speaker) inside each
+leave-one-speaker-out fold, with a \texttt{StandardScaler} fit on the
+inner-train split only (\texttt{results/finetuned\_ssl\_baseline.json}).
+\textbf{MFCC + RBF-SVR}: 58-d MFCC/acoustic features mean-pooled per
+utterance into an RBF Support Vector Regressor ($C$ and $\gamma$ tuned per
+fold). \textbf{WavLM pool + Ridge} and \textbf{WavLM pool + LinearSVR}:
+WavLM Layer-9 mean-pooled embedding into a Ridge ($\alpha$ tuned per fold)
+or LinearSVR ($C$ tuned per fold) head; these are \emph{trained upper
+references} for the frozen-feature setting. \textbf{MFCC trajectory DTW}:
+same DTW pipeline as ATD but with MFCCs replacing SSL features, included as
+the most informative ablation. We do not fine-tune the backbone: full
+fine-tuning is degenerate at $n=15$ speakers, so the frozen-backbone +
+trained-head probe is the fair strong baseline (following the spirit of
+\cite{Hernandez2020SSLDysarthria,Schu2023SSLDys}).
 
 \subsection{Evaluation protocol}
 Speaker-level Spearman $\rho(\overline{\mathrm{ATD}}, \mathrm{severity})$
-is the primary endpoint, with $p$-values from \texttt{scipy.stats.spearmanr}
-and 10{,}000-sample bootstrap 95\%~CIs. RMSE is reported on speaker-level
-mean predictions versus categorical severity. Leave-One-Speaker-Out
-(LOSO) is computed only over dysarthric speakers (controls cannot be
-held out as they are reference builders); we report mean LOSO $\rho$ and
-rank accuracy ("higher-ATD speaker is more severe than 7/8 hold-outs").
-For supervised baselines (MFCC+SVR, WavLM Pool+Ridge) the LOSO
-loop refits the regression head on the remaining speakers; ATD is fold-free.
+over all 15 TORGO speakers is the primary endpoint, with $p$-values from
+\texttt{scipy.stats.spearmanr} and 10{,}000-sample bootstrap 95\%~CIs.
+RMSE is reported on speaker-level mean predictions versus categorical
+severity, on the $0$--$1$ normalised severity scale. We additionally
+report a \emph{dysarthric-subgroup} Spearman over the 8 dysarthric
+speakers only (controls cannot be held out as they are reference
+builders); we stress this is a single $n = 8$ rank correlation, not a
+leave-one-speaker-out cross-validation score, and we report its
+non-significance ($p = 0.33$) and pairwise rank concordance ($\approx
+73\%$) as directional indicators only. For the trained baseline heads
+(MFCC + RBF-SVR, WavLM pool + Ridge/LinearSVR) the head and its
+hyperparameters are refit on the remaining speakers in each
+leave-one-speaker-out fold; ATD is fold-free (zero-shot), so its LOSO score
+equals its full-set score.
 
 \subsection{Accent-versus-dysarthria specificity}
 To address the standing concern that any deviation-based metric may
@@ -62,5 +78,8 @@ Pearson correlation between ATD and per-utterance duration.
 Per-speaker leverage is reported via leave-one-out on each of the 15
 speakers and via Cook's-distance-style sensitivity in
 the supplementary. We additionally pre-register a controlled-perturbation
-study on the seven control speakers (\S~5.4 and Appendix~B) that
-falsifies an acoustic-distance-only interpretation.
+study on the seven control speakers (\S~5.4 and Appendix~B); its
+pre-registered articulatory-specificity hypothesis is \emph{falsified}
+(pink noise outranks formant shift at both layers, triggering locked
+falsification criterion~\#2), and we report it as such in the Limitations
+section.

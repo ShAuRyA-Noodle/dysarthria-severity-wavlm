@@ -41,18 +41,75 @@ FASTDTW_RADIUS = 30
 
 # --- bundled reference cache ------------------------------------------------
 
+# Reference trajectories are shipped via Git LFS in references/. If the Space
+# was cloned without LFS (pointer files only) or the directory is empty, fall
+# back to pulling them from the Hub dataset named by ATD_REFS_REPO.
+REFS_DIR = HERE / "references"
+REFS_HUB_REPO = os.environ.get("ATD_REFS_REPO", "").strip()
+
+
+def _looks_like_real_pickle(path: Path) -> bool:
+    """True unless the file is a Git LFS pointer stub (not the real object)."""
+    try:
+        head = path.read_bytes()[:64]
+    except OSError:
+        return False
+    return not head.startswith(b"version https://git-lfs")
+
+
+def _maybe_fetch_from_hub() -> None:
+    """Populate references/ from the Hub if local pkls are missing/pointers."""
+    have_real = [p for p in REFS_DIR.glob("*_layer9.pkl") if _looks_like_real_pickle(p)]
+    if have_real:
+        return
+    if not REFS_HUB_REPO:
+        logger.warning(
+            "no usable reference pkls in %s and ATD_REFS_REPO unset; "
+            "dropdown will be empty. Ship the pkls via Git LFS or set "
+            "ATD_REFS_REPO=<hub dataset id>.", REFS_DIR,
+        )
+        return
+    try:
+        from huggingface_hub import snapshot_download
+        logger.info("fetching reference pkls from Hub repo %r…", REFS_HUB_REPO)
+        snapshot_download(
+            repo_id=REFS_HUB_REPO,
+            repo_type="dataset",
+            allow_patterns=["*_layer9.pkl"],
+            local_dir=str(REFS_DIR),
+        )
+    except Exception as exc:  # noqa: BLE001 — startup resilience
+        logger.error("Hub fallback failed (%s); dropdown may be empty.", exc)
+
+
 def _load_references() -> dict[str, dict]:
     refs: dict[str, dict] = {}
-    for p in sorted((HERE / "references").glob("*_layer9.pkl")):
+    REFS_DIR.mkdir(parents=True, exist_ok=True)
+    _maybe_fetch_from_hub()
+    for p in sorted(REFS_DIR.glob("*_layer9.pkl")):
         word = p.stem.replace("_layer9", "")
-        with open(p, "rb") as f:
-            refs[word] = pickle.load(f)
+        if not _looks_like_real_pickle(p):
+            logger.warning("skipping %s: looks like an unresolved LFS pointer", p.name)
+            continue
+        try:
+            with open(p, "rb") as f:
+                refs[word] = pickle.load(f)
+        except Exception as exc:  # noqa: BLE001
+            # sklearn pickles are version-fragile; skip the bad word rather
+            # than crashing the whole Space.
+            logger.error("failed to load reference %r (%s); skipping word", word, exc)
     return refs
 
 
 REFS = _load_references()
 WORDS = sorted(REFS.keys())
-logger.info("loaded %d reference words: %s", len(REFS), WORDS)
+if WORDS:
+    logger.info("loaded %d reference words: %s", len(REFS), WORDS)
+else:
+    logger.error(
+        "NO reference words loaded — the demo dropdown will be empty. "
+        "Ensure references/*.pkl are present (Git LFS) or set ATD_REFS_REPO."
+    )
 
 
 # --- WavLM (loaded once at startup) -----------------------------------------
@@ -185,8 +242,12 @@ with gr.Blocks(title="ATD — Articulatory Trajectory Deviation") as demo:
         audio_in = gr.Audio(label="Speak the chosen word",
                             sources=["microphone", "upload"],
                             type="numpy")
-        word_in = gr.Dropdown(WORDS, label="Target word",
-                              value=WORDS[0] if WORDS else None)
+        word_in = gr.Dropdown(
+            WORDS or ["(no references loaded)"],
+            label="Target word",
+            value=(WORDS[0] if WORDS else "(no references loaded)"),
+            interactive=bool(WORDS),
+        )
 
     run_btn = gr.Button("Compute ATD", variant="primary")
     headline_out = gr.Markdown()
