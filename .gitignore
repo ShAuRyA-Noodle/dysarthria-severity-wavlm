@@ -35,6 +35,9 @@ __pycache__/
 # Exception: the HF Space reference trajectories are required at
 # Space startup and are tracked via Git LFS (see space/.gitattributes).
 !space/references/*.pkl
+# Exception: small startup reference arrays for the Clarify/Mirror Spaces
+!space/veritas_clarify/references/*.npy
+!space/veritas_mirror/references/*.npy
 
 # ===== Environment =====
 .env
