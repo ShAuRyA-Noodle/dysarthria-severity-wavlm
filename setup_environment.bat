@@ -26,8 +26,8 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Step 3: Install matching GPU-enabled PyTorch packages
-echo [3/4] Installing PyTorch and Torchaudio 2.11.0 with CUDA 12.6...
-python -m pip install torch==2.11.0 torchaudio==2.11.0 --index-url https://download.pytorch.org/whl/cu126
+echo [3/4] Installing PyTorch 2.13.0 and Torchaudio 2.11.0 with CUDA 12.6...
+python -m pip install torch==2.13.0 torchaudio==2.11.0 --index-url https://download.pytorch.org/whl/cu126
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Failed to install CUDA-enabled PyTorch packages.
     exit /b 1
