@@ -2,16 +2,29 @@
 
 import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 import numpy as np
+import soundfile as sf
 from transformers import AutoModel, WavLMConfig
 
-from src.ssl_extractor import MODELS_CONFIG, SSLExtractor
+from src.ssl_extractor import MODELS_CONFIG, SSLExtractor, load_processed_audio
 
 
 class SSLExtractorSmokeTest(unittest.TestCase):
     """Verify that supported Transformers can load and run a WavLM model."""
+
+    def test_processed_mono_wav_loading(self) -> None:
+        """Read the PCM WAV format produced by the preprocessing stage."""
+        with tempfile.TemporaryDirectory() as audio_dir:
+            audio_path = Path(audio_dir) / "sample.wav"
+            sf.write(audio_path, np.zeros(16000, dtype=np.float32), 16000, subtype="PCM_16")
+            waveform, sample_rate = load_processed_audio(audio_path)
+
+        self.assertEqual(sample_rate, 16000)
+        self.assertEqual(waveform.shape, (16000,))
+        self.assertEqual(waveform.dtype, np.float32)
 
     def test_frozen_wavlm_hidden_states(self) -> None:
         """Load a tiny local checkpoint and extract both transformer layers."""

@@ -21,7 +21,6 @@ RESULTS_LOG_DIR = PROJECT_ROOT / "results" / "logs"
 # ── Expected packages (from requirements.txt) ──────────────────────────
 REQUIRED_PACKAGES = [
     ("torch", "torch"),
-    ("torchaudio", "torchaudio"),
     ("transformers", "transformers"),
     ("librosa", "librosa"),
     ("soundfile", "soundfile"),
@@ -62,14 +61,14 @@ def check_python_version() -> tuple[bool, str]:
 
 
 def check_pytorch_version() -> tuple[bool, str]:
-    """Check that PyTorch matches the version paired with torchaudio."""
+    """Check that PyTorch has the patched version required by the project."""
     try:
         import torch
         ver = torch.__version__
-        ok = ver.split("+")[0] == "2.11.0"
+        ok = ver.split("+")[0] == "2.14.0"
         msg = f"PyTorch version: {ver}"
         if not ok:
-            msg += " — EXPECTED 2.11.0"
+            msg += " — EXPECTED 2.14.0"
         return ok, msg
     except ImportError:
         return False, "PyTorch: NOT INSTALLED"
