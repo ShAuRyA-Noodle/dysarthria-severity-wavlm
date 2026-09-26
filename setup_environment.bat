@@ -2,7 +2,7 @@
 REM ============================================================
 REM  ATD Project — Environment Setup Script (Windows)
 REM  Creates conda env "dysarthria" with Python 3.11,
-REM  installs matching CUDA 12.6 PyTorch wheels and project requirements.
+REM  installs a CUDA 12.6 PyTorch wheel and project requirements.
 REM ============================================================
 
 echo ============================================================
@@ -26,10 +26,10 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Step 3: Install matching GPU-enabled PyTorch packages
-echo [3/4] Installing PyTorch 2.13.0 and Torchaudio 2.11.0 with CUDA 12.6...
-python -m pip install torch==2.13.0 torchaudio==2.11.0 --index-url https://download.pytorch.org/whl/cu126
+echo [3/4] Installing PyTorch 2.14.0 with CUDA 12.6...
+python -m pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cu126
 if %ERRORLEVEL% NEQ 0 (
-    echo ERROR: Failed to install CUDA-enabled PyTorch packages.
+    echo ERROR: Failed to install CUDA-enabled PyTorch.
     exit /b 1
 )
 

@@ -9,7 +9,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 import torch
-import torchaudio
+import soundfile as sf
 from transformers import AutoModel
 from tqdm import tqdm
 
@@ -35,6 +35,14 @@ TARGET_LAYERS = [1, 3, 6, 9, 12, 15, 18, 21, 23]
 RANDOM_SEED = 42
 
 logger = logging.getLogger(__name__)
+
+
+def load_processed_audio(audio_path: Path) -> tuple[np.ndarray, int]:
+    """Read a preprocessed mono PCM WAV as float32 samples and its sample rate."""
+    waveform, sample_rate = sf.read(str(audio_path), dtype="float32")
+    if waveform.ndim != 1:
+        raise ValueError(f"Expected mono processed audio: {audio_path}")
+    return waveform, sample_rate
 
 
 class SSLExtractor:
@@ -420,8 +428,7 @@ def extract_dataset_embeddings(
                 continue
 
             # Load audio
-            waveform, sr = torchaudio.load(str(audio_path))
-            waveform = waveform.squeeze(0).numpy()  # (T_samples,)
+            waveform, sr = load_processed_audio(audio_path)
 
             # Extract embeddings from all target layers
             layer_embeddings = extractor.extract_all_layers(
