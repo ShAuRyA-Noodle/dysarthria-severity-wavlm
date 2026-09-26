@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torchaudio
-from transformers import AutoModel, AutoProcessor
+from transformers import AutoModel
 from tqdm import tqdm
 
 # ── Configuration ──────────────────────────────────────────────────────

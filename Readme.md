@@ -20,7 +20,7 @@
   <img src="https://img.shields.io/badge/Zero--Shot-No%20Fine--Tuning-orange?style=flat-square"/>
   <img src="https://img.shields.io/badge/Dataset-TORGO-lightgrey?style=flat-square"/>
   <img src="https://img.shields.io/badge/Python-3.11-blue?style=flat-square"/>
-  <img src="https://img.shields.io/badge/PyTorch-2.6%2B-red?style=flat-square"/>
+  <img src="https://img.shields.io/badge/PyTorch-2.11.0-red?style=flat-square"/>
 </p>
 
 ---
@@ -176,14 +176,14 @@ cd dysarthria-severity-wavlm
 conda create -n dysarthria python=3.11 -y
 conda activate dysarthria
 
-# Install PyTorch with CUDA
-conda install pytorch==2.2.2 torchaudio==2.2.2 pytorch-cuda=12.1 -c pytorch -c nvidia -y
+# Install matching CUDA 12.6 PyTorch and Torchaudio wheels
+python -m pip install torch==2.11.0 torchaudio==2.11.0 --index-url https://download.pytorch.org/whl/cu126
 
-# Install remaining dependencies
-pip install -r requirements.txt
+# Install remaining dependencies, including patched Transformers
+python -m pip install -r requirements.txt
 ```
 
-**Requirements:** NVIDIA GPU with at least 8GB VRAM, CUDA 12.1+, ~80GB disk space for embeddings
+**Requirements:** NVIDIA GPU with at least 8GB VRAM, a driver supporting CUDA 12.6, ~80GB disk space for embeddings
 
 ---
 
@@ -213,7 +213,7 @@ python experiments/01_verify_environment.py
 Expected output:
 ```
 [PASS] Python 3.11.x
-[PASS] PyTorch 2.2.2
+[PASS] PyTorch 2.11.0
 [PASS] CUDA available
 [PASS] GPU: RTX 4080 (12GB)
 [PASS] All 20 packages importable
