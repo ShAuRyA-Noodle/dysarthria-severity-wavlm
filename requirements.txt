@@ -1,4 +1,4 @@
-torch==2.14.0
+torch==2.14.1
 transformers>=5.17.0,<6.0
 librosa>=0.10.2,<0.12
 soundfile>=0.14.0,<0.15
