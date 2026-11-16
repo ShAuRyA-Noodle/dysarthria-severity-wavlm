@@ -3,10 +3,23 @@ data/raw/
 data/embeddings/
 data/processed/audio_16khz/
 data/processed/references/
+data/processed/references_loco/
+data/processed/references_ipvs/
+data/processed/features/
 F/
 M/
 FC/
 MC/
+
+# ===== VERITAS cross-corpus harness: all downloaded/derived corpus data =====
+# (archives, extracted audio, and cached WavLM features — all regenerable;
+#  the baseline result JSON lives in results/veritas/ and IS tracked)
+data/veritas/
+
+# ===== Raw external-corpus archives (NEVER commit, copyrighted) =====
+DS_10283_3443/
+l2arctic_release_v5.0/
+paper/references/
 
 # ===== Python cache =====
 __pycache__/
@@ -19,6 +32,12 @@ __pycache__/
 *.h5
 *.hdf5
 *.pkl
+# Exception: the HF Space reference trajectories are required at
+# Space startup and are tracked via Git LFS (see space/.gitattributes).
+!space/references/*.pkl
+# Exception: small startup reference arrays for the Clarify/Mirror Spaces
+!space/veritas_clarify/references/*.npy
+!space/veritas_mirror/references/*.npy
 
 # ===== Environment =====
 .env
@@ -26,6 +45,13 @@ __pycache__/
 
 # ===== Logs =====
 results/logs/
+
+# ===== Privacy: real-name → anonymous-ID maps (NEVER commit) =====
+data/processed/metadata/*_speaker_map.csv
+
+# ===== MFA corpus tree (copy of TORGO audio + .lab files) =====
+mfa_corpus_torgo/
+data/processed/textgrids/
 
 # ===== OS =====
 Thumbs.db
@@ -36,3 +62,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# ===== Staging area for deletion (freed by user) =====
+dump/

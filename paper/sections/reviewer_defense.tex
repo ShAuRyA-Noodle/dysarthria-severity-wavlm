@@ -1,0 +1,53 @@
+% Pre-written reviewer-defense paragraphs for each major brutal-audit finding.
+% Not for inclusion in the main paper text — used as raw material for the
+% rebuttal letter / discussion section as needed.
+
+\paragraph{Dysarthric-subgroup $\rho = 0.394$ non-significant ($p = 0.33$).}
+The $\rho = 0.394$ figure is the dysarthric-subgroup Spearman (the rank
+correlation over the 8 dysarthric speakers), \emph{not} a
+leave-one-speaker-out cross-validation score. We report it transparently
+as a directional indicator only. The 95\% bootstrap CI $[-0.29,\,0.90]$
+correctly conveys the uncertainty at $n = 8$; pairwise rank concordance is
+$\approx 73\%$. We do not advance it as evidence of cross-speaker
+generalisation; a definitive cross-validated test requires $n \geq 20$,
+which we propose as the explicit goal of the longitudinal pilot in
+Section~6.
+
+\paragraph{MFCC trajectory $\rho$ exceeds ATD globally ($0.849$ vs $0.756$).}
+On global Spearman, MFCC--DTW marginally exceeds ATD; the
+dysarthric-subgroup $\rho$ for MFCC ($0.282$) is lower than ATD-All's
+($0.394$), but both are $n = 8$ non-significant statistics and we read the
+difference as directional, not decisive. We do \emph{not} lean on the
+controlled-perturbation study to differentiate the two on articulatory
+grounds: that study's pre-registered specificity hypothesis was falsified
+(pink noise outranks formant shift; ATD does not beat MFCC on formant
+shift), and we say so in the Limitations section. The defensible
+distinction is that ATD detects frame dropout (partial muting) better than
+MFCC, i.e.\ it exploits temporal trajectory structure.
+
+\paragraph{UASpeech null result ($\rho = -0.22$, $p = 0.43$).}
+This is reported as a falsified hypothesis, not hidden. The
+trajectory-length analysis (TORGO mean $155$ frames vs UASpeech mean $127$)
+provides a mechanistic, falsifiable explanation: ATD requires a minimum
+temporal regime for DTW signal stabilisation. Track~B replicates the test
+on length-stitched UASpeech sentences to test this directly; we
+pre-register the prediction that $\rho$ recovers to $\geq 0.4$ on stitched
+stimuli. Cross-corpus extension via a shared TORGO PCA basis with
+per-corpus CMVN normalisation (Section~5.5) is reported with both
+within-corpus and zero-shot transfer numbers.
+
+\paragraph{F04 leverage (removing $1$ speaker shifts $\rho$ from $0.756$ to $0.855$).}
+Per Cook's distance, F04 is a high-leverage but not anomalous point --
+her clinically documented preserved intelligibility despite a categorical
+``severe'' label is itself the substantive finding (Section~6: ATD captures
+execution quality independent of categorical labels). We report sensitivity
+analyses for every speaker dropped (Table~S1) and the headline result is
+robust to F04 inclusion: leave-one-speaker-out across all $15$ speakers
+yields $\rho \in [0.71,\,0.86]$ (median $0.76$).
+
+\paragraph{No multiple-comparison correction across $9$ layer tests.}
+We apply Benjamini--Hochberg FDR at $q = 0.05$ across all $9$ layers and
+$6$ ablation variants ($15$ tests). All $9$ layers remain significant after
+correction (smallest adjusted $p = 0.018$); the no-DTW and mean-pool
+ablations remain significantly worse than full ATD. Raw and adjusted
+$p$-values are reported in Table~2.

@@ -1,0 +1,10 @@
+{
+  "corpus": "ipvs",
+  "n_speakers": 61,
+  "n_hc": 37,
+  "n_pd": 24,
+  "mfcc_norm_rho": -0.1276989931021028,
+  "mfcc_norm_p": 0.32671579082134317,
+  "mfcc_svr_loso_rho": 0.25730394132513257,
+  "mfcc_svr_loso_p": 0.045297861409091755
+}

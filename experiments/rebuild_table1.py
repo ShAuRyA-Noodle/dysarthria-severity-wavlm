@@ -17,6 +17,7 @@ from scipy.stats import spearmanr
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.baselines import (
     TORGO_SEVERITY,
@@ -89,6 +90,7 @@ def compute_global_spearman_mfcc(metadata_df: pd.DataFrame) -> dict:
 
 
 def main():
+    set_global_seed(42)
     print("=" * 60)
     print("  Rebuilding Table 1 with Global Spearman")
     print("=" * 60)

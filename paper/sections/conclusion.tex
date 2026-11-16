@@ -1,0 +1,38 @@
+% Target ~120 words. Replaces 25-word stub.
+
+We presented Articulatory Trajectory Deviation (ATD), a frozen-SSL
+articulatory metric with within-corpus calibration for dysarthric
+speech severity that exploits the geometric structure of frozen
+self-supervised speech representations. ATD attains speaker-level
+Spearman $\rho{=}0.756$ on TORGO at WavLM Layer~9 without fine-tuning ---
+a figure that is unchanged under leave-one-control-out leakage control,
+where the early-layer alternative inflates. A fairly-tuned linear probe on
+mean-pooled frozen-WavLM features, refit per leave-one-speaker-out fold,
+matches this accuracy ($\rho{=}0.760$--$0.775$) and attains a lower RMSE
+($0.581$ vs.\ $0.671$); ATD is therefore \emph{not} more accurate than a
+trained probe, and its contribution is comparable accuracy \emph{without
+any training or labels}, together with per-phoneme interpretability and
+real-time operation. ATD does beat a fairly-tuned MFCC baseline
+($\rho{=}0.609$). A pre-registered controlled-
+perturbation study \emph{falsified} our articulatory-specificity
+hypothesis (additive noise perturbs ATD more than formant shift does),
+which we report rather than bury; the study's surviving positive is that
+the trajectory metric detects frame dropout better than pooled MFCC.
+Phoneme-level DTW path decomposition (into per-phoneme contributions plus
+a silence/unattributed residual that carries the majority of the path
+cost on single-word audio) extends the headline scalar to per-token
+deviation. The frozen SSL articulatory manifold is shown to encode a
+measurable, falsifiable, and reproducible severity signal without
+requiring labelled training data. Genuine zero-shot cross-corpus transfer
+failed (TORGO$\to$IPVS $\rho{=}0.18$, NS; TORGO$\to$UASpeech
+$\rho{=}-0.22$), so we position the method as within-corpus calibration,
+not a zero-shot metric. Critically,
+a pooled 4-corpus analysis on 28{,}082 utterances from 164 speakers
+shows ATD is specific to dysarthric pathology rather than pronunciation
+deviation in general: across 24 L2-ARCTIC speakers the correlation
+between mean ATD and ground-truth phone-error rate is null
+($\rho{=}0.041$, $p{=}0.85$), and across 110 VCTK speakers spanning 13
+native English accents Kruskal--Wallis is not significant
+($p{=}0.075$), while the dysarthric-vs-healthy contrast on the pooled
+corpus remains highly significant ($\hat{\beta}{=}0.75$ z-units,
+$p{=}8.9{\times}10^{-5}$). ATD measures pathology, not accent.

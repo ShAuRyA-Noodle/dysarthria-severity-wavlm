@@ -1,0 +1,64 @@
+% Target ~100 words.
+
+\paragraph{Sample size and statistical power.}
+$n = 15$ TORGO speakers (8 dysarthric) yields wide bootstrap CIs. The
+dysarthric-subgroup Spearman ($n = 8$, $\rho = 0.394$, $p = 0.33$) is
+non-significant at $\alpha = 0.05$ and is reported as a directional
+indicator only, not as a leave-one-speaker-out cross-validation result.
+We report this transparently throughout.
+
+\paragraph{Pre-registered specificity hypothesis falsified (Track~C).}
+Our pre-registration (\texttt{paper/appendix/track\_c\_preregistration.md},
+locked \texttt{2026-05-08}) predicted that ATD would respond to
+articulatory distortions (formant shift, partial muting) more strongly
+than to acoustic distortions (pink noise, reverberation, time-stretch),
+and listed the falsifying condition explicitly. That condition (locked
+criterion~\#2, $\beta(\text{pink\_noise}) > \beta(\text{formant\_shift})$)
+is \emph{met} at both layers: pink-noise sensitivity exceeds formant-shift
+sensitivity at Layer~9 ($\rho = 0.766$ vs $0.170$) and at Layer~1
+($\rho = 0.832$ vs $0.395$). ATD also does not beat MFCC on formant shift
+($\rho_{\text{ATD}} - \rho_{\text{MFCC}} = -0.055$ at Layer~9). As the
+pre-registration requires, we report this here as a failed hypothesis: the
+perturbation study does \emph{not} establish articulatory specificity, and
+we make no specificity claim from it. The one surviving positive ---
+better detection of frame dropout (partial muting) than MFCC,
+$\Delta\rho = +0.25$ --- speaks to ATD's use of temporal structure, not to
+formant-level selectivity. The accent-specificity evidence
+(\S\ref{sec:specificity}) is a separate, independently supported argument.
+
+\paragraph{Single-corpus headline.}
+The 0.756 figure is on TORGO only. Cross-corpus generalisation to
+UASpeech is reported as a falsified hypothesis (the trajectory-length
+analysis offers a mechanistic explanation pre-registered for follow-up);
+extension to PD (PC-GITA, IPVS) and Italian dysarthria (EasyCall) is
+prospective.
+
+\paragraph{F04 leverage.}
+Removing one influential speaker shifts $\rho$ from 0.756 to 0.855. We
+report the leave-one-out distribution across all 15 speakers in the
+supplementary.
+
+\paragraph{Cross-corpus z-norm caveat.}
+The 4-corpus pooled analysis (\S\ref{sec:specificity}) z-normalises
+ATD \emph{within} each corpus before pooling. This controls for
+differences in recording chain (microphone, room, sample rate) but
+also collapses any absolute-scale information across corpora. The
+specificity claim therefore concerns the \emph{relative position} of
+each population within its corpus's ATD distribution, not the
+absolute magnitude. We chose this trade-off because the alternative,
+calibrating absolute ATD across corpora with different reference
+constructions, is not solvable without a shared reference vocabulary.
+A pooled mixed-effects model with speaker random effects is degenerate
+(speaker $\to$ severity is 1:1 within corpus); we therefore report
+OLS with cluster-robust standard errors on speaker, which is the
+correct frequentist instrument given the dependence structure.
+
+\paragraph{Reproducibility caveats.}
+WavLM-Large is extracted in FP16 with cudnn determinism; bit-exact
+reproduction across GPU drivers is not guaranteed. We release pre-
+extracted embeddings on Zenodo to obviate re-extraction.
+
+\paragraph{Ethics.}
+TORGO, UASpeech, L2-ARCTIC, and VCTK are research-only releases; we do
+not redistribute audio. Speaker-level ATD scores are not personally
+identifying but should not be linked to clinical records without IRB.

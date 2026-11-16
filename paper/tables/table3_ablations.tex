@@ -1,17 +1,21 @@
 \begin{table}[t]
 \centering
 \caption{Ablation study. Each row removes or modifies one component of ATD.
-$\rho_\text{global}$ uses all 15 speakers; $\rho_\text{LOSO}$ uses only 8 dysarthric speakers.}
+$\rho_\text{global}$ uses all 15 speakers; $\rho_\text{dys}$ is the
+dysarthric-subgroup Spearman over the 8 dysarthric speakers only ($n=8$,
+non-significant, directional indicator). Layer~9 is the primary
+configuration (Layer~1 inflates under leakage; see Results). The mean-pool
+distance and ``No DTW'' rows are the same algebraic computation
+(pool-then-$L_2$) and are reported once.}
 \label{tab:ablations}
-\begin{tabular}{lccc}
+\begin{tabular}{lccl}
 \toprule
-Variant & $\rho_\text{global}$ & $\rho_\text{LOSO}$ & Notes \\
+Variant & $\rho_\text{global}$ & $\rho_\text{dys}$ & Notes \\
 \midrule
-Full ATD -- Layer 1 & 0.775 & 0.394 & Best layer by Spearman \\
-Full ATD -- Layer 9 & 0.756 & 0.394 & Mid-network articulatory layer \\
-No DTW -- Mean L2 & 0.471 & 0.394 & Mean embed distance, no trajectory \\
-No PCA -- 1024d DTW & 0.802 & 0.394 & Full dim DTW, sampled 200/spk \\
-Mean-pool distance & 0.471 & 0.394 & No trajectory, pool then L2 \\
+Full ATD -- Layer 9 & 0.756 & 0.394 & Primary (leakage-robust) layer \\
+Full ATD -- Layer 1 & 0.775 & 0.394 & Inflated by leakage; LOCO $\rho=0.687$ \\
+No DTW (pool-then-$L_2$) & 0.471 & 0.394 & No trajectory; identical to mean-pool \\
+No PCA -- 1024d DTW & 0.802 & $-0.056$ & Full-dim; subgroup $\rho$ collapses \\
 MFCC trajectory DTW & \textbf{0.849} & 0.282 & Same framework, MFCC not SSL \\
 \bottomrule
 \end{tabular}

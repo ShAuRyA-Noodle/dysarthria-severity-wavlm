@@ -1,0 +1,125 @@
+{
+  "reports": [
+    {
+      "speaker_id": "F01",
+      "backend": "gemini",
+      "model": "gemini-2.5-flash",
+      "elapsed_s": 5.701912299999094,
+      "cached": false,
+      "path": "results/clinical_reports/F01.gemini.md"
+    },
+    {
+      "speaker_id": "F01",
+      "backend": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "elapsed_s": 0.9187023999984376,
+      "cached": false,
+      "path": "results/clinical_reports/F01.groq.md"
+    },
+    {
+      "speaker_id": "F03",
+      "backend": "gemini",
+      "model": "gemini-2.5-flash",
+      "elapsed_s": 6.379885399997875,
+      "cached": false,
+      "path": "results/clinical_reports/F03.gemini.md"
+    },
+    {
+      "speaker_id": "F03",
+      "backend": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "elapsed_s": 0.8975103999982821,
+      "cached": false,
+      "path": "results/clinical_reports/F03.groq.md"
+    },
+    {
+      "speaker_id": "F04",
+      "backend": "gemini",
+      "model": "gemini-2.5-flash",
+      "elapsed_s": 6.004268799995771,
+      "cached": false,
+      "path": "results/clinical_reports/F04.gemini.md"
+    },
+    {
+      "speaker_id": "F04",
+      "backend": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "elapsed_s": 1.0193128999962937,
+      "cached": false,
+      "path": "results/clinical_reports/F04.groq.md"
+    },
+    {
+      "speaker_id": "M01",
+      "backend": "gemini",
+      "model": "gemini-2.5-flash",
+      "elapsed_s": 8.145991999997932,
+      "cached": false,
+      "path": "results/clinical_reports/M01.gemini.md"
+    },
+    {
+      "speaker_id": "M01",
+      "backend": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "elapsed_s": 1.3488361999989138,
+      "cached": false,
+      "path": "results/clinical_reports/M01.groq.md"
+    },
+    {
+      "speaker_id": "M02",
+      "backend": "gemini",
+      "model": "gemini-2.5-flash",
+      "elapsed_s": 7.130759899999248,
+      "cached": false,
+      "path": "results/clinical_reports/M02.gemini.md"
+    },
+    {
+      "speaker_id": "M02",
+      "backend": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "elapsed_s": 0.8573892999993404,
+      "cached": false,
+      "path": "results/clinical_reports/M02.groq.md"
+    },
+    {
+      "speaker_id": "M03",
+      "backend": "gemini",
+      "model": "gemini-2.5-flash",
+      "elapsed_s": 6.782231799996225,
+      "cached": false,
+      "path": "results/clinical_reports/M03.gemini.md"
+    },
+    {
+      "speaker_id": "M03",
+      "backend": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "elapsed_s": 0.7468006999988575,
+      "cached": false,
+      "path": "results/clinical_reports/M03.groq.md"
+    },
+    {
+      "speaker_id": "M04",
+      "backend": "gemini",
+      "model": "gemini-2.5-flash",
+      "elapsed_s": 5.4008954000019,
+      "cached": false,
+      "path": "results/clinical_reports/M04.gemini.md"
+    },
+    {
+      "speaker_id": "M04",
+      "backend": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "elapsed_s": 0.9230746999965049,
+      "cached": false,
+      "path": "results/clinical_reports/M04.groq.md"
+    },
+    {
+      "speaker_id": "M05",
+      "backend": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "elapsed_s": 0.8698823000013363,
+      "cached": false,
+      "path": "results/clinical_reports/M05.groq.md"
+    }
+  ],
+  "n_total": 15
+}

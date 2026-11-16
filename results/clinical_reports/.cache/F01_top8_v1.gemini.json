@@ -1,0 +1,6 @@
+{
+  "backend": "gemini",
+  "model": "gemini-2.5-flash",
+  "text": "**SPEECH-LANGUAGE PATHOLOGY REPORT: ARTICULATORY TRAJECTORY DEVIATION (ATD)**\n\n**Speaker ID:** F01\n\n**OVERALL:**\nSpeaker F01 exhibits severe articulatory deviation, with a mean Articulatory Trajectory Deviation (ATD) of 97.533, which is +1.19 standard deviations above the population mean of 76.499.\n\n**ARTICULATORY PATTERNS:**\n*   Significant deviations were observed for vowels, particularly /ER1/ (z=+5.56), /UH1/ (z=+5.52), and /OW2/ (z=+2.55), contributing to a mean vowel z-score of +1.",
+  "elapsed_s": 5.701912299999094
+}

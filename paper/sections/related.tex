@@ -1,0 +1,59 @@
+% Target ~350 words.
+
+\paragraph{Acoustic feature engineering.} Early automatic dysarthria
+severity work relied on hand-crafted acoustic features: long-term-average
+spectra, perturbation measures (jitter, shimmer), and rhythm
+metrics~\cite{Tu2017XVectorDysarthria,Berisha2014AcousticMarkers}. MFCC
++ SVR/Ridge remains the default baseline. These features are
+interpretable but brittle to channel and recording variability and require
+per-speaker calibration in deployment.
+
+\paragraph{Self-supervised representations.} A second wave of work
+fine-tunes large SSL backbones (wav2vec~2.0~\cite{Baevski2020wav2vec2},
+HuBERT~\cite{Hsu2021HuBERT}, WavLM~\cite{Chen2022WavLM}) on dysarthric
+classification or regression
+heads~\cite{Hernandez2020SSLDysarthria,Joshi2021IndianDysarthria,Schu2023SSLDys}.
+Fine-tuning yields strong in-distribution accuracy but destroys the
+pre-trained geometry, requires labels at training time, and tends to
+overfit speaker-specific spectral idiosyncrasies (consistent with our
+ablations, where MFCC trajectory DTW achieves the highest global $\rho$
+but a lower dysarthric-subgroup $\rho$ than SSL features; both are $n = 8$
+non-significant and read as directional only).
+
+\paragraph{Frozen SSL probes.} Recent perceptual-quality work demonstrates
+that frozen SSL representations can be probed with simple distance metrics
+and recover useful speech-quality
+signals~\cite{Millet2022SSLPerceptual,Janbakhshi2021PCADys}. The closest
+methodological ancestor is the subspace-distance line of Janbakhshi et
+al.~\cite{Janbakhshi2019Subspace,Janbakhshi2021PCADys}, which measures the
+distance of a dysarthric utterance to a healthy-reference subspace; very
+recent training-free work extends this idea to frozen SSL representations
+at scale, including cross-lingual phonological-subspace analysis over
+hundreds to thousands of
+speakers~\cite{Muller2026TrainingFree,Subspace2026Collapse}. Relative to
+these, our contribution is narrow and specific: rather than a
+\emph{pooled} or \emph{subspace} distance computed offline, we treat the
+per-frame embedding sequence as a \emph{curve} and measure its frame-level
+DTW \emph{trajectory} geometry against a reference curve, add an exact
+per-phoneme path attribution (with an explicit silence/unattributed
+residual), and provide an exact-parity real-time streaming variant. We do
+\emph{not} claim to be the first to use frozen SSL representations or
+healthy-reference distances for dysarthria; the delta is frame-level
+trajectory geometry plus path-level attribution plus streaming, versus the
+pooled/subspace $d'$ offline metrics of prior work.
+
+\paragraph{Trajectory-based methods in atypical speech.} Dynamic time
+warping has long been used in dysarthric ASR to handle the 2--3$\times$
+slower production
+rate~\cite{Bhat2022DTWDysarthria,Salvador2007FastDTW}. We borrow the
+alignment machinery and length-normalisation but apply it to learned SSL
+representations rather than acoustic features, and we use it for severity
+estimation rather than recognition.
+
+\paragraph{Cross-disorder and cross-language extension.} Severity
+estimation has been pursued separately for Parkinson's
+disease~\cite{Vasquez-Correa2019CNNPD,Pompili2020SSLPD} and ALS, with
+limited cross-disorder portability. Our cross-corpus extension (Section~5)
+tests whether the SSL articulatory manifold generalises across disorders
+(PD, dysarthria), languages (English, Spanish, Italian), and recording
+conditions, using a shared reference basis with per-corpus normalisation.

@@ -20,10 +20,12 @@ from sklearn.decomposition import PCA
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.atd_metric import TORGO_SEVERITY, LAYER_POSITION_MAP
 
 ALL_SPEAKERS = sorted(TORGO_SEVERITY.keys())
+DYSARTHRIC_SPEAKERS = sorted(s for s, sev in TORGO_SEVERITY.items() if sev > 0)
 TARGET_LAYERS = [1, 3, 6, 9, 12, 15, 18, 21, 23]
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(message)s")
@@ -39,30 +41,58 @@ def load_speaker_atd_from_file(layer: int) -> dict:
     return dict(zip(df.speaker_id, df.mean_atd))
 
 
+def _loso_spearman(speaker_scores: dict) -> float:
+    """LOSO Spearman: dysarthric speakers only.
+
+    Controls are reference-builders, never held out. Each dysarthric speaker
+    is effectively LOSO already (their utterances were never in any reference).
+    Hence LOSO rho == Spearman of dysarthric-only mean scores vs severity.
+    """
+    y_true, y_pred = [], []
+    for spk in DYSARTHRIC_SPEAKERS:
+        if spk in speaker_scores:
+            y_true.append(TORGO_SEVERITY[spk])
+            y_pred.append(speaker_scores[spk])
+    if len(y_true) < 3:
+        return float("nan")
+    rho, _ = spearmanr(y_true, y_pred)
+    return round(float(rho), 4)
+
+
 def evaluate_speaker_metric(speaker_scores: dict, metric_name: str) -> dict:
-    """Evaluate a speaker-level metric against severity."""
+    """Evaluate a speaker-level metric against severity.
+
+    Returns BOTH global Spearman (15 speakers) and LOSO Spearman (8 dysarthric).
+    Critical: LOSO must be computed from THIS variant's per-speaker scores,
+    not from cached layer-9 ATD scores (which was the bug in
+    add_loso_to_ablations.py producing identical 0.3944 across rows).
+    """
     y_true, y_pred = [], []
     for spk in ALL_SPEAKERS:
         if spk in speaker_scores:
             y_true.append(TORGO_SEVERITY[spk])
             y_pred.append(speaker_scores[spk])
 
-    y_true = np.array(y_true)
-    y_pred = np.array(y_pred)
+    y_true_arr = np.array(y_true)
+    y_pred_arr = np.array(y_pred)
 
-    rho = 0.0
-    rmse = 0.0
-    if len(y_true) >= 3:
-        rho, _ = spearmanr(y_true, y_pred)
-        rmse = float(np.sqrt(np.mean((y_true - y_pred) ** 2)))
-    else:
-        rmse = float(np.sqrt(np.mean((y_true - y_pred) ** 2)))
+    rho_global = 0.0
+    rmse: float | str = "N/A"
+    if len(y_true_arr) >= 3:
+        rho_global, _ = spearmanr(y_true_arr, y_pred_arr)
+        # RMSE only meaningful if scores are on severity scale; we report it
+        # mainly for ATD which is unitless. Kept for backward compat.
+        rmse = round(float(np.sqrt(np.mean((y_true_arr - y_pred_arr) ** 2))), 4)
+
+    rho_loso = _loso_spearman(speaker_scores)
 
     return {
         "variant": metric_name,
-        "spearman_rho": round(float(rho), 4),
-        "rmse": round(rmse, 4) if rmse > 0 else "N/A",
-        "n_speakers": len(y_true),
+        "spearman_global": round(float(rho_global), 4),
+        "spearman_loso": rho_loso,
+        "rmse": rmse,
+        "n_speakers": len(y_true_arr),
+        "n_dysarthric_in_loso": sum(1 for s in DYSARTHRIC_SPEAKERS if s in speaker_scores),
     }
 
 
@@ -327,6 +357,7 @@ def ablation_6_mfcc_trajectory():
 
 
 def main():
+    set_global_seed(42)
     print("=" * 60)
     print("  Ablation Study — ATD Components")
     print("=" * 60)
@@ -353,18 +384,26 @@ def main():
 
     # Save
     df = pd.DataFrame(results)
+    # Reorder columns for readability.
+    col_order = ["variant", "spearman_global", "spearman_loso", "rmse",
+                 "n_speakers", "n_dysarthric_in_loso", "notes"]
+    df = df[[c for c in col_order if c in df.columns]]
     out_path = PROJECT_ROOT / "results/tables/table2_ablations.csv"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(out_path, index=False)
 
-    print(f"\n{'='*60}")
-    print("  Table 2 — Ablation Results")
-    print(f"{'='*60}")
+    print(f"\n{'='*72}")
+    print("  Table 2 — Ablation Results (per-variant LOSO from each variant's scores)")
+    print(f"{'='*72}")
     print(df.to_string(index=False))
-    print(f"\n  Best variant: {df.loc[df.spearman_rho.idxmax(), 'variant']} "
-          f"(rho={df.spearman_rho.max():.4f})")
+    best_idx = df["spearman_global"].idxmax()
+    print(
+        f"\n  Best variant by global rho: {df.loc[best_idx, 'variant']} "
+        f"(rho_global={df.loc[best_idx, 'spearman_global']:.4f}, "
+        f"rho_loso={df.loc[best_idx, 'spearman_loso']})"
+    )
     print(f"\nSaved to: {out_path}")
-    print("=" * 60)
+    print("=" * 72)
 
 
 if __name__ == "__main__":

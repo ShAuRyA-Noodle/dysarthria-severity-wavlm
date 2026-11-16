@@ -1,0 +1,27 @@
+{
+  "observed_rho": 0.7560864148142503,
+  "observed_p": 0.0011089540064018154,
+  "n_speakers": 15,
+  "fisher_se": 0.2886751345948129,
+  "prior": {
+    "family": "Beta(a,b) on (rho+1)/2",
+    "a": 8.0,
+    "b": 2.0,
+    "implied_prior_mean_rho": 0.6000000000000001
+  },
+  "posterior": {
+    "mean": 0.69823694367013,
+    "median": 0.7163090086253187,
+    "ci_95_low": 0.41305842736301346,
+    "ci_95_high": 0.8833124536153244,
+    "ci_width": 0.47025402625231094,
+    "mode_kde": 0.7513827655310622,
+    "n_samples": 100000
+  },
+  "comparison_to_frequentist": {
+    "frequentist_ci_low": 0.382,
+    "frequentist_ci_high": 0.921,
+    "frequentist_ci_width": 0.539,
+    "bayesian_ci_width_reduction": 0.12754355055229888
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "anomaly_investigation": {
+    "F04": {
+      "severity": 2,
+      "n_utterances": 243,
+      "mean_atd": 72.9,
+      "std_atd": 16.24,
+      "median_atd": 69.26,
+      "min_atd": 51.11,
+      "max_atd": 149.09,
+      "iqr": 15.61,
+      "unique_words": 210,
+      "group_mean_atd": 97.19,
+      "group_std_atd": 14.44,
+      "z_score_in_group": -1.68
+    },
+    "M05": {
+      "severity": 1,
+      "n_utterances": 482,
+      "mean_atd": 97.96,
+      "std_atd": 14.22,
+      "median_atd": 96.37,
+      "min_atd": 64.28,
+      "max_atd": 154.18,
+      "iqr": 16.0,
+      "unique_words": 392,
+      "group_mean_atd": 85.68,
+      "group_std_atd": 11.43,
+      "z_score_in_group": 1.07
+    }
+  },
+  "sensitivity_analysis": {
+    "full_15_speakers": {
+      "rho": 0.7561,
+      "p": 0.001109,
+      "n": 15
+    },
+    "without_F04": {
+      "rho": 0.8554,
+      "p": 9.6e-05,
+      "n": 14
+    },
+    "without_M05": {
+      "rho": 0.7571,
+      "p": 0.001715,
+      "n": 14
+    },
+    "without_F04_M05": {
+      "rho": 0.8485,
+      "p": 0.000245,
+      "n": 13
+    },
+    "dysarthric_only_8": {
+      "rho": 0.3944,
+      "p": 0.333601,
+      "n": 8
+    },
+    "dysarthric_without_F04": {
+      "rho": 0.7217,
+      "p": 0.067106,
+      "n": 7
+    }
+  },
+  "bootstrap_confidence_intervals": {
+    "speaker_level_15": {
+      "rho": 0.7561,
+      "ci_lower": 0.403,
+      "ci_upper": 0.9199,
+      "ci_level": 0.95,
+      "n_bootstrap": 10000,
+      "n_valid_resamples": 10000,
+      "se": 0.1382
+    },
+    "without_F04": {
+      "rho": 0.8554,
+      "ci_lower": 0.6079,
+      "ci_upper": 0.9423,
+      "ci_level": 0.95,
+      "n_bootstrap": 10000,
+      "n_valid_resamples": 9999,
+      "se": 0.0858
+    },
+    "without_F04_M05": {
+      "rho": 0.8485,
+      "ci_lower": 0.5428,
+      "ci_upper": 0.9454,
+      "ci_level": 0.95,
+      "n_bootstrap": 10000,
+      "n_valid_resamples": 9998,
+      "se": 0.1033
+    },
+    "dysarthric_only": {
+      "rho": 0.3944,
+      "ci_lower": -0.2924,
+      "ci_upper": 0.9001,
+      "ci_level": 0.95,
+      "n_bootstrap": 10000,
+      "n_valid_resamples": 9772,
+      "se": 0.3367
+    }
+  },
+  "pca_dimension_analysis": {
+    "known_dimensions": {
+      "64": 0.756,
+      "1024": 0.802
+    },
+    "rho_difference": 0.046,
+    "computational_tradeoff": "16x slower for 0.046 rho improvement",
+    "recommendation": "Keep PCA=64, justify on computational grounds",
+    "full_sweep_needed": true,
+    "full_sweep_est_hours": 14
+  }
+}

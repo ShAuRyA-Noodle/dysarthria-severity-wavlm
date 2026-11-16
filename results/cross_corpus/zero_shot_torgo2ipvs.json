@@ -1,0 +1,10 @@
+{
+  "torgo_layer": 1,
+  "ipvs_layer": 1,
+  "n_speakers": 61,
+  "n_controls": 37,
+  "n_dysarthric": 24,
+  "rho_centroid_distance_vs_label": 0.17915978136712934,
+  "p_value": 0.1671124829726462,
+  "method": "TORGO-fit shared PCA basis + per-corpus CMVN; speaker-level centroid distance to HC prototype."
+}

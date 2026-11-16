@@ -1,0 +1,39 @@
+{
+  "task": "ipvs_sustained_vowel_a",
+  "layer": 1,
+  "by_backbone": [
+    {
+      "backbone": "wavlm_large",
+      "status": "ok",
+      "n_utts": 99,
+      "n_speakers": 46,
+      "n_controls": 22,
+      "n_pd": 24,
+      "rho": 0.4622081388685876,
+      "p_value": 0.0012213869191219251,
+      "elapsed_min": 1.8884288867314656
+    },
+    {
+      "backbone": "xlsr_300m",
+      "status": "ok",
+      "n_utts": 99,
+      "n_speakers": 46,
+      "n_controls": 22,
+      "n_pd": 24,
+      "rho": 0.07867372576486599,
+      "p_value": 0.603263492448917,
+      "elapsed_min": 1.6768760879834492
+    },
+    {
+      "backbone": "hubert_large",
+      "status": "ok",
+      "n_utts": 99,
+      "n_speakers": 46,
+      "n_controls": 22,
+      "n_pd": 24,
+      "rho": 0.31797297496633337,
+      "p_value": 0.031280708479481674,
+      "elapsed_min": 6.262005678812662
+    }
+  ]
+}

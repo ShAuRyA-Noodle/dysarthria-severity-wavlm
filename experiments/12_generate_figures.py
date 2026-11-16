@@ -10,6 +10,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 from src.visualization import (
     fig1_layer_analysis,
@@ -22,6 +23,7 @@ from src.visualization import (
 
 
 def main():
+    set_global_seed(42)
     print("=" * 60)
     print("  Phase 7 — Generating Publication Figures")
     print("=" * 60)

@@ -1,0 +1,50 @@
+{
+  "method": "leave-one-speaker-out jackknife on TORGO Spearman rho",
+  "n_speakers": 15,
+  "full_rho": 0.7560864148142503,
+  "full_p": 0.0011089540064018154,
+  "loso_rhos_sorted": [
+    0.7239,
+    0.7239,
+    0.7239,
+    0.735,
+    0.735,
+    0.735,
+    0.735,
+    0.735,
+    0.7403,
+    0.7407,
+    0.7571,
+    0.7837,
+    0.7963,
+    0.7963,
+    0.8554
+  ],
+  "loso_mean": 0.7544333333333333,
+  "loso_median": 0.735,
+  "jackknife_se": 0.13538056647014665,
+  "jackknife_95_ci": [
+    0.4907405045327629,
+    1.0214323250957378
+  ],
+  "jackknife_95_ci_width": 0.5306918205629749,
+  "bias_corrected_rho": 0.7792295555470883,
+  "percentile_min_max_bracket": [
+    0.7239,
+    0.8554
+  ],
+  "iqr_25_75": [
+    0.735,
+    0.7704
+  ],
+  "comparison_to_bootstrap": {
+    "bootstrap_95_ci": [
+      0.382,
+      0.921
+    ],
+    "bootstrap_95_ci_width": 0.539,
+    "jackknife_is_tighter": true,
+    "ci_width_ratio_jk_over_boot": 0.984585937964703
+  },
+  "interpretation": "Jackknife CI quantifies how much each speaker shifts the headline rho. The percentile bracket [min, max] shows the rho if the most-favourable or least-favourable speaker were removed. Both reported alongside the bootstrap CI to address the F04-leverage objection raised by the independent audit."
+}

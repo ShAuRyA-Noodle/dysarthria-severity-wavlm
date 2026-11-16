@@ -1,0 +1,255 @@
+{
+  "n_l2_speakers": 24,
+  "test_1_corr_atd_vs_per": {
+    "spearman_rho": 0.040869565217391296,
+    "spearman_p": 0.8496151500324182,
+    "pearson_r": 0.02642664918054194,
+    "pearson_p": 0.9024449466627966,
+    "interpretation": "H0: ATD independent of per-speaker phone-error-rate (accent strength). Significant rho => ATD is generic deviation detector. NS rho => specific to dysarthric temporal disruption (desired)."
+  },
+  "test_2_kruskal_wallis_across_l1": {
+    "H": 12.290000000000006,
+    "p": 0.031023083283616307,
+    "n_groups": 6,
+    "group_means": {
+      "Arabic": {
+        "mean": 7.160883207876578,
+        "std": 0.10533024701579327,
+        "count": 4.0
+      },
+      "Chinese": {
+        "mean": 6.98714529826086,
+        "std": 0.17861887377571106,
+        "count": 4.0
+      },
+      "Hindi": {
+        "mean": 7.349285761885874,
+        "std": 0.062575861867966,
+        "count": 4.0
+      },
+      "Korean": {
+        "mean": 6.9749783540676455,
+        "std": 0.1764822763026309,
+        "count": 4.0
+      },
+      "Spanish": {
+        "mean": 6.974301405337058,
+        "std": 0.2487017006420003,
+        "count": 4.0
+      },
+      "Vietnamese": {
+        "mean": 7.028696312396667,
+        "std": 0.08146026249703774,
+        "count": 4.0
+      }
+    },
+    "interpretation": "H0: mean ATD same across 6 L1 groups (Arabic, Chinese, Hindi, Korean, Spanish, Vietnamese). NS => ATD does not distinguish accents (desired)."
+  },
+  "test_3_cross_corpus_effect_sizes": {
+    "torgo_control_n": 7,
+    "torgo_control_mean": 69.84997560512393,
+    "torgo_dys_n": 8,
+    "torgo_dys_mean": 92.87537122712737,
+    "l2_arctic_n": 24,
+    "l2_arctic_mean": 7.079215056637447,
+    "cohen_d_l2_vs_torgo_ctrl": -15.996213596974709,
+    "cohen_d_l2_vs_torgo_dys": -12.813993413512321,
+    "cohen_d_torgo_ctrl_vs_dys": -1.9624200114873682,
+    "mw_l2_vs_torgo_ctrl_p": 7.605791810463668e-07,
+    "mw_l2_vs_torgo_dys_p": 1.901447952615917e-07
+  },
+  "summary_table": [
+    {
+      "speaker_id": "HJK",
+      "l1": "Korean",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 6.937806606319241,
+      "per": 0.0692104729044043
+    },
+    {
+      "speaker_id": "YBAA",
+      "l1": "Arabic",
+      "gender": "M",
+      "n_utts": 149,
+      "mean_atd": 7.1306086770601365,
+      "per": 0.0789685737308622
+    },
+    {
+      "speaker_id": "HKK",
+      "l1": "Korean",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 7.1769096762361295,
+      "per": 0.0936933306467862
+    },
+    {
+      "speaker_id": "ABA",
+      "l1": "Arabic",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 7.028326043448904,
+      "per": 0.1019349690803909
+    },
+    {
+      "speaker_id": "YDCK",
+      "l1": "Korean",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 6.755290291138426,
+      "per": 0.1074096507167373
+    },
+    {
+      "speaker_id": "ZHAA",
+      "l1": "Arabic",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 7.270033089319256,
+      "per": 0.1108883096049729
+    },
+    {
+      "speaker_id": "RRBI",
+      "l1": "Hindi",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 7.365121703936316,
+      "per": 0.1127804487179487
+    },
+    {
+      "speaker_id": "TNI",
+      "l1": "Hindi",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 7.422838036477659,
+      "per": 0.1146149181322013
+    },
+    {
+      "speaker_id": "MBMPS",
+      "l1": "Spanish",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 6.6364722869938815,
+      "per": 0.1227200634417129
+    },
+    {
+      "speaker_id": "NCC",
+      "l1": "Chinese",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 6.999378155152177,
+      "per": 0.1249497790277219
+    },
+    {
+      "speaker_id": "YKWK",
+      "l1": "Korean",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 7.029906842576785,
+      "per": 0.1255052546483427
+    },
+    {
+      "speaker_id": "NJS",
+      "l1": "Spanish",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 7.081713171038558,
+      "per": 0.1344820756585462
+    },
+    {
+      "speaker_id": "TXHC",
+      "l1": "Chinese",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 6.944618750261449,
+      "per": 0.1381028298126743
+    },
+    {
+      "speaker_id": "SKA",
+      "l1": "Arabic",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 7.214565021678018,
+      "per": 0.1470240441466298
+    },
+    {
+      "speaker_id": "SVBI",
+      "l1": "Hindi",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 7.272254564409526,
+      "per": 0.1685529506871463
+    },
+    {
+      "speaker_id": "PNV",
+      "l1": "Vietnamese",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 6.958905581705694,
+      "per": 0.1769367941351297
+    },
+    {
+      "speaker_id": "ASI",
+      "l1": "Hindi",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 7.336928742719995,
+      "per": 0.1828629032258064
+    },
+    {
+      "speaker_id": "ERMS",
+      "l1": "Spanish",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 6.960386635111909,
+      "per": 0.1886867088607595
+    },
+    {
+      "speaker_id": "BWC",
+      "l1": "Chinese",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 6.786309387241884,
+      "per": 0.1895411741134041
+    },
+    {
+      "speaker_id": "LXC",
+      "l1": "Chinese",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 7.218274900387931,
+      "per": 0.1966786714685874
+    },
+    {
+      "speaker_id": "EBVS",
+      "l1": "Spanish",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 7.218633528203882,
+      "per": 0.2279498235985887
+    },
+    {
+      "speaker_id": "TLV",
+      "l1": "Vietnamese",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 6.964367940057044,
+      "per": 0.2498031496062992
+    },
+    {
+      "speaker_id": "HQTV",
+      "l1": "Vietnamese",
+      "gender": "M",
+      "n_utts": 150,
+      "mean_atd": 7.1266141741472,
+      "per": 0.2657534246575342
+    },
+    {
+      "speaker_id": "THV",
+      "l1": "Vietnamese",
+      "gender": "F",
+      "n_utts": 150,
+      "mean_atd": 7.064897553676731,
+      "per": 0.2744751814793015
+    }
+  ]
+}

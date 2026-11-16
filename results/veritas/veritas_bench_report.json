@@ -1,0 +1,267 @@
+{
+  "schema": "veritas-bench/1.0",
+  "config": {
+    "seed": 42,
+    "device": "cuda:0",
+    "primary_corpus": "torgo",
+    "reference_corpora": [
+      "ipvs",
+      "easycall"
+    ],
+    "per_speaker_cap_probe_transfer": 80,
+    "atd_full_utterances": true,
+    "feature": "frozen WavLM-Large; ATD layers {9,1} PCA-64 DTW; probe L9 mean-pool",
+    "notes": "ATD score-based tests use ALL TORGO utterances (reproduce the committed headline); probe + cross-corpus transfer use an 80-utt per-speaker cap (matches CX_cross_corpus_severity.py)."
+  },
+  "thresholds": {
+    "alpha": 0.05,
+    "predictive_validity": {
+      "PASS": "rho >= 0.5 and p < 0.05",
+      "WARN": "rho >= 0.3",
+      "FAIL": "rho < 0.3",
+      "stat": "within-corpus leave-one-speaker-out Spearman rho (metric vs severity)"
+    },
+    "leakage_loco": {
+      "PASS": "naive-minus-LOCO delta <= 0.05",
+      "WARN": "delta <= 0.15",
+      "FAIL": "delta > 0.15",
+      "NA": "metric is not reference-based",
+      "stat": "rho(naive reference) - rho(leave-one-control-out reference)"
+    },
+    "silence_confound": {
+      "PASS": "speech-only retains >= 0.7 of full rho AND silence_fraction < 0.5",
+      "WARN": "retains >= 0.4, or majority-silence representation",
+      "FAIL": "speech-only retains < 0.4 of full rho",
+      "stat": "retention = rho(speech-only) / rho(full); plus mean silence frame fraction"
+    },
+    "energy_confound": {
+      "PASS": "partial rho retains >= 0.7 of raw rho",
+      "WARN": "retains >= 0.4",
+      "FAIL": "retains < 0.4",
+      "stat": "partial Spearman(metric, severity | mean speech energy) vs raw Spearman"
+    },
+    "cross_corpus_transfer": {
+      "PASS": "transfer rho >= 0.5 and p < 0.05",
+      "WARN": "rho >= 0.3 and p < 0.05",
+      "FAIL": "rho < 0.3 or not significant",
+      "NA": "fewer than 2 corpora available, or metric exposes no representation",
+      "stat": "train probe on other corpora -> test held-out corpus; speaker Spearman"
+    },
+    "leakage_by_layer": {
+      "PASS": "speaker-identity AUC <= 0.7",
+      "WARN": "AUC <= 0.85",
+      "FAIL": "AUC > 0.85 (representation strongly encodes identity)",
+      "stat": "macro one-vs-rest speaker-classification AUC of the metric's representation"
+    }
+  },
+  "report_cards": [
+    {
+      "metric_name": "atd_wavlm_l9",
+      "metric_kind": "reference",
+      "corpus": "torgo",
+      "n_speakers": 15,
+      "overall": "FAIL",
+      "tests": {
+        "predictive_validity": {
+          "name": "predictive_validity",
+          "outcome": "PASS",
+          "headline": "within-corpus LOSO Spearman rho=+0.772 (p=0.000755, n=15)",
+          "stats": {
+            "rho": 0.7715167498104595,
+            "p": 0.0007551535176300724,
+            "n_speakers": 15,
+            "eval": "leave-one-speaker-out"
+          }
+        },
+        "leakage_loco": {
+          "name": "leakage_loco",
+          "outcome": "PASS",
+          "headline": "naive rho=+0.772 -> LOCO rho=+0.772; leakage inflation delta=+0.000",
+          "stats": {
+            "naive_rho": 0.7715167498104595,
+            "naive_p": 0.0007551535176300724,
+            "loco_rho": 0.7715167498104595,
+            "loco_p": 0.0007551535176300724,
+            "delta_rho": 0.0,
+            "n_speakers": 15
+          }
+        },
+        "silence_confound": {
+          "name": "silence_confound",
+          "outcome": "FAIL",
+          "headline": "full rho=+0.772 -> speech-only rho=+0.181 (retains 24%); silence mass=63%",
+          "stats": {
+            "full_rho": 0.7715167498104595,
+            "full_p": 0.0007551535176300724,
+            "speech_only_rho": 0.18130643620545797,
+            "speech_only_p": 0.5178440458355975,
+            "retention": 0.235,
+            "silence_fraction": 0.6308046862989578,
+            "n_speakers": 15,
+            "protocol": "metric-as-published (naive) on full vs MFA speech-span frames"
+          }
+        },
+        "energy_confound": {
+          "name": "energy_confound",
+          "outcome": "PASS",
+          "headline": "raw rho=+0.772 -> energy-partial rho=+0.743 (retains 96%)",
+          "stats": {
+            "raw_rho": 0.7715167498104595,
+            "raw_p": 0.0007551535176300724,
+            "partial_rho": 0.7434435803003085,
+            "partial_p": 0.0023070963845720064,
+            "retention": 0.9636130135644524,
+            "control": "mean speech log-RMS energy",
+            "n_speakers": 15
+          }
+        },
+        "cross_corpus_transfer": {
+          "name": "cross_corpus_transfer",
+          "outcome": "FAIL",
+          "headline": "train on ['ipvs', 'easycall'] -> test torgo: transfer rho=+0.432 (p=0.108, n=15)",
+          "stats": {
+            "transfer_rho": 0.43204937989385733,
+            "p": 0.10777768863555542,
+            "n_speakers": 15,
+            "train_corpora": [
+              "ipvs",
+              "easycall"
+            ],
+            "representation": "frozen WavLM-Large layer-9 PCA-64 trajectory vs control reference"
+          }
+        },
+        "leakage_by_layer": {
+          "name": "leakage_by_layer",
+          "outcome": "FAIL",
+          "headline": "speaker-identity AUC=0.996 over 15 speakers (chance 0.5)",
+          "stats": {
+            "speaker_identity_auc": 0.9955751488095238,
+            "n_speakers": 15,
+            "representation": "frozen WavLM-Large layer-9 PCA-64 trajectory vs control reference",
+            "interpretation": "higher AUC = representation encodes identity -> leakage risk for reference metrics"
+          }
+        }
+      },
+      "notes": []
+    },
+    {
+      "metric_name": "atd_wavlm_l1",
+      "metric_kind": "reference",
+      "corpus": "torgo",
+      "n_speakers": 15,
+      "overall": "WARN",
+      "tests": {
+        "predictive_validity": {
+          "name": "predictive_validity",
+          "outcome": "PASS",
+          "headline": "within-corpus LOSO Spearman rho=+0.687 (p=0.00469, n=15)",
+          "stats": {
+            "rho": 0.6866499073313089,
+            "p": 0.0046925609336158705,
+            "n_speakers": 15,
+            "eval": "leave-one-speaker-out"
+          }
+        },
+        "leakage_loco": {
+          "name": "leakage_loco",
+          "outcome": "WARN",
+          "headline": "naive rho=+0.775 -> LOCO rho=+0.687; leakage inflation delta=+0.089",
+          "stats": {
+            "naive_rho": 0.7753743335595117,
+            "naive_p": 0.0006828894411368989,
+            "loco_rho": 0.6866499073313089,
+            "loco_p": 0.0046925609336158705,
+            "delta_rho": 0.08872442622820276,
+            "n_speakers": 15
+          }
+        }
+      },
+      "notes": []
+    },
+    {
+      "metric_name": "pooled_wavlm_probe",
+      "metric_kind": "probe",
+      "corpus": "torgo",
+      "n_speakers": 15,
+      "overall": "FAIL",
+      "tests": {
+        "predictive_validity": {
+          "name": "predictive_validity",
+          "outcome": "PASS",
+          "headline": "within-corpus LOSO Spearman rho=+0.745 (p=0.00145, n=15)",
+          "stats": {
+            "rho": 0.7445136635670934,
+            "p": 0.0014537567726604448,
+            "n_speakers": 15,
+            "eval": "leave-one-speaker-out"
+          }
+        },
+        "leakage_loco": {
+          "name": "leakage_loco",
+          "outcome": "N/A",
+          "headline": "N/A - metric is not reference-based (no control reference to leak)",
+          "stats": {
+            "applicable": false,
+            "metric_kind": "probe"
+          }
+        },
+        "silence_confound": {
+          "name": "silence_confound",
+          "outcome": "WARN",
+          "headline": "full rho=+0.745 -> speech-only rho=+0.745 (retains 100%); silence mass=63%",
+          "stats": {
+            "full_rho": 0.7445136635670934,
+            "full_p": 0.0014537567726604448,
+            "speech_only_rho": 0.7445136635670934,
+            "speech_only_p": 0.0014537567726604448,
+            "retention": 1.0,
+            "silence_fraction": 0.6329798397901177,
+            "n_speakers": 15,
+            "protocol": "metric-as-published (naive) on full vs MFA speech-span frames"
+          }
+        },
+        "energy_confound": {
+          "name": "energy_confound",
+          "outcome": "PASS",
+          "headline": "raw rho=+0.745 -> energy-partial rho=+0.599 (retains 80%)",
+          "stats": {
+            "raw_rho": 0.7445136635670934,
+            "raw_p": 0.0014537567726604448,
+            "partial_rho": 0.5988103441629696,
+            "partial_p": 0.023656135284501462,
+            "retention": 0.8042973198019846,
+            "control": "mean speech log-RMS energy",
+            "n_speakers": 15
+          }
+        },
+        "cross_corpus_transfer": {
+          "name": "cross_corpus_transfer",
+          "outcome": "FAIL",
+          "headline": "train on ['ipvs', 'easycall'] -> test torgo: transfer rho=+0.432 (p=0.108, n=15)",
+          "stats": {
+            "transfer_rho": 0.43204937989385733,
+            "p": 0.10777768863555542,
+            "n_speakers": 15,
+            "train_corpora": [
+              "ipvs",
+              "easycall"
+            ],
+            "representation": "frozen WavLM-Large layer-9 mean-pool (1024-d), speaker=mean over utts"
+          }
+        },
+        "leakage_by_layer": {
+          "name": "leakage_by_layer",
+          "outcome": "FAIL",
+          "headline": "speaker-identity AUC=0.996 over 15 speakers (chance 0.5)",
+          "stats": {
+            "speaker_identity_auc": 0.9955751488095238,
+            "n_speakers": 15,
+            "representation": "frozen WavLM-Large layer-9 mean-pool (1024-d), speaker=mean over utts",
+            "interpretation": "higher AUC = representation encodes identity -> leakage risk for reference metrics"
+          }
+        }
+      },
+      "notes": []
+    }
+  ]
+}

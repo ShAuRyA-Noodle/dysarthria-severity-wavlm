@@ -1,0 +1,125 @@
+% Target ~600 words.
+
+\subsection{Notation and pipeline overview}
+Let $\mathbf{x}_u \in \mathbb{R}^{T_u}$ denote the 16~kHz waveform of an
+utterance $u$ of word $w$ by speaker $s$. Let $f^{(\ell)}: \mathbb{R}^{T_u}
+\to \mathbb{R}^{F_u \times d}$ be the frozen WavLM-Large feature extractor
+returning the $\ell$-th transformer-layer hidden states with $d = 1024$
+channels and $F_u \approx 50 \cdot T_u / \mathrm{sr}$ frames at 50~fps. We
+compute the per-utterance ATD against a per-word control reference
+trajectory in a 64-dimensional PCA subspace shared with the reference.
+
+\subsection{Reference trajectory construction}
+For each word $w$ in the lexicon, we collect every utterance of $w$
+produced by any of the seven TORGO control speakers. We extract layer-$\ell$
+embeddings $\{\mathbf{E}^{(\ell)}_{u_i}\}_i$ and concatenate to fit a
+single PCA model $\mathbf{P}_w$ to 64 dimensions. We then project each
+control trajectory to the 64-D subspace, select the median-length
+trajectory as a template $\mathbf{R}_w^{0}$, DTW-align all other control
+trajectories to the template, and take the frame-wise mean to obtain the
+reference $\mathbf{R}_w \in \mathbb{R}^{T_w \times 64}$. The PCA model
+$\mathbf{P}_w$ is stored alongside $\mathbf{R}_w$ so that test utterances
+are projected into the \emph{same} coordinate space as the reference. The
+reference-builder enforces a hard invariant that no dysarthric utterance
+ever contributes to a reference (\texttt{src/reference\_builder.py}, line 196).
+
+\subsection{ATD computation}
+For a test utterance $u$ of word $w$ at layer $\ell$, we project frames
+into the reference's PCA subspace via $\mathbf{Z}_u = \mathbf{P}_w(
+\mathbf{E}^{(\ell)}_u )$ and compute
+\begin{equation}
+\mathrm{ATD}(u, w, \ell) =
+   \frac{ \mathrm{DTW}\!\left( \mathbf{Z}_u,\, \mathbf{R}_w \right) }
+        { \max\!\left( T_u,\, T_w \right) },
+\label{eq:atd}
+\end{equation}
+where $\mathrm{DTW}(\cdot,\cdot)$ is the FastDTW alignment cost with
+Sakoe--Chiba band radius 30 (near-exact on the trajectory lengths
+encountered) and Euclidean local cost. Length-normalisation by the longer
+of the two trajectories ensures that ATD measures geometric \emph{quality}
+rather than speaking \emph{rate}; we verify this empirically in
+Section~5.4.
+
+\subsection{Speaker-level aggregation}
+Speaker $s$'s ATD score is the unweighted mean across all utterances
+$u \in \mathcal{U}_s$:
+\(\overline{\mathrm{ATD}}_s = |\mathcal{U}_s|^{-1} \sum_{u} \mathrm{ATD}(u, w_u, \ell)\).
+The headline correlation $\rho(\overline{\mathrm{ATD}}, \mathrm{severity})$
+is computed over the 15 TORGO speakers; we additionally report a
+\emph{dysarthric-subgroup} Spearman restricted to the 8 dysarthric
+speakers, since controls (with severity 0) are by construction the
+reference builders and cannot be held out. This subgroup correlation is a
+single $n = 8$ rank statistic, not a leave-one-speaker-out
+cross-validation score.
+
+\subsection{Layer selection and design choices}
+We sample 9 transformer layers $\ell \in \{1, 3, 6, 9, 12, 15, 18, 21, 23\}$
+to balance representational diversity against extraction cost. For each
+layer we compute Equation~\ref{eq:atd}; we report Bonferroni- and
+Benjamini--Hochberg-corrected $p$-values across the layer family. We adopt
+\textbf{Layer~9} as the primary articulatory layer: although a naive
+single-reference sweep marginally favours Layer~1, that edge is an
+early-layer speaker-identity leakage artifact that disappears under
+leave-one-control-out references, whereas Layer~9 is unchanged
+(Results~\S\ref{sec:deleak}). The PCA-64 reduction is a speed/robustness
+trade-off, not a lossless step: it yields a 16$\times$ DTW speedup, and
+while a full-dimension PCA-1024 variant gives a marginally higher
+\emph{global} $\rho$ on $n = 15$ speakers, its dysarthric-subgroup $\rho$
+collapses (Results~\S\ref{sec:main_results}), consistent with the extra
+dimensions encoding speaker-specific rather than severity-relevant
+structure. The median-length-template choice for the reference barycentre
+is robust to ties (selecting the first-encountered minimum is
+deterministic given a fixed metadata ordering and
+\texttt{RANDOM\_SEED = 42}).
+
+\subsection{Phoneme-level decomposition}
+For each utterance we additionally produce per-phoneme ATD by slicing the
+DTW path by Montreal-Forced-Aligner-derived phoneme boundaries and
+aggregating the path's cost contributions over each phoneme's frame range,
+length-normalised by the phoneme's local span. The decomposition is an
+\emph{exact decomposition into per-phoneme contributions plus a
+silence/unattributed residual},
+\begin{equation}
+\sum_p D(p) \;+\; \mathrm{residual} \;=\; \mathrm{DTW}(\mathbf{Z}_u, \mathbf{R}_w),
+\end{equation}
+where the residual books all path cost falling in MFA silence intervals
+(\texttt{sil}/\texttt{sp}/\texttt{spn}) or in no phone interval. It is
+\emph{not} an exact phone-only additive identity. On TORGO single-word
+recordings the residual carries the \emph{majority} of the path cost
+(per-utterance residual fraction $\approx 0.70$--$0.76$, mean $\approx
+0.71$; \texttt{results/streaming\_dtw\_correctness.json} phoneme run),
+because leading and trailing silence dominate isolated-word audio.
+Per-phoneme attribution therefore covers a \emph{minority} of the total
+distance, and the same observation implies the headline utterance-level
+ATD itself may carry silence/pausing signal as well as articulation ---
+silence trimming before scoring is left to future work. Per-phoneme
+distributions are z-scored against control-speaker tokens, with
+manner-class fallback when fewer than 30 control tokens are available for
+a specific phone.
+
+\subsection{Streaming variant}
+For real-time deployment we replace the offline fastdtw call with an
+online DTW recurrence~\cite{Mueller2007SubseqDTW,
+Rakthanmanon2012UCRSuite} that updates the accumulated cost matrix
+column-by-column as new query frames arrive. We use the classic
+closed-$(0,0)$-start recurrence whose path terminates at
+$(T_u{-}1, T_w{-}1)$, so the online variant computes the \emph{exact}
+offline DTW rather than a subsequence relaxation. Per-frame extension
+cost is $O(|\mathbf{R}_w|)$ regardless of cumulative utterance length;
+empirical per-frame latency is $132$\,$\mu$s (p50) on a single RTX~4080
+thread. WavLM-Large forward ($\approx 30$\,ms GPU on 250\,ms context)
+remains the binding latency budget. On a 200-utterance parity test the
+online and offline ATD are in exact agreement: Pearson $r = 1.0$, maximum
+relative error $< 10^{-15}$, validated against a full-matrix exact DP
+reference (\texttt{tests/test\_streaming\_dtw\_correctness.py};
+\texttt{results/streaming\_dtw\_correctness.json}). An earlier
+free-initial-column (subsequence) variant gave $r = 0.81$; that defect is
+fixed and guarded by a regression test.
+
+\subsection{Cross-corpus multilingual variant}
+For non-English corpora (IPVS Italian, PC-GITA Spanish, EasyCall
+Italian) we swap WavLM-Large for XLS-R-300m, which is pre-trained on
+436k hours across 128 languages. The reference-construction pipeline
+is identical except that the donor (control) frames come from the
+target corpus and the PCA basis is re-fit per corpus; a shared-basis
+zero-shot variant is also evaluated in Section~5.5.

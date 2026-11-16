@@ -1,0 +1,6 @@
+{
+  "backend": "groq",
+  "model": "llama-3.3-70b-versatile",
+  "text": "OVERALL: The speaker exhibits a severe articulation pattern deviation, with an ATD z-score of -0.72.\n\nARTICULATORY PATTERNS:\n* The phonemes /AA2/ and /AH2/ show significant deviation, with z-scores of +2.08 and +1.93, respectively.\n* The vowel /AE0/ has a z-score of -1.36, indicating under-articulation.\n* The glide manner class has a mean z-score of +0.18, suggesting some deviation in this area.\n\nSLP RECOMMENDATIONS:\n* Target precise vowel articulation, particularly for /AA2/ and /AH2/, to improve overall intelligibility.\n* Focus on developing consistent glide productions to address deviations in this manner class.\n\nCAVEAT: The ATD metric is a research-grade tool and should not be used as a sole basis for diagnosis or treatment planning.",
+  "elapsed_s": 1.0193128999962937
+}

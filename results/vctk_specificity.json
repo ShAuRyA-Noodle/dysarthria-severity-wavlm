@@ -1,0 +1,75 @@
+{
+  "n_speakers": 110,
+  "n_accents_total": 13,
+  "n_accents_retained_n_ge_4": 7,
+  "kruskal_wallis_across_accents": {
+    "H": 11.473842121054247,
+    "p": 0.07479021038234804,
+    "n_groups": 7,
+    "groups": [
+      "English",
+      "American",
+      "Scottish",
+      "Irish",
+      "Canadian",
+      "NorthernIrish",
+      "SouthAfrican"
+    ],
+    "per_accent_stats": {
+      "American": {
+        "mean": 7.7176,
+        "median": 7.8113,
+        "std": 0.3488,
+        "count": 22
+      },
+      "Canadian": {
+        "mean": 7.727,
+        "median": 7.9199,
+        "std": 0.406,
+        "count": 8
+      },
+      "English": {
+        "mean": 7.9607,
+        "median": 7.9992,
+        "std": 0.1701,
+        "count": 33
+      },
+      "Irish": {
+        "mean": 7.792,
+        "median": 7.8359,
+        "std": 0.2541,
+        "count": 9
+      },
+      "NorthernIrish": {
+        "mean": 7.7045,
+        "median": 7.831,
+        "std": 0.4266,
+        "count": 6
+      },
+      "Scottish": {
+        "mean": 7.9399,
+        "median": 7.9157,
+        "std": 0.1645,
+        "count": 19
+      },
+      "SouthAfrican": {
+        "mean": 7.811,
+        "median": 7.7989,
+        "std": 0.2085,
+        "count": 4
+      }
+    },
+    "interpretation": "H0: ATD distribution identical across native-English accents. NS p => ATD does not distinguish accents (specificity desired)."
+  },
+  "spearman_atd_vs_age": {
+    "rho": -0.12428918034585346,
+    "p": 0.19577343262933694
+  },
+  "gender_effect": {
+    "n_male": 47,
+    "n_female": 63,
+    "male_mean": 7.936734653111103,
+    "female_mean": 7.776590196555699,
+    "mw_p": 0.01005113546796562
+  }
+}

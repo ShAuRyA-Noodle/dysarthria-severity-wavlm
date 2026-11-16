@@ -1,0 +1,200 @@
+{
+  "hypothesis": "per-frame faithfulness NEGATIVELY predicts per-frame articulatory inversion error vs measured TORGO EMA (low faithfulness <-> high error)",
+  "decisive": true,
+  "articulator_primary": "tongue (dorsum/body/tip); 6 SPARC channels TDX..TTY",
+  "faithfulness_primary": "plain cycle-consistency (uncentered), WavLM layer 9",
+  "faithfulness_secondary": "healthy-manifold centered (mu on ALIGN control frames)",
+  "alignment": {
+    "method": "per-speaker integer lag (max_lag=15) + per-articulator 3D->2D affine (TORGO xyz -> SPARC XY); fit on held-out ALIGN utts, applied to disjoint EVAL utts; faithfulness never used in the fit (no circularity)",
+    "ema_downsample": "200Hz -> 50fps polyphase (scipy.resample_poly 1/4)",
+    "coord_axes": "TORGO x=ant-post, y=lateral(dropped by affine), z=vertical; SPARC 2D (X,Y) recovered by the affine",
+    "align_utts_per_speaker": 10
+  },
+  "data_gate": "controls only; skip if >2 dead coils or tongue coils don't move (objective AG500 session validity, not SPARC performance)",
+  "n_speakers_used": 5,
+  "speakers_used": [
+    "FC01",
+    "FC02",
+    "MC01",
+    "MC03",
+    "MC04"
+  ],
+  "speakers_skipped": {
+    "FC03": "6 dead coils > 2 (degenerate session)",
+    "MC02": "9 dead coils > 2 (degenerate session)"
+  },
+  "n_frames": 22854,
+  "n_utts": 150,
+  "median_utt_spearman_plain": 0.07113111737969516,
+  "mean_utt_spearman_plain": 0.04621730015887244,
+  "pooled_spearman_plain": 0.1290203371360643,
+  "pooled_spearman_plain_p": 2.054185103308765e-85,
+  "pooled_within_spk_spearman_plain": 0.10561895732636788,
+  "pooled_pearson_plain": 0.08963065613851515,
+  "pooled_spearman_centered": 0.39095483760771776,
+  "median_utt_spearman_centered": 0.39095483760771776,
+  "spearman_faith_energy": -0.4677372538351446,
+  "spearman_err_energy": -0.22791164855034632,
+  "partial_spearman_plain_ctrl_energy": -0.0011431613840040158,
+  "pooled_spearman_top50pct_energy": 0.08740912682359449,
+  "pooled_spearman_top25pct_energy": -0.08972082278360671,
+  "utt_meanfaith_vs_meanerr_spearman": 0.23689763989510648,
+  "verdict": "faithfulness predicts inversion error: NO (median per-utt Spearman=+0.071; the raw association is a speech-energy artifact \u2014 energy-controlled partial Spearman=-0.001 ~ 0, faith-vs-energy and error-vs-energy dominate). As formulated the cycle-consistency metric does NOT measure per-frame inversion reliability on real EMA.",
+  "per_speaker": {
+    "FC01": {
+      "used": 30,
+      "eval_utts_failed": 0,
+      "n_frames": 6229,
+      "lag_frames": 6,
+      "lag_ms": 120,
+      "dead_coils_1idx": [
+        10
+      ],
+      "tongue_coils_1idx": {
+        "TD": 1,
+        "TB": 2,
+        "TT": 3
+      },
+      "align_corr_tongue": 0.44262175792338276,
+      "spearman_plain": 0.050322250069307246,
+      "pearson_plain": 0.1064660303881248,
+      "spearman_centered": 0.4069294898388225,
+      "spearman_faith_energy": -0.5198210625629349,
+      "spearman_err_energy": -0.06647876020902309,
+      "partial_spearman_plain_ctrl_energy": 0.018495378686156347,
+      "spearman_plain_top25pct_energy": -0.2589912251294308,
+      "mean_faith": 0.8045381903648376,
+      "mean_err": 1.3965408026385375
+    },
+    "FC02": {
+      "used": 30,
+      "eval_utts_failed": 0,
+      "n_frames": 4633,
+      "lag_frames": 5,
+      "lag_ms": 100,
+      "dead_coils_1idx": [
+        10
+      ],
+      "tongue_coils_1idx": {
+        "TD": 1,
+        "TB": 2,
+        "TT": 3
+      },
+      "align_corr_tongue": 0.5790606399430099,
+      "spearman_plain": 0.15669467107312596,
+      "pearson_plain": 0.12795372448030606,
+      "spearman_centered": 0.31537711837611515,
+      "spearman_faith_energy": -0.5602854893846333,
+      "spearman_err_energy": -0.11301660953127064,
+      "partial_spearman_plain_ctrl_energy": 0.11345556412469734,
+      "spearman_plain_top25pct_energy": -0.08517197827426311,
+      "mean_faith": 0.8183346390724182,
+      "mean_err": 3.4989611901016024
+    },
+    "FC03": {
+      "used": 0,
+      "skipped_reason": "6 dead coils > 2 (degenerate session)",
+      "dead_coils_1idx": [
+        1,
+        2,
+        3,
+        6,
+        7,
+        9
+      ],
+      "tongue_coils_1idx": {
+        "TD": 10,
+        "TB": 8
+      }
+    },
+    "MC01": {
+      "used": 30,
+      "eval_utts_failed": 0,
+      "n_frames": 5469,
+      "lag_frames": 5,
+      "lag_ms": 100,
+      "dead_coils_1idx": [],
+      "tongue_coils_1idx": {
+        "TD": 1,
+        "TB": 2,
+        "TT": 3
+      },
+      "align_corr_tongue": 0.5071257171615019,
+      "spearman_plain": 0.043966227593096506,
+      "pearson_plain": 0.006284936226030656,
+      "spearman_centered": 0.3790185966276061,
+      "spearman_faith_energy": -0.3533299148301986,
+      "spearman_err_energy": -0.32235732334295714,
+      "partial_spearman_plain_ctrl_energy": -0.07896952718649818,
+      "spearman_plain_top25pct_energy": 0.05658266840298223,
+      "mean_faith": 0.7845978140830994,
+      "mean_err": 1.6146310900396932
+    },
+    "MC02": {
+      "used": 0,
+      "skipped_reason": "9 dead coils > 2 (degenerate session)",
+      "dead_coils_1idx": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "tongue_coils_1idx": {
+        "TD": 5
+      }
+    },
+    "MC03": {
+      "used": 30,
+      "eval_utts_failed": 0,
+      "n_frames": 2487,
+      "lag_frames": 4,
+      "lag_ms": 80,
+      "dead_coils_1idx": [],
+      "tongue_coils_1idx": {
+        "TD": 1,
+        "TB": 2,
+        "TT": 3
+      },
+      "align_corr_tongue": 0.46898609022150645,
+      "spearman_plain": 0.28030120381340956,
+      "pearson_plain": 0.3187649417562656,
+      "spearman_centered": 0.5544780823539021,
+      "spearman_faith_energy": -0.3069851064808543,
+      "spearman_err_energy": -0.17084270008240143,
+      "partial_spearman_plain_ctrl_energy": 0.24298770214999868,
+      "spearman_plain_top25pct_energy": 0.3468052394314181,
+      "mean_faith": 0.8034341335296631,
+      "mean_err": 1.4625121539671775
+    },
+    "MC04": {
+      "used": 30,
+      "eval_utts_failed": 0,
+      "n_frames": 4036,
+      "lag_frames": 5,
+      "lag_ms": 100,
+      "dead_coils_1idx": [],
+      "tongue_coils_1idx": {
+        "TD": 1,
+        "TB": 2,
+        "TT": 3
+      },
+      "align_corr_tongue": 0.6033975192754722,
+      "spearman_plain": 0.08779025974104854,
+      "pearson_plain": 0.07504795054476744,
+      "spearman_centered": 0.2811655645366354,
+      "spearman_faith_energy": -0.27985408547768303,
+      "spearman_err_energy": -0.35759510748710954,
+      "partial_spearman_plain_ctrl_energy": -0.013701451093671895,
+      "spearman_plain_top25pct_energy": -0.15570141008154334,
+      "mean_faith": 0.8353773355484009,
+      "mean_err": 1.701721500074762
+    }
+  },
+  "layer": 9,
+  "limit_per_speaker": 40
+}

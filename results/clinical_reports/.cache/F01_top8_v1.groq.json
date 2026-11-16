@@ -1,0 +1,6 @@
+{
+  "backend": "groq",
+  "model": "llama-3.3-70b-versatile",
+  "text": "OVERALL: The speaker exhibits a severe articulation pattern deviation, with a mean ATD of 97.533, indicating significant differences from the population mean.\n\nARTICULATORY PATTERNS:\n* The phonemes /ER1/ and /UH1/ show the most pronounced deviations, with z-scores of +5.56 and +5.52, respectively.\n* Fricatives, such as /V/ and /Z/, exhibit notable deviations, with z-scores of +2.87 and +2.76.\n* Vowels, including /OW2/, demonstrate deviations, with a z-score of +2.55.\n\nSLP RECOMMENDATIONS:\n* Target precise articulation of vowel sounds, such as /ER1/ and /UH1/, in therapy sessions.\n* Focus on correct production of fricative phonemes, like /V/ and /Z/, to improve overall articulation.\n\nCAVEAT: The ATD metric is a research-grade tool and should not be used as a sole basis for diagnosis.",
+  "elapsed_s": 0.9187023999984376
+}

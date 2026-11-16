@@ -25,6 +25,7 @@ from scipy.stats import spearmanr
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from src.seed_utils import set_global_seed  # noqa: E402
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -177,6 +178,7 @@ def plot_speaker_profile(speaker_df: pd.DataFrame) -> Path:
 
 def main() -> None:
     """Generate all diagnostic plots."""
+    set_global_seed(42)
     print(f"{'='*60}")
     print(f"  ATD Deep Validation — Diagnostic Plots")
     print(f"{'='*60}\n")

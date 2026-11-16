@@ -1,0 +1,9 @@
+{
+  "torgo_mean_frames": 155.3,
+  "torgo_min_frames": 1,
+  "torgo_max_frames": 9691,
+  "uaspeech_mean_frames": 126.9,
+  "uaspeech_min_frames": 51,
+  "uaspeech_max_frames": 2846,
+  "ratio": 1.22
+}

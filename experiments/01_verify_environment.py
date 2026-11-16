@@ -75,49 +75,46 @@ def check_pytorch_version() -> tuple[bool, str]:
 
 
 def check_cuda_available() -> tuple[bool, str]:
-    """Check that CUDA is available."""
+    """Report CUDA availability. CPU is allowed but ~50x slower for SSL extraction."""
     try:
         import torch
-        ok = torch.cuda.is_available()
-        msg = f"CUDA available: {ok}"
-        if not ok:
-            msg += " — CUDA is required. Check your PyTorch installation."
-        return ok, msg
+        has_cuda = torch.cuda.is_available()
+        if has_cuda:
+            return True, f"CUDA available: True"
+        return True, (
+            "CUDA available: False — CPU fallback active. "
+            "SSL extraction will be ~50x slower. Pre-extracted embeddings recommended."
+        )
     except ImportError:
         return False, "CUDA check: PyTorch not installed"
 
 
 def check_gpu_name() -> tuple[bool, str]:
-    """Check that GPU name contains '4080'."""
+    """Report GPU name (informational only — no model is required)."""
     try:
         import torch
         if not torch.cuda.is_available():
-            return False, "GPU name: CUDA not available"
+            return True, "GPU name: (no CUDA — CPU mode)"
         name = torch.cuda.get_device_name(0)
-        ok = "4080" in name
-        msg = f"GPU name: {name}"
-        if not ok:
-            msg += " — EXPECTED a GPU containing '4080'"
-        return ok, msg
+        return True, f"GPU name: {name}"
     except Exception as e:
-        return False, f"GPU name check failed: {e}"
+        return True, f"GPU name check skipped: {e}"
 
 
 def check_gpu_vram() -> tuple[bool, str]:
-    """Check that GPU VRAM is >= 10 GB."""
+    """Report GPU VRAM. <8 GB triggers a warning but does not fail."""
     try:
         import torch
         if not torch.cuda.is_available():
-            return False, "GPU VRAM: CUDA not available"
+            return True, "GPU VRAM: (no CUDA — CPU mode)"
         total = torch.cuda.get_device_properties(0).total_memory
         total_gb = total / (1024 ** 3)
-        ok = total_gb >= 10.0
         msg = f"GPU VRAM: {total_gb:.1f} GB"
-        if not ok:
-            msg += " — EXPECTED >= 10 GB"
-        return ok, msg
+        if total_gb < 8.0:
+            msg += " — WARNING: <8 GB may OOM on WavLM-Large; reduce batch size or use CPU."
+        return True, msg
     except Exception as e:
-        return False, f"GPU VRAM check failed: {e}"
+        return True, f"GPU VRAM check skipped: {e}"
 
 
 def check_packages() -> tuple[bool, str]:
@@ -187,15 +184,15 @@ def check_torgo_data() -> tuple[bool, str]:
 
 
 def check_disk_space() -> tuple[bool, str]:
-    """Check that C: drive has >= 50 GB free."""
+    """Check that the project-root drive has >= 50 GB free (portable across OS)."""
     try:
-        usage = shutil.disk_usage("C:\\")
+        usage = shutil.disk_usage(str(PROJECT_ROOT))
         free_gb = usage.free / (1024 ** 3)
         total_gb = usage.total / (1024 ** 3)
         ok = free_gb >= 50.0
-        msg = f"Disk space (C:): {free_gb:.1f} GB free / {total_gb:.1f} GB total"
+        msg = f"Disk space ({PROJECT_ROOT.anchor or PROJECT_ROOT}): {free_gb:.1f} GB free / {total_gb:.1f} GB total"
         if not ok:
-            msg += " — EXPECTED >= 50 GB free"
+            msg += " — EXPECTED >= 50 GB free (embeddings alone are ~66 GB)"
         return ok, msg
     except Exception as e:
         return False, f"Disk space check failed: {e}"

@@ -1,0 +1,23 @@
+{
+  "n_observations": 7826,
+  "n_speakers": 15,
+  "n_words": 794,
+  "formula": "atd_score ~ severity_score + (1|speaker) + (1|word)",
+  "fixed_effect_severity": {
+    "beta": 13.682281120300162,
+    "se": 0.550580886589147,
+    "ci_low": 12.603162412009302,
+    "ci_high": 14.761399828591022,
+    "p_value": 2.545723386501186e-136,
+    "z": 24.85062858803909
+  },
+  "random_effects_variance": {
+    "speaker": null,
+    "word": 1105.933750298004,
+    "residual": 69.12085939362522,
+    "icc_speaker": null
+  },
+  "aic": NaN,
+  "log_likelihood": -36791.487821162555,
+  "interpretation": "beta is the per-unit change in ATD when severity_score moves from 0->1->2. CI is the journal-grade precision estimate; compare to the speaker-mean bootstrap CI on Spearman rho (width 0.54). The fixed-effect CI here is much tighter because n_obs = 7826, not 15."
+}

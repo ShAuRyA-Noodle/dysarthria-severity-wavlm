@@ -1,0 +1,86 @@
+{
+  "n_speakers": 91,
+  "corpora": {
+    "IPVS": "61",
+    "TORGO": "15",
+    "UASpeech": "15"
+  },
+  "class_distribution": {
+    "Control": "44",
+    "Parkinson": "24",
+    "Mild-Mod": "18",
+    "Severe": "5"
+  },
+  "loso_macro_f1": 0.573015873015873,
+  "labels_in_order": [
+    "Control",
+    "Mild-Mod",
+    "Parkinson",
+    "Severe"
+  ],
+  "confusion_matrix": [
+    [
+      40,
+      4,
+      0,
+      0
+    ],
+    [
+      3,
+      14,
+      0,
+      1
+    ],
+    [
+      24,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      4
+    ]
+  ],
+  "per_class": {
+    "Control": {
+      "precision": 0.5882352941176471,
+      "recall": 0.9090909090909091,
+      "f1-score": 0.7142857142857143,
+      "support": 44.0
+    },
+    "Mild-Mod": {
+      "precision": 0.7777777777777778,
+      "recall": 0.7777777777777778,
+      "f1-score": 0.7777777777777778,
+      "support": 18.0
+    },
+    "Parkinson": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 24.0
+    },
+    "Severe": {
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1-score": 0.8,
+      "support": 5.0
+    },
+    "accuracy": 0.6373626373626373,
+    "macro avg": {
+      "precision": 0.5415032679738563,
+      "recall": 0.6217171717171717,
+      "f1-score": 0.573015873015873,
+      "support": 91.0
+    },
+    "weighted avg": {
+      "precision": 0.48222365869424694,
+      "recall": 0.6373626373626373,
+      "f1-score": 0.543171114599686,
+      "support": 91.0
+    }
+  }
+}

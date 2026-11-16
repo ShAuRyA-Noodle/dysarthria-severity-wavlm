@@ -1,0 +1,23 @@
+{
+  "layer": 9,
+  "n_utterances": 7654,
+  "n_rows": 68945,
+  "vowels_only": {
+    "rho": 0.6287861510955245,
+    "p": 0.012041418168809862,
+    "n_speakers": 15,
+    "n_tokens": 25767
+  },
+  "consonants_only": {
+    "rho": 0.6249285673464722,
+    "p": 0.012740681851627307,
+    "n_speakers": 15,
+    "n_tokens": 43178
+  },
+  "voiceless_stops_only": {
+    "rho": 0.5940678973540539,
+    "p": 0.019532689561673592,
+    "n_speakers": 15,
+    "n_tokens": 9542
+  }
+}

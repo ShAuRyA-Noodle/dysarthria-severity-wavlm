@@ -1,0 +1,404 @@
+% Target ~600 words.
+
+\subsection{Main results on TORGO}
+\label{sec:main_results}
+Table~\ref{tab:main} reports the headline comparison. ATD attains
+speaker-level Spearman $\rho = 0.756$ at WavLM Layer~9
+($p = 0.0011$, $n = 15$, 95\% bootstrap CI $[0.40,\,0.92]$).
+\paragraph{ATD does not beat a fairly-tuned probe on accuracy.}
+We compare against three baselines whose regression head and
+hyperparameters are refit inside each leave-one-speaker-out (LOSO) fold by
+nested group-CV (\texttt{results/finetuned\_ssl\_baseline.json}). A
+mean-pooled frozen-WavLM Layer-9 probe \emph{matches or slightly exceeds}
+ATD: Ridge reaches $\rho = 0.760$ ($p = 0.0010$, RMSE $0.581$) and
+LinearSVR $\rho = 0.775$ ($p = 0.0007$, RMSE $0.623$), versus ATD's
+$\rho = 0.756$; the Ridge probe's RMSE ($0.581$) is also lower than ATD's
+($0.671$). We state this plainly: ATD is \emph{not} more accurate than a
+trained linear probe on the same frozen features. Its defensible
+contribution is that it reaches this comparable accuracy \emph{zero-shot}
+--- no per-fold training, no severity labels --- and that it does beat a
+fairly-tuned classical MFCC + RBF-SVR baseline ($\rho = 0.609$,
+$p = 0.016$, RMSE $0.743$). Mapping ATD onto the $0$--$1$ severity scale
+with a per-fold Ridge head gives RMSE $0.671$, a $9.7\%$ reduction versus
+the fairly-tuned MFCC ($0.743$) --- but not versus the pooled-WavLM probe.
+The earlier ``$16.3\%$ RMSE reduction'' figure compared against an
+under-tuned MFCC ($0.802$) and is superseded by these fairly-tuned
+numbers. (An earlier draft reported the pooled-WavLM Ridge probe with a
+\emph{negative} $\rho = -0.79$; that was an under-regularisation artifact
+at $\alpha = 1$ --- a proper hyperparameter search selects $\alpha = 1000$
+on every fold and yields $\rho = 0.760$. The negative figure was wrong and
+is retracted.)
+\paragraph{Dysarthric-subgroup correlation.}
+We additionally report a dysarthric-subgroup Spearman --- the correlation
+restricted to the 8 dysarthric speakers (controls are excluded because by
+construction they build the references and all carry severity~0) --- of
+$\rho = 0.394$ for ATD. It is \emph{not significant} ($n = 8$, $p = 0.33$,
+95\% CI $[-0.29,\,0.90]$) and is a directional indicator only, \emph{not}
+a leave-one-speaker-out cross-validation score: it is a single
+within-subgroup rank correlation on 8 points.
+Among the 8 dysarthric speakers, pairwise rank concordance between ATD and
+the severity label is $\approx 73\%$ (the underlying $\rho = 0.394$ is
+non-significant, so this concordance is indicative only); the most
+discordant speaker is F04, a documented case of preserved intelligibility
+despite a ``severe'' categorical label, discussed in \S~6.
+
+\subsection{Layer analysis}
+\label{sec:layers}
+Figure~\ref{fig:layers} reports $\rho$ for each of the 9 sampled layers,
+with raw, Bonferroni-corrected, and Benjamini--Hochberg-corrected
+$p$-values in Table~\ref{tab:layers}. Every sampled layer is significant
+under both corrections at $\alpha = 0.05$, and all nine sit within the
+bootstrap noise floor of one another ($\Delta\rho < 0.09$, overlapping
+95\% CIs). The naive single-reference sweep places Layer~1
+($\rho = 0.775$) marginally above Layer~9 ($\rho = 0.756$), but this
+apparent ordering does not survive a leakage-controlled reference
+construction (\S\ref{sec:deleak}): under leave-one-control-out (LOCO)
+references the Layer~1 figure deflates to $\rho = 0.687$ while Layer~9 is
+\emph{unchanged} at $\rho = 0.756$. We therefore adopt \textbf{Layer~9 as
+the primary articulatory layer} throughout. Early SSL layers encode
+speaker identity, so a control speaker's own utterances inside its
+reference artificially lower its ATD and inflate the Layer-1 correlation;
+mid-network Layer~9 encodes articulation and is robust to this leakage.
+
+\subsection{Leakage control: leave-one-control-out references}
+\label{sec:deleak}
+A control speaker contributes its own utterances to the per-word
+reference it is then scored against, which can deflate its ATD and
+inflate the control--dysarthric separation. To quantify this we rebuilt
+every speaker's references under a strict leave-one-control-out (LOCO)
+protocol (radius~1, 10{,}000-sample bootstrap; seed~42) and recomputed
+the speaker-level Spearman correlation
+(\texttt{results/deleak\_report\_fast.json}). The result is a clean
+diagnostic for layer robustness rather than a weakness of the headline:
+
+\begin{tabular}{lccc}
+\toprule
+Layer & leaked $\rho$ & LOCO $\rho$ & $\Delta$ \\
+\midrule
+9 (primary) & $0.756$ & $\mathbf{0.756}$ & $0.000$ \\
+1           & $0.775$ & $0.687$ & $+0.089$ \\
+\bottomrule
+\end{tabular}
+
+The Layer-9 headline is \emph{unchanged} by de-leaking
+($0.756 \to 0.756$, $p = 0.0011$; control mean $70.27 \to 70.12$,
+negligible), whereas Layer~1 inflates: its leaked $\rho = 0.775$ falls to
+$0.687$ ($p = 0.0047$) and its control mean shifts substantially
+($33.49 \to 36.25$). This is the expected signature of speaker-identity
+leakage in early SSL layers: removing a control's own utterances from its
+reference raises its ATD most where the representation encodes who is
+speaking. Under proper LOCO references Layer~9 ($0.756$) therefore exceeds
+Layer~1 ($0.687$), confirming the mid-network articulatory layer as the
+robust primary. The de-leaked speaker-level effect size (controls vs.\
+severe) is Cohen's $d = 2.63$ at Layer~9. The dysarthric-subgroup
+correlation (\S\ref{sec:main_results}) is unaffected by de-leaking
+($\rho = 0.394$, $n = 8$, unchanged) because controls do not enter the
+references for that within-subgroup test.
+
+\subsection{Ablations}
+Table~\ref{tab:ablations} shows that removing DTW (Mean L2) drops the
+global $\rho$ by 40\% (from $0.7561$ to $0.4706$); collapsing the
+trajectory entirely (mean-pool distance) is similarly catastrophic
+(the no-DTW and mean-pool rows are the same algebraic computation ---
+pool-then-$L_2$ --- and report identical numbers). PCA reduction to 64
+dimensions is a deliberate speed/robustness trade-off rather than a
+lossless step: the full-dimension PCA-1024 variant attains a
+\emph{higher} global $\rho = 0.8024$ than the PCA-64 pipeline
+($0.756$), which we attribute to $n = 15$ sampling noise rather than to
+PCA discarding signal, but its dysarthric-subgroup $\rho$ collapses to
+$-0.056$, indicating the higher-dimensional variant chases
+speaker-specific directions that do not generalise. The MFCC trajectory
+ablation --- replacing WavLM features with MFCCs in an
+otherwise-identical pipeline --- attains the highest global $\rho$
+($0.8487$) but a low dysarthric-subgroup $\rho$ ($0.2817$), consistent
+with MFCC trajectories tracking speaker-specific spectral idiosyncrasies;
+we read these $n = 8$ subgroup numbers as directional only.
+
+\subsection{Causal-perturbation sensitivity profile}
+We applied five DSP perturbations (time-stretch, pink noise, formant
+shift, partial muting, reverberation) to 175 TORGO control utterances
+covering nine words shared by all speakers. Per-family Spearman
+correlation between intensity (centred at the no-perturbation baseline)
+and $\Delta$ATD against a leave-one-control-out reference:
+
+\begin{tabular}{lrr}
+\toprule
+Family & $\rho$ & mean $\Delta$ATD \\
+\midrule
+pink-noise       & $+0.766$ & $19.3$ \\
+reverberation    & $+0.673$ & $9.1$  \\
+partial muting   & $+0.402$ & $15.9$ \\
+time-stretch     & $+0.244$ & $3.2$  \\
+formant shift    & $+0.170$ & $2.7$  \\
+\bottomrule
+\end{tabular}
+
+The same five perturbations were applied to the same waveforms and
+scored with an MFCC-trajectory DTW pipeline (13 coefficients, median-
+length control reference per word, identical FastDTW radius). The
+per-family slope \emph{difference} ATD~$-$~MFCC is:
+
+\begin{tabular}{lrrr}
+\toprule
+Family & ATD $\rho$ & MFCC $\rho$ & $\Delta = \rho_\text{ATD} - \rho_\text{MFCC}$ \\
+\midrule
+reverberation    & $0.673$ & $0.081$ & $\mathbf{+0.592}$ \\
+partial muting   & $0.402$ & $0.156$ & $\mathbf{+0.247}$ \\
+time-stretch     & $0.244$ & $0.003$ & $\mathbf{+0.241}$ \\
+pink-noise       & $0.766$ & $0.848$ & $-0.082$ \\
+formant shift    & $0.170$ & $0.224$ & $-0.055$ \\
+\bottomrule
+\end{tabular}
+
+\paragraph{The pre-registered specificity hypothesis is falsified.}
+The pre-registration (\texttt{paper/appendix/track\_c\_preregistration.md},
+locked \texttt{2026-05-08}) predicted that articulatory distortions
+(formant shift, partial muting) would dominate acoustic distortions
+(pink noise, reverberation, time-stretch), and it named the falsifying
+condition explicitly: locked criterion~\#2, ``$\beta(\text{pink\_noise})
+> \beta(\text{formant\_shift})$ $\Rightarrow$ ATD is more sensitive to
+acoustic noise than to articulatory distortion.'' That condition is met
+at \emph{both} layers. At Layer~9, pink noise ($\rho{=}0.766$) far
+exceeds formant shift ($\rho{=}0.170$); at Layer~1, pink noise
+($\rho{=}0.832$) again exceeds formant shift ($\rho{=}0.395$). ATD also
+loses to MFCC on the one articulatory family it was supposed to win on
+($\rho_{\text{ATD}} - \rho_{\text{MFCC}} = -0.055$ for formant shift at
+Layer~9). We therefore report Track~C as a \emph{falsified} hypothesis
+and do \emph{not} claim articulatory specificity from the perturbation
+study; the failure is documented in the Limitations section as the
+pre-registration requires. The one defensible positive is that the
+trajectory metric detects partial muting --- frame dropout that breaks
+temporal continuity --- much better than MFCC
+($\Delta\rho{=}+0.25$ at Layer~9), consistent with ATD using temporal
+structure that pooled MFCC features discard; but this does not establish
+the formant/articulatory specificity that was pre-registered. The
+companion Layer-1 sweep (3{,}740 rows, six families) shows the same
+ordering (pink noise $>$ formant shift) and so does not rescue the
+hypothesis. Layer~9 remains the primary layer for the reasons given in
+\S\ref{sec:layers} and \S\ref{sec:deleak}; the perturbation profile is
+not used to motivate any layer choice.
+
+\subsection{Phoneme-level localisation}
+Figure~\ref{fig:phonemes} shows per-phoneme z-scored deviation for each
+TORGO speaker, computed by slicing each DTW path by Montreal-Forced-
+Aligner english\_us\_arpa boundaries (7654 of 8044 utterances aligned;
+68945 per-phoneme rows over 64 distinct ARPABET phones). Speaker-mean
+ATD per manner class correlates with severity at:
+
+\begin{tabular}{lccr}
+\toprule
+Manner class & $\rho$ & $p$ & $n_\mathrm{tokens}$ \\
+\midrule
+Vowels           & $0.629$ & $0.012$ & $25{,}767$ \\
+Consonants       & $0.625$ & $0.013$ & $43{,}178$ \\
+Voiceless stops  & $0.594$ & $0.020$ & $9{,}542$  \\
+\bottomrule
+\end{tabular}
+
+All three classes are significant. The pre-registered consonant-over-
+vowel hypothesis (typical consonantal-imprecision profile of mixed
+dysarthria) is \emph{not} supported at the speaker-mean aggregate level:
+vowels and consonants yield indistinguishable Spearman magnitudes.
+Voiceless stops show a slightly smaller but still significant
+correlation, plausibly limited by token count. We interpret this as
+evidence that ATD captures a manner-agnostic signal: dysarthric
+deviation distributes across both vowel quality and consonant
+articulation rather than concentrating in one class. Per-speaker
+heatmaps remain clinically useful: $|z| > 2$ cells identify specific
+articulators where individual patients deviate from the control
+distribution.
+
+\subsection{Confound analysis}
+ATD is not a proxy for speaking rate: per-utterance ATD vs.\ duration
+yields Pearson $r = 0.105$ ($p < 10^{-15}$, $n = 7{,}826$): significant at
+this sample size but a negligible effect ($R^2 \approx 1\%$), and the
+Spearman rank correlation is $-0.07$. The control--severe
+duration ratio is $0.83\times$ in TORGO; if ATD tracked rate, the sign
+would invert.
+
+\subsection{Cross-disorder, cross-language generalisation on IPVS}
+\label{sec:cross-corpus}
+We extend the analysis to the Italian Parkinson's Voice and Speech
+corpus (IPVS, $n{=}24$ Parkinson's disease + $n{=}37$ healthy controls)
+using XLS-R-300m features as the multilingual SSL backbone. Layer~9
+within-corpus discrimination is null ($\rho{=}{-}0.21$, $p{=}0.11$),
+but the acoustic-near \emph{Layer~1} recovers a significant binary
+PD-versus-HC signal ($\rho{=}+0.28$, $p{=}0.030$, Cohen's $d{=}0.52$).
+
+Restricting to sustained-vowel tasks (the canonical Parkinsonian-speech
+biomarker), the per-vowel Spearman correlations are all
+\emph{significant after Benjamini--Hochberg FDR correction} at
+$q = 0.05$:
+
+\begin{tabular}{lccc}
+\toprule
+Vowel & $\rho$ & 95\% bootstrap CI & $p_\mathrm{BH}$ \\
+\midrule
+/a/ & $0.32$ & $[0.04,\,0.57]$ & $0.029$ \\
+/e/ & $0.36$ & $[0.08,\,0.62]$ & $0.021$ \\
+/i/ & $0.38$ & $[0.11,\,0.63]$ & $0.021$ \\
+/o/ & $0.39$ & $[0.10,\,0.64]$ & $0.021$ \\
+/u/ & $0.35$ & $[0.06,\,0.61]$ & $0.021$ \\
+\bottomrule
+\end{tabular}
+
+Mean Cohen's $d{=}0.55$ across the five vowels (range $0.42$ to $0.68$).
+All 5 95\% bootstrap CIs exclude zero. /i/ and /o/ additionally survive
+Bonferroni correction at $\alpha = 0.05$. On this cross-language IPVS
+analysis the within-corpus PD-vs-HC signal is recovered by the
+acoustic-near XLS-R Layer~1 rather than Layer~9. We flag this as a
+corpus- and backbone-specific observation, not a general layer
+recommendation: it concerns XLS-R-300m on Italian sustained vowels,
+whereas our TORGO headline uses WavLM-Large, where Layer~9 is the
+leakage-robust primary layer (\S\ref{sec:deleak}). Because early SSL
+layers also carry speaker-identity information, this Layer-1 IPVS result
+should be read with the same leakage caveat and is reported as a
+within-corpus (not zero-shot) finding; we do not claim Layer~1 is a
+universal articulatory layer.
+
+A direct zero-shot transfer (TORGO-fit shared PCA basis applied to
+IPVS via per-corpus CMVN, speaker centroid distance to the TORGO
+healthy prototype) is positive but underpowered: $\rho{=}0.18$,
+$p{=}0.17$, $n{=}61$. Within-corpus IPVS reference building
+outperforms zero-shot, consistent with channel + language mismatch
+not being fully absorbed by mean-variance normalisation alone.
+
+\paragraph{Differential-diagnosis classifier (TORGO + UASpeech + IPVS pooled).}
+A 4-class logistic regression with LOSO over $91$ pooled speakers
+(44 Control / 18 Mild--Moderate / 5 Severe / 24 Parkinson) reaches
+macro-F$_1 = 0.573$. Control + dysarthric severity are well separated
+(precision/recall both $\geq 0.78$ on Mild + Severe), but Parkinson
+is uniformly mis-classified as Control. The failure is informative:
+without per-corpus normalisation, the IPVS ATD scale overlaps
+TORGO-control magnitude, masking the within-corpus PD signal that
+Section~5.6 already documented. Per-corpus z-rank normalisation does
+\emph{not} rescue this: it collapses to the all-Control majority
+predictor (macro-F$_1 = 0.163$, identical to the trivial baseline,
+with Parkinson, Mild--Moderate, and Severe recall all $0$). We
+therefore report pooled cross-corpus differential diagnosis as a
+\emph{negative} result---it fails without speaker- or corpus-level
+calibration, consistent with the failed zero-shot transfer above.
+
+\paragraph{Confidence-aware ATD.}
+Per-utterance DTW-path entropy decreases monotonically with severity
+(Control $0.976$, Mild $0.943$, Severe $0.929$): severe trajectories
+concentrate on a smaller subset of reference frames. Path coverage
+saturates at $1.0$ across all severity levels in this regime,
+indicating fastdtw radius~$30$ is wide enough to visit every
+reference frame regardless of speaker. The entropy drop is small
+($\sim 0.05$) but reproducible and provides a per-utterance
+confidence indicator for clinical-deployment scenarios where flagging
+low-confidence ATD outputs is important.
+
+\paragraph{Cross-SSL backbone bake-off (IPVS sustained-$/$a$/$, Layer 1).}
+A surprising negative finding: the English-pretrained WavLM-Large
+out-performs the multilingual XLS-R-300m on Italian Parkinsonian
+speech.
+
+\begin{tabular}{lrr}
+\toprule
+Backbone (Layer 1) & $\rho$ (PD vs HC) & $p$ \\
+\midrule
+WavLM-Large       & $\mathbf{0.462}$ & $0.0012$ \\
+HuBERT-Large      & $0.318$          & $0.031$ \\
+XLS-R-300m        & $0.079$          & $0.60$ (NS) \\
+\bottomrule
+\end{tabular}
+
+n=46 speakers (22 HC + 24 PD) per backbone, identical pipeline
+(layer-1 features, median-length DTW-barycentre reference from IPVS
+controls, length-normalised FastDTW). Pre-training language is
+\emph{less} important than denoising objective: WavLM's masked-
+denoising pre-training produces frame-level features whose geometry
+discriminates Parkinsonian dysarthria better than XLS-R's
+multilingual contrastive objective, even on Italian audio. HuBERT-
+Large, also English-pretrained with masked prediction, sits in
+between. This reframes the multilingual-transfer narrative: \emph{at
+Layer~1, articulatory features are language-agnostic enough that
+English pre-training transfers without an explicit multilingual
+objective}.
+
+\subsection{Accent-versus-dysarthria specificity (L2-ARCTIC + VCTK)}
+\label{sec:specificity}
+
+A key reviewer concern for any deviation-based dysarthria metric is
+whether it merely measures \emph{any} pronunciation deviation from a
+canonical reference, rather than dysarthric pathology specifically.
+We address this directly by running the ATD pipeline on two
+neurologically healthy but acoustically non-canonical populations:
+L2-ARCTIC (24 second-language English speakers, 6 native-language
+backgrounds; \cite{Zhao2018L2Arctic}) and VCTK Corpus 0.92
+(110 native English speakers, 13 regional accents;
+\cite{Veaux2017VCTK}).
+
+\paragraph{Within-corpus design.}
+For each corpus we build a within-corpus leave-one-speaker-out (LOCO)
+reference: the per-sentence reference is the linear-interpolated
+average of all annotated speakers' PCA-64 trajectories at WavLM
+Layer~9, minus the target speaker's contribution. Reference DTW uses
+the same fast banded algorithm (window~20) as the TORGO headline
+pipeline. L2-ARCTIC analysis is restricted to the 3{,}599 manually
+phone-annotated utterances; VCTK analysis uses the 50 sentence IDs
+read by at least 100 speakers (5{,}437 utterances).
+
+\paragraph{Result 1: ATD does not track L2 accent strength.}
+L2-ARCTIC ships speaker-level manual annotations of phone
+substitutions, deletions, and additions; we summarise these as a
+per-speaker phone-error rate (PER) ranging from 0.069 (HJK, Korean)
+to 0.274 (THV, Vietnamese). The speaker-level Spearman correlation
+between mean ATD and PER is $\rho = 0.041$ ($p = 0.85$;
+$n = 24$).\footnote{Cluster-robust SE on speaker; identical
+direction in Pearson $r = 0.026$.}
+The corresponding Kruskal--Wallis test across the six L1 groups gives
+$H = 12.29$, $p = 0.031$, which is \emph{not} significant after
+Bonferroni correction over the three specificity tests in this
+section ($p_{\text{adj}} = 0.093$).
+
+\paragraph{Result 2: ATD does not distinguish native English accents.}
+Across the 7 VCTK accent groups with $n \geq 4$ speakers (English,
+American, Scottish, Irish, Canadian, NorthernIrish, SouthAfrican),
+Kruskal--Wallis gives $H = 11.47$, $p = 0.075$ (NS). Age has no
+significant association ($\rho = -0.12$, $p = 0.20$). A small gender
+effect remains ($M\!=\!7.94$, $F\!=\!7.78$, Mann--Whitney $p = 0.010$),
+$\Delta = 0.16$ in ATD units (2\%~of the absolute scale), at least an
+order of magnitude smaller than the TORGO control--severe gap.
+
+\paragraph{Result 3: pooled 4-corpus cross-validation.}
+We pool all 28{,}082 utterances from 164 speakers into a single OLS
+model with corpus fixed effects and cluster-robust standard errors on
+speaker (mixed-effects models are degenerate because severity is
+constant within speaker). On TORGO~$+$~UASpeech only (19{,}046
+utts), the within-corpus severity coefficient is
+$\hat{\beta}_{\text{sev}} = 0.273$ z-units per severity step, 95\%
+CI~$[0.070,\,0.477]$, $p = 0.008$. Across all four corpora the
+binary contrast \emph{dysarthric vs healthy} (with VCTK + L2-ARCTIC
+acting as accented-healthy distractors) gives
+$\hat{\beta}_{\text{dys}} = 0.752$ z-units, 95\%
+CI~$[0.376,\,1.129]$, $p = 8.9{\times}10^{-5}$.
+
+The per-population z-ATD picture (Fig.~\ref{fig:specificity_4corpus})
+is the cleanest summary: TORGO\,controls~$\approx$~UA\,controls
+($d = 0.02$) $\approx$~VCTK~native-accented healthy ($d = 0.40$) $\approx$~L2-ARCTIC
+L2-accented healthy ($d = 0.40$ vs TORGO\,controls), while
+TORGO\,severe and UA\,severe sit \emph{above} all healthy
+populations: $d(\text{TORGO\,severe},\text{VCTK}) = 0.93$,
+$d(\text{TORGO\,severe},\text{UA\,controls}) = 1.70$,
+$d(\text{TORGO\,severe},\text{TORGO\,controls}) = 1.49$. The
+accented-but-healthy populations do not elevate into the dysarthric
+range. The most parsimonious account is that ATD is a pathology
+detector, not an accent detector.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_specificity_4corpus.pdf}
+\caption{Per-population ATD distribution (z-scored within each corpus).
+Blue: clinical controls. Cyan: neurologically healthy speakers with
+non-canonical accents (VCTK regional accents, L2-ARCTIC L2 speakers).
+Orange: mild dysarthria. Red: severe dysarthria. The accented-healthy
+populations (cyan) sit in the same band as the clinical controls
+(blue), \emph{not} the dysarthric populations (orange/red). The
+specificity claim is a falsifiable prediction passing in both
+corpora, with $n = 134$ accented-but-healthy speakers as the
+adversarial test set.}
+\label{fig:specificity_4corpus}
+\end{figure}

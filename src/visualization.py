@@ -605,3 +605,209 @@ def fig6_speaker_heatmap(project_root: Path) -> str:
     _save_figure(fig, "fig6_speaker_heatmap", project_root)
     plt.close(fig)
     return "fig6_speaker_heatmap"
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# FIGURE 7 — Cross-corpus scatter (UA-Speech ATD vs intelligibility)
+# ═══════════════════════════════════════════════════════════════════════
+INTELL_GROUP_COLORS = {
+    "very_low": "#D32F2F",  # <25%
+    "low": "#FF9800",       # 25-50%
+    "mid": "#FDD835",       # 50-75%
+    "high": "#4CAF50",      # >=75%
+}
+
+
+def fig7_cross_corpus_scatter(project_root: Path) -> str:
+    """Cross-corpus scatter: UA-Speech ATD vs intelligibility."""
+    plt.rcParams.update(STYLE)
+    df = pd.read_csv(project_root / "results" / "uaspeech_speaker_atd.csv")
+
+    fig, ax = plt.subplots(figsize=(10, 7))
+    _apply_style(ax)
+
+    # Severity groups
+    def sev_group(score):
+        if score < 25:
+            return "very_low"
+        elif score < 50:
+            return "low"
+        elif score < 75:
+            return "mid"
+        return "high"
+
+    df["sev_group"] = df["intelligibility_score"].apply(sev_group)
+    group_labels = {"very_low": "Very Low (<25%)", "low": "Low (25-50%)",
+                    "mid": "Mid (50-75%)", "high": "High (≥75%)"}
+
+    # Scatter by group
+    for grp, color in INTELL_GROUP_COLORS.items():
+        mask = df["sev_group"] == grp
+        subset = df[mask]
+        if len(subset) == 0:
+            continue
+        ax.scatter(subset["intelligibility_score"], subset["mean_atd"],
+                   c=color, s=120, edgecolors="black", linewidths=0.5,
+                   zorder=5, label=group_labels[grp])
+        ax.errorbar(subset["intelligibility_score"], subset["mean_atd"],
+                    yerr=subset["std_atd"], fmt="none", ecolor=color,
+                    alpha=0.3, capsize=4, zorder=2)
+
+    # Speaker labels
+    for _, row in df.iterrows():
+        ax.annotate(row["speaker_id"],
+                    (row["intelligibility_score"], row["mean_atd"]),
+                    textcoords="offset points", xytext=(6, 4),
+                    fontsize=8, alpha=0.8)
+
+    # Regression line + 95% CI
+    x = df["intelligibility_score"].values
+    y = df["mean_atd"].values
+    slope, intercept, r_val, p_val_reg, stderr = linregress(x, y)
+    x_line = np.linspace(0, 100, 200)
+    y_line = slope * x_line + intercept
+    ax.plot(x_line, y_line, "k--", linewidth=2, alpha=0.6, zorder=4)
+
+    # CI band
+    n = len(df)
+    y_pred = slope * x + intercept
+    resid_std = np.std(y - y_pred)
+    se = resid_std * np.sqrt(1/n + (x_line - x.mean())**2 / np.sum((x - x.mean())**2))
+    ci = 1.96 * se
+    ax.fill_between(x_line, y_line - ci, y_line + ci, alpha=0.08, color="black")
+
+    # Spearman
+    rho, pval = spearmanr(df["intelligibility_score"], df["mean_atd"])
+    textbox = (f"Spearman ρ = {rho:.3f} (p={pval:.4f})\n"
+               f"Zero-shot cross-corpus\n"
+               f"References: UA-Speech controls\n"
+               f"Method designed on TORGO")
+    ax.text(0.03, 0.95, textbox, transform=ax.transAxes, fontsize=10,
+            verticalalignment="top",
+            bbox=dict(boxstyle="round", facecolor="white", edgecolor="gray", alpha=0.9))
+
+    ax.set_xlabel("Intelligibility Score (%)")
+    ax.set_ylabel("Mean ATD Score")
+    ax.set_title("Cross-Corpus ATD Validation on UA-Speech (Zero-Shot)",
+                 fontsize=14, fontweight="bold")
+    ax.set_xlim(-5, 105)
+    ax.legend(loc="lower right", framealpha=0.9)
+
+    fig.tight_layout()
+    _save_figure(fig, "fig7_cross_corpus_scatter", project_root)
+    plt.close(fig)
+    return "fig7_cross_corpus_scatter"
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# FIGURE 8 — Combined dataset comparison (TORGO + UA-Speech)
+# ═══════════════════════════════════════════════════════════════════════
+def fig8_cross_dataset(project_root: Path) -> str:
+    """Two-panel figure: TORGO vs UA-Speech ATD results side by side."""
+    plt.rcParams.update(STYLE)
+
+    torgo_df = pd.read_csv(project_root / "results" / "speaker_atd.csv")
+    ua_df = pd.read_csv(project_root / "results" / "uaspeech_speaker_atd.csv")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7), sharey=True)
+
+    # ── Left: TORGO ──────────────────────────────────────────────
+    _apply_style(ax1)
+
+    torgo_colors = {0: "#4CAF50", 1: "#FF9800", 2: "#F44336"}
+    torgo_labels = {0: "Control", 1: "Mild-Mod", 2: "Severe"}
+
+    np.random.seed(42)
+    jitter = np.random.uniform(-0.08, 0.08, len(torgo_df))
+
+    for sev in sorted(torgo_df["severity_score"].unique()):
+        mask = torgo_df["severity_score"] == sev
+        subset = torgo_df[mask]
+        jit = subset["severity_score"].values + jitter[mask.values]
+        ax1.scatter(jit, subset["mean_atd"], c=torgo_colors[sev],
+                    s=100, edgecolors="black", linewidths=0.5, zorder=5,
+                    label=torgo_labels[sev])
+        ax1.errorbar(jit, subset["mean_atd"], yerr=subset["std_atd"],
+                     fmt="none", ecolor=torgo_colors[sev], alpha=0.3,
+                     capsize=4, zorder=2)
+
+    # Speaker labels
+    for _, row in torgo_df.iterrows():
+        idx = torgo_df.index.get_loc(row.name)
+        ax1.annotate(row["speaker_id"],
+                     (row["severity_score"] + jitter[idx], row["mean_atd"]),
+                     textcoords="offset points", xytext=(5, 4),
+                     fontsize=7, alpha=0.8)
+
+    # Regression
+    slope_t, int_t, _, _, _ = linregress(torgo_df["severity_score"], torgo_df["mean_atd"])
+    x_t = np.linspace(-0.3, 2.3, 50)
+    ax1.plot(x_t, slope_t * x_t + int_t, "k--", lw=1.5, alpha=0.5)
+
+    rho_t, p_t = spearmanr(torgo_df["severity_score"], torgo_df["mean_atd"])
+    ax1.text(0.03, 0.95, f"TORGO: ρ = {rho_t:.3f}\np = {p_t:.4f}\nn = {len(torgo_df)}",
+             transform=ax1.transAxes, fontsize=11, va="top",
+             bbox=dict(boxstyle="round", facecolor="white", edgecolor="gray", alpha=0.9))
+
+    ax1.set_xticks([0, 1, 2])
+    ax1.set_xticklabels(["Control", "Mild-Mod", "Severe"])
+    ax1.set_xlabel("Severity Score")
+    ax1.set_ylabel("Mean ATD Score")
+    ax1.set_title("TORGO Dataset", fontsize=13, fontweight="bold")
+    ax1.set_xlim(-0.4, 2.4)
+    ax1.legend(loc="lower right", fontsize=9, framealpha=0.9)
+
+    # ── Right: UA-Speech ─────────────────────────────────────────
+    _apply_style(ax2)
+
+    for grp, color in INTELL_GROUP_COLORS.items():
+        if "severity_group" in ua_df.columns:
+            mask = ua_df["severity_group"] == grp
+        else:
+            def _grp(s):
+                if s < 25: return "very_low"
+                elif s < 50: return "low"
+                elif s < 75: return "mid"
+                return "high"
+            mask = ua_df["intelligibility_score"].apply(_grp) == grp
+        subset = ua_df[mask]
+        if len(subset) == 0:
+            continue
+        grp_label = {"very_low": "Very Low", "low": "Low",
+                     "mid": "Mid", "high": "High"}[grp]
+        ax2.scatter(subset["intelligibility_score"], subset["mean_atd"],
+                    c=color, s=100, edgecolors="black", linewidths=0.5,
+                    zorder=5, label=grp_label)
+        ax2.errorbar(subset["intelligibility_score"], subset["mean_atd"],
+                     yerr=subset["std_atd"], fmt="none", ecolor=color,
+                     alpha=0.3, capsize=4, zorder=2)
+
+    # Speaker labels
+    for _, row in ua_df.iterrows():
+        ax2.annotate(row["speaker_id"],
+                     (row["intelligibility_score"], row["mean_atd"]),
+                     textcoords="offset points", xytext=(5, 4),
+                     fontsize=7, alpha=0.8)
+
+    # Regression
+    slope_u, int_u, _, _, _ = linregress(ua_df["intelligibility_score"], ua_df["mean_atd"])
+    x_u = np.linspace(-5, 105, 100)
+    ax2.plot(x_u, slope_u * x_u + int_u, "k--", lw=1.5, alpha=0.5)
+
+    rho_u, p_u = spearmanr(ua_df["intelligibility_score"], ua_df["mean_atd"])
+    ax2.text(0.03, 0.95, f"UA-Speech: ρ = {rho_u:.3f}\np = {p_u:.4f}\nn = {len(ua_df)}",
+             transform=ax2.transAxes, fontsize=11, va="top",
+             bbox=dict(boxstyle="round", facecolor="white", edgecolor="gray", alpha=0.9))
+
+    ax2.set_xlabel("Intelligibility Score (%)")
+    ax2.set_title("UA-Speech Dataset", fontsize=13, fontweight="bold")
+    ax2.set_xlim(-5, 105)
+    ax2.legend(loc="lower right", fontsize=9, framealpha=0.9)
+
+    fig.suptitle("ATD Across Two Independent Dysarthric Speech Datasets",
+                 fontsize=15, fontweight="bold", y=1.02)
+
+    fig.tight_layout()
+    _save_figure(fig, "fig8_cross_dataset", project_root)
+    plt.close(fig)
+    return "fig8_cross_dataset"

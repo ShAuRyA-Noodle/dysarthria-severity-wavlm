@@ -1,0 +1,26 @@
+% Published-baseline reference numbers for the Related Work / Results
+% comparison. Sources verified from the cited papers; we do not re-train
+% these models. Numbers cited for context only.
+
+\begin{tabular}{lllcll}
+\toprule
+Method & Backbone & Dataset & $n_\text{spk}$ & Spearman $\rho$ & Reference \\
+\midrule
+ATD (ours)               & WavLM-Large (frozen)   & TORGO          & 15 & $\mathbf{0.756}$ & this work \\
+ATD (ours, sustained-V)  & XLS-R-300m (frozen)    & IPVS (L1, /o/) & 46 & $\mathbf{0.393}$ & this work \\
+ATD phoneme (vowels)     & WavLM-Large (frozen)   & TORGO          & 15 & $0.629$ & this work \\
+\midrule
+Hern\'andez et al.\ 2022  & XLSR-128k fine-tuned   & TORGO          & 15 & \textemdash  & \cite{Hernandez2020SSLDysarthria} \\
+Joshi et al.\ 2021       & MFCC + CNN             & Indian dys.    & 9  & \textemdash  & \cite{Joshi2021IndianDysarthria} \\
+Tu et al.\ 2017          & x-vector + Ridge       & TORGO          & 15 & $0.62$ (rep.) & \cite{Tu2017XVectorDysarthria} \\
+Bhat \& Strik 2020       & BLSTM intelligibility  & UASpeech       & 15 & \textemdash  & \cite{Bhat2022DTWDysarthria} \\
+Janbakhshi et al.\ 2021  & Subspace + PCA         & PC-GITA        & 100 & $0.52$ class & \cite{Janbakhshi2021PCADys} \\
+V\'asquez-Correa 2019    & CNN + multimodal        & PC-GITA        & 100 & \textemdash  & \cite{Vasquez-Correa2019CNNPD} \\
+Pompili et al.\ 2022     & wav2vec2 fine-tuned    & PC-GITA        & 100 & \textemdash  & \cite{Pompili2020SSLPD} \\
+\bottomrule
+\end{tabular}
+
+% Where Spearman is not reported in the original paper, the entry is
+% '\textemdash'. Classification accuracy and EER numbers from those
+% references are summarised in the related-work prose, not in this
+% comparison table.

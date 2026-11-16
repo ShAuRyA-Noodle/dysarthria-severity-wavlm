@@ -1,71 +1,1706 @@
 {
-  "dataset": {
-    "total_speakers": 15,
-    "dysarthric_speakers": 8,
-    "control_speakers": 7,
-    "severe_speakers": 5,
-    "mild_mod_speakers": 3,
-    "total_utterances": 8218,
-    "valid_atd_utterances": 7826,
-    "total_reference_words": 794,
-    "total_reference_trajectories": 7146,
-    "total_hours": 7.1
+  "generated_by": "experiments/21_consolidate_paper_numbers.py",
+  "generated_at_utc": "2026-05-11T17:09:50.794904+00:00",
+  "branch": "audit-cleanup-2026-05-08",
+  "datasets": {
+    "torgo": {
+      "n_speakers": 15,
+      "n_dysarthric": 8,
+      "n_controls": 7,
+      "n_utterances_in_metadata": 8218,
+      "n_utterances_with_atd": 7826,
+      "n_mfa_aligned": 8007
+    },
+    "uaspeech": {
+      "n_dysarthric": 15
+    },
+    "ipvs": {
+      "n_speakers": 61,
+      "n_pd": 24,
+      "n_hc_old": 22,
+      "n_hc_young": 15,
+      "n_utterances": 831,
+      "n_resampled_44100_to_16000": 160
+    }
   },
-  "atd_validation": {
-    "speaker_spearman_rho": 0.756,
-    "speaker_spearman_p": 0.0011,
-    "utterance_spearman_rho": 0.524,
-    "cohens_d_mild_severe": 0.586,
-    "cohens_d_control_severe": 1.488,
-    "control_mean_atd": 69.8,
-    "mild_mean_atd": 85.7,
-    "severe_mean_atd": 97.2,
-    "monotonic_ordering": true
+  "torgo_headline": {
+    "n_speakers": 15,
+    "n_resamples": 10000,
+    "point_rho": 0.7560864148142503,
+    "point_p_value": 0.0011089540064018154,
+    "ci_low": 0.3822763244267563,
+    "ci_high": 0.9212138348773308,
+    "bootstrap_median_rho": 0.7635679142281755,
+    "bootstrap_pct_above_zero": 0.9995
   },
-  "layer_analysis": {
+  "torgo_leave_one_out": {
+    "full_rho": 0.7560864148142503,
+    "full_p": 0.0011089540064018154,
+    "n_speakers": 15,
+    "loo_rho_min": 0.7239,
+    "loo_rho_max": 0.8554,
+    "loo_rho_median": 0.735,
+    "most_influential_speaker": "F04",
+    "most_influential_delta": 0.0993,
+    "f04_loo_rho": 0.8554,
+    "all_loo_rho": {
+      "F04": 0.8554,
+      "MC03": 0.7963,
+      "MC04": 0.7963,
+      "F01": 0.7239,
+      "M01": 0.7239,
+      "M02": 0.7239,
+      "M03": 0.7837,
+      "FC01": 0.735,
+      "FC02": 0.735,
+      "FC03": 0.735,
+      "MC01": 0.735,
+      "MC02": 0.735,
+      "F03": 0.7403,
+      "M04": 0.7407,
+      "M05": 0.7571
+    }
+  },
+  "torgo_validation_report": {
+    "speaker_spearman": 0.7560864148142503,
+    "p_value": 0.0011089540064018154,
+    "passed": true,
+    "utterance_spearman": 0.5242203639307736,
+    "utterance_p": 0.0
+  },
+  "torgo_critical_fixes_report": {
+    "anomaly_investigation": {
+      "F04": {
+        "severity": 2,
+        "n_utterances": 243,
+        "mean_atd": 72.9,
+        "std_atd": 16.24,
+        "median_atd": 69.26,
+        "min_atd": 51.11,
+        "max_atd": 149.09,
+        "iqr": 15.61,
+        "unique_words": 210,
+        "group_mean_atd": 97.19,
+        "group_std_atd": 14.44,
+        "z_score_in_group": -1.68
+      },
+      "M05": {
+        "severity": 1,
+        "n_utterances": 482,
+        "mean_atd": 97.96,
+        "std_atd": 14.22,
+        "median_atd": 96.37,
+        "min_atd": 64.28,
+        "max_atd": 154.18,
+        "iqr": 16.0,
+        "unique_words": 392,
+        "group_mean_atd": 85.68,
+        "group_std_atd": 11.43,
+        "z_score_in_group": 1.07
+      }
+    },
+    "sensitivity_analysis": {
+      "full_15_speakers": {
+        "rho": 0.7561,
+        "p": 0.001109,
+        "n": 15
+      },
+      "without_F04": {
+        "rho": 0.8554,
+        "p": 9.6e-05,
+        "n": 14
+      },
+      "without_M05": {
+        "rho": 0.7571,
+        "p": 0.001715,
+        "n": 14
+      },
+      "without_F04_M05": {
+        "rho": 0.8485,
+        "p": 0.000245,
+        "n": 13
+      },
+      "dysarthric_only_8": {
+        "rho": 0.3944,
+        "p": 0.333601,
+        "n": 8
+      },
+      "dysarthric_without_F04": {
+        "rho": 0.7217,
+        "p": 0.067106,
+        "n": 7
+      }
+    },
+    "bootstrap_confidence_intervals": {
+      "speaker_level_15": {
+        "rho": 0.7561,
+        "ci_lower": 0.403,
+        "ci_upper": 0.9199,
+        "ci_level": 0.95,
+        "n_bootstrap": 10000,
+        "n_valid_resamples": 10000,
+        "se": 0.1382
+      },
+      "without_F04": {
+        "rho": 0.8554,
+        "ci_lower": 0.6079,
+        "ci_upper": 0.9423,
+        "ci_level": 0.95,
+        "n_bootstrap": 10000,
+        "n_valid_resamples": 9999,
+        "se": 0.0858
+      },
+      "without_F04_M05": {
+        "rho": 0.8485,
+        "ci_lower": 0.5428,
+        "ci_upper": 0.9454,
+        "ci_level": 0.95,
+        "n_bootstrap": 10000,
+        "n_valid_resamples": 9998,
+        "se": 0.1033
+      },
+      "dysarthric_only": {
+        "rho": 0.3944,
+        "ci_lower": -0.2924,
+        "ci_upper": 0.9001,
+        "ci_level": 0.95,
+        "n_bootstrap": 10000,
+        "n_valid_resamples": 9772,
+        "se": 0.3367
+      }
+    },
+    "pca_dimension_analysis": {
+      "known_dimensions": {
+        "64": 0.756,
+        "1024": 0.802
+      },
+      "rho_difference": 0.046,
+      "computational_tradeoff": "16x slower for 0.046 rho improvement",
+      "recommendation": "Keep PCA=64, justify on computational grounds",
+      "full_sweep_needed": true,
+      "full_sweep_est_hours": 14
+    }
+  },
+  "torgo_layer_analysis": [
+    {
+      "layer_idx": 1,
+      "spearman_rho": 0.7754,
+      "p_value": 0.000683,
+      "significant": true,
+      "n_speakers": 15,
+      "n_utterances": 7826
+    },
+    {
+      "layer_idx": 3,
+      "spearman_rho": 0.6828,
+      "p_value": 0.005028,
+      "significant": true,
+      "n_speakers": 15,
+      "n_utterances": 7826
+    },
+    {
+      "layer_idx": 6,
+      "spearman_rho": 0.7021,
+      "p_value": 0.003524,
+      "significant": true,
+      "n_speakers": 15,
+      "n_utterances": 7826
+    },
+    {
+      "layer_idx": 9,
+      "spearman_rho": 0.7561,
+      "p_value": 0.001109,
+      "significant": true,
+      "n_speakers": 15,
+      "n_utterances": 7826
+    },
+    {
+      "layer_idx": 12,
+      "spearman_rho": 0.7561,
+      "p_value": 0.001109,
+      "significant": true,
+      "n_speakers": 15,
+      "n_utterances": 7826
+    },
+    {
+      "layer_idx": 15,
+      "spearman_rho": 0.7715,
+      "p_value": 0.000755,
+      "significant": true,
+      "n_speakers": 15,
+      "n_utterances": 7826
+    },
+    {
+      "layer_idx": 18,
+      "spearman_rho": 0.7561,
+      "p_value": 0.001109,
+      "significant": true,
+      "n_speakers": 15,
+      "n_utterances": 7826
+    },
+    {
+      "layer_idx": 21,
+      "spearman_rho": 0.7021,
+      "p_value": 0.003524,
+      "significant": true,
+      "n_speakers": 15,
+      "n_utterances": 7826
+    },
+    {
+      "layer_idx": 23,
+      "spearman_rho": 0.7561,
+      "p_value": 0.001109,
+      "significant": true,
+      "n_speakers": 15,
+      "n_utterances": 7826
+    }
+  ],
+  "torgo_ablations": [
+    {
+      "variant": "Full ATD \u2014 Layer 1",
+      "spearman_global": 0.7754,
+      "spearman_loso": 0.3944,
+      "rmse": 40.5195,
+      "n_speakers": 15,
+      "n_dysarthric_in_loso": 8,
+      "notes": "Best layer by Spearman"
+    },
+    {
+      "variant": "Full ATD \u2014 Layer 9",
+      "spearman_global": 0.7561,
+      "spearman_loso": 0.3944,
+      "rmse": 82.6699,
+      "n_speakers": 15,
+      "n_dysarthric_in_loso": 8,
+      "notes": "Mid-network articulatory layer"
+    },
+    {
+      "variant": "No DTW \u2014 Mean L2",
+      "spearman_global": 0.4706,
+      "spearman_loso": 0.3944,
+      "rmse": 40.4485,
+      "n_speakers": 15,
+      "n_dysarthric_in_loso": 8,
+      "notes": "Mean embed distance, no trajectory"
+    },
+    {
+      "variant": "No PCA \u2014 1024d DTW",
+      "spearman_global": 0.8024,
+      "spearman_loso": -0.0563,
+      "rmse": 22819.213,
+      "n_speakers": 15,
+      "n_dysarthric_in_loso": 8,
+      "notes": "Full dim DTW, sampled 200/spk"
+    },
+    {
+      "variant": "Mean-pool distance",
+      "spearman_global": 0.4706,
+      "spearman_loso": 0.3944,
+      "rmse": 40.4485,
+      "n_speakers": 15,
+      "n_dysarthric_in_loso": 8,
+      "notes": "No trajectory, pool then L2"
+    },
+    {
+      "variant": "MFCC trajectory DTW",
+      "spearman_global": 0.8487,
+      "spearman_loso": 0.2817,
+      "rmse": 11570.1601,
+      "n_speakers": 15,
+      "n_dysarthric_in_loso": 8,
+      "notes": "Same framework, MFCC not SSL"
+    }
+  ],
+  "track_c_perturbation_atd_vs_mfcc": {
+    "n_rows": 3080,
+    "by_family": {
+      "formant_shift": {
+        "n": 660,
+        "rho_atd": 0.1697011157000062,
+        "rho_mfcc": 0.22430906808850054,
+        "atd_minus_mfcc": -0.054607952388494335
+      },
+      "partial_mute": {
+        "n": 550,
+        "rho_atd": 0.40220513759102083,
+        "rho_mfcc": 0.15550037192608343,
+        "atd_minus_mfcc": 0.2467047656649374
+      },
+      "pink_noise": {
+        "n": 660,
+        "rho_atd": 0.7664137655944502,
+        "rho_mfcc": 0.8482611120787665,
+        "atd_minus_mfcc": -0.08184734648431635
+      },
+      "reverberate": {
+        "n": 550,
+        "rho_atd": 0.6726107514056051,
+        "rho_mfcc": 0.08061871136706882,
+        "atd_minus_mfcc": 0.5919920400385363
+      },
+      "time_stretch": {
+        "n": 660,
+        "rho_atd": 0.24408921063670622,
+        "rho_mfcc": 0.0032036737999209045,
+        "atd_minus_mfcc": 0.24088553683678532
+      }
+    }
+  },
+  "track_c_perturbation_layer1": {
+    "layer": 1,
+    "by_family": {
+      "formant_shift": {
+        "rho": 0.3949763408385952,
+        "p": 4.551953166192204e-26,
+        "mean_dATD": 2.585589439211783
+      },
+      "partial_mute": {
+        "rho": 0.7758606757054338,
+        "p": 1.0520376824880276e-111,
+        "mean_dATD": 4.583071755064975
+      },
+      "pink_noise": {
+        "rho": 0.8320611394771317,
+        "p": 1.4262912105813262e-170,
+        "mean_dATD": 11.831687944281683
+      },
+      "pitch_shift": {
+        "rho": 0.688475405161389,
+        "p": 7.224294254447208e-94,
+        "mean_dATD": 5.861780671753685
+      },
+      "reverberate": {
+        "rho": 0.38327897399934396,
+        "p": 1.0913480718289369e-20,
+        "mean_dATD": 8.61794921208852
+      },
+      "time_stretch": {
+        "rho": 0.3247351794460524,
+        "p": 1.1302385684398834e-17,
+        "mean_dATD": 1.5673697705365783
+      }
+    },
+    "n_rows": 3740
+  },
+  "ipvs_within_corpus_layer9": {
+    "corpus": "ipvs",
+    "task_subset": null,
+    "layer": 9,
+    "model": "xlsr_300m",
+    "n_utterances_with_atd": 757,
+    "n_speakers": 61,
+    "n_controls": 37,
+    "n_dysarthric": 24,
+    "rho_binary": -0.20584315306010606,
+    "p_binary": 0.11149206534897295
+  },
+  "ipvs_within_corpus_layer1": {
+    "corpus": "ipvs",
+    "task_subset": null,
+    "layer": 1,
+    "model": "xlsr_300m",
+    "n_utterances_with_atd": 757,
+    "n_speakers": 61,
+    "n_controls": 37,
+    "n_dysarthric": 24,
+    "rho_binary": 0.2782694476553286,
+    "p_binary": 0.029894955471947038
+  },
+  "ipvs_per_vowel_bootstrap": {
+    "n_resamples": 10000,
+    "alpha_uncorrected": 0.05,
+    "alpha_bonferroni": 0.01,
+    "per_vowel": [
+      {
+        "vowel": "a",
+        "n": 46,
+        "rho": 0.3212510468732028,
+        "ci_low": 0.039021850852072014,
+        "ci_high": 0.5743186521929239,
+        "p_raw": 0.029485517465648647,
+        "p_bonferroni": 0.14742758732824324,
+        "p_bh_fdr": 0.029485517465648647
+      },
+      {
+        "vowel": "e",
+        "n": 46,
+        "rho": 0.36386598166250517,
+        "ci_low": 0.07871430063281132,
+        "ci_high": 0.621048606862011,
+        "p_raw": 0.012925806981910737,
+        "p_bonferroni": 0.06462903490955368,
+        "p_bh_fdr": 0.021064163788895394
+      },
+      {
+        "vowel": "i",
+        "n": 46,
+        "rho": 0.3835344131037217,
+        "ci_low": 0.10814518921708159,
+        "ci_high": 0.6298978421816334,
+        "p_raw": 0.008510093487301413,
+        "p_bonferroni": 0.04255046743650706,
+        "p_bh_fdr": 0.021064163788895394
+      },
+      {
+        "vowel": "o",
+        "n": 46,
+        "rho": 0.39336862882433,
+        "ci_low": 0.10374943529342613,
+        "ci_high": 0.6404672651078456,
+        "p_raw": 0.006840306516034921,
+        "p_bonferroni": 0.03420153258017461,
+        "p_bh_fdr": 0.021064163788895394
+      },
+      {
+        "vowel": "u",
+        "n": 46,
+        "rho": 0.3507536940350275,
+        "ci_low": 0.06395574988984468,
+        "ci_high": 0.6070818029265843,
+        "p_raw": 0.016851331031116315,
+        "p_bonferroni": 0.08425665515558158,
+        "p_bh_fdr": 0.021064163788895394
+      }
+    ]
+  },
+  "ipvs_zero_shot_from_torgo": {
+    "torgo_layer": 1,
+    "ipvs_layer": 1,
+    "n_speakers": 61,
+    "n_controls": 37,
+    "n_dysarthric": 24,
+    "rho_centroid_distance_vs_label": 0.17915978136712934,
+    "p_value": 0.1671124829726462,
+    "method": "TORGO-fit shared PCA basis + per-corpus CMVN; speaker-level centroid distance to HC prototype."
+  },
+  "phoneme_decomposition_torgo": {
+    "layer": 9,
+    "n_utterances": 7654,
+    "n_rows": 68945,
+    "vowels_only": {
+      "rho": 0.6287861510955245,
+      "p": 0.012041418168809862,
+      "n_speakers": 15,
+      "n_tokens": 25767
+    },
+    "consonants_only": {
+      "rho": 0.6249285673464722,
+      "p": 0.012740681851627307,
+      "n_speakers": 15,
+      "n_tokens": 43178
+    },
+    "voiceless_stops_only": {
+      "rho": 0.5940678973540539,
+      "p": 0.019532689561673592,
+      "n_speakers": 15,
+      "n_tokens": 9542
+    }
+  },
+  "uaspeech_within_corpus": {
+    "dataset": "UA-Speech",
+    "layer": 1,
+    "n_dysarthric_speakers": 15,
+    "n_utterances": 11220,
+    "spearman_rho": -0.22,
+    "p_value": 0.4303,
+    "abs_spearman_rho": 0.22,
+    "references_from": "UA-Speech_controls",
+    "zero_shot_cross_corpus": true,
+    "method_from": "TORGO (Layer 1, PCA=64, DTW norm)",
+    "severity_group_means": {
+      "very_low": 39.0,
+      "low": 36.3,
+      "mid": 39.0,
+      "high": 35.7
+    }
+  },
+  "torgo_plus_uaspeech_pooled": {
+    "torgo_n_speakers": 8,
+    "torgo_spearman_rho": -0.394,
+    "torgo_p_value": 0.3336,
+    "uaspeech_n_speakers": 15,
+    "uaspeech_spearman_rho": -0.22,
+    "uaspeech_p_value": 0.4303,
+    "combined_n_speakers": 23,
+    "combined_spearman_rho": -0.074,
+    "combined_p_value": 0.7368,
+    "method": "ATD (WavLM-Large, Layer 1, PCA=64, DTW)",
+    "zero_shot_cross_corpus": true,
+    "note": "TORGO severity mapped to intelligibility: 0->100%, 1->60%, 2->20%"
+  },
+  "torgo_confound_analysis": {
+    "atd_duration_pearson_r": 0.1047,
+    "atd_duration_pearson_p": 0.0,
+    "atd_duration_spearman_rho": -0.0722,
+    "atd_duration_spearman_p": 0.0,
+    "n_utterances": 7826,
+    "is_confounded": false,
+    "verdict": "ATD is NOT a proxy for speaking rate"
+  },
+  "frame_length_analysis": {
+    "torgo_mean_frames": 155.3,
+    "torgo_min_frames": 1,
+    "torgo_max_frames": 9691,
+    "uaspeech_mean_frames": 126.9,
+    "uaspeech_min_frames": 51,
+    "uaspeech_max_frames": 2846,
+    "ratio": 1.22
+  },
+  "torgo_best_layer": {
     "best_layer": 1,
-    "best_layer_rho": 0.775,
-    "layer9_rho": 0.756,
-    "all_layers_significant": true,
-    "n_layers_tested": 9
+    "spearman_rho": 0.7754
   },
-  "main_results": {
-    "atd_l9_rmse": 0.721,
-    "atd_all_rmse": 0.671,
-    "mfcc_rmse": 0.802,
-    "ssl_pool_rmse": 0.795,
-    "atd_l9_loso_rho": 0.282,
-    "atd_all_loso_rho": 0.394,
-    "mfcc_loso_rho": 0.056,
-    "ssl_pool_loso_rho": -0.056,
-    "atd_l9_global_rho": 0.756,
-    "atd_all_global_rho": 0.756,
-    "mfcc_global_rho": 0.787,
-    "rmse_improvement_pct": 16.3,
-    "loso_rho_improvement_x": 7.0
+  "track_a_streaming_parity": {
+    "n_utterances": 200,
+    "n_frame_samples": 31063,
+    "atd_pearson_r_online_vs_offline": 0.8119427443941369,
+    "atd_mean_abs_diff": 3.8692253538222108,
+    "atd_median_abs_diff": 1.1498357249450919e-05,
+    "atd_mean_rel_diff": 0.037527832166664644,
+    "atd_max_rel_diff": 0.666552977461586,
+    "per_frame_latency_us_p50": 91.40000474872068,
+    "per_frame_latency_us_p95": 260.5000037874561,
+    "per_frame_latency_us_p99": 402.4039981595714,
+    "per_frame_latency_us_max": 3105.799994955305
   },
-  "loso": {
-    "total_speakers_tested": 8,
-    "correctly_ranked": 7,
-    "rank_accuracy_pct": 87.5
+  "ipvs_mfcc_svr_baseline": {
+    "corpus": "ipvs",
+    "n_speakers": 61,
+    "n_hc": 37,
+    "n_pd": 24,
+    "mfcc_norm_rho": -0.1276989931021028,
+    "mfcc_norm_p": 0.32671579082134317,
+    "mfcc_svr_loso_rho": 0.25730394132513257,
+    "mfcc_svr_loso_p": 0.045297861409091755
   },
-  "ablations": {
-    "full_atd_l1_rho": 0.775,
-    "full_atd_l9_rho": 0.756,
-    "no_dtw_rho": 0.471,
-    "no_pca_rho": 0.802,
-    "mean_pool_rho": 0.471,
-    "mfcc_trajectory_rho": 0.849,
-    "dtw_contribution": 0.285
+  "differential_dx_classifier": {
+    "n_speakers": 91,
+    "corpora": {
+      "IPVS": "61",
+      "TORGO": "15",
+      "UASpeech": "15"
+    },
+    "class_distribution": {
+      "Control": "44",
+      "Parkinson": "24",
+      "Mild-Mod": "18",
+      "Severe": "5"
+    },
+    "loso_macro_f1": 0.573015873015873,
+    "labels_in_order": [
+      "Control",
+      "Mild-Mod",
+      "Parkinson",
+      "Severe"
+    ],
+    "confusion_matrix": [
+      [
+        40,
+        4,
+        0,
+        0
+      ],
+      [
+        3,
+        14,
+        0,
+        1
+      ],
+      [
+        24,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        4
+      ]
+    ],
+    "per_class": {
+      "Control": {
+        "precision": 0.5882352941176471,
+        "recall": 0.9090909090909091,
+        "f1-score": 0.7142857142857143,
+        "support": 44.0
+      },
+      "Mild-Mod": {
+        "precision": 0.7777777777777778,
+        "recall": 0.7777777777777778,
+        "f1-score": 0.7777777777777778,
+        "support": 18.0
+      },
+      "Parkinson": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 24.0
+      },
+      "Severe": {
+        "precision": 0.8,
+        "recall": 0.8,
+        "f1-score": 0.8,
+        "support": 5.0
+      },
+      "accuracy": 0.6373626373626373,
+      "macro avg": {
+        "precision": 0.5415032679738563,
+        "recall": 0.6217171717171717,
+        "f1-score": 0.573015873015873,
+        "support": 91.0
+      },
+      "weighted avg": {
+        "precision": 0.48222365869424694,
+        "recall": 0.6373626373626373,
+        "f1-score": 0.543171114599686,
+        "support": 91.0
+      }
+    }
   },
-  "confound": {
-    "atd_duration_pearson_r": 0.105,
-    "is_rate_confounded": false
+  "perturbation_layer_hierarchy": {
+    "layers_compared": [
+      1,
+      9
+    ],
+    "note": "LOCO references only built at L1 + L9; full 9-layer sweep deferred",
+    "rows": [
+      {
+        "layer": 1,
+        "family": "formant_shift",
+        "n": 660,
+        "rho": 0.3965354206749237,
+        "p": 2.80189735956831e-26,
+        "mean_delta_atd": 2.6185121593125094
+      },
+      {
+        "layer": 1,
+        "family": "partial_mute",
+        "n": 550,
+        "rho": 0.7758606757054338,
+        "p": 1.0520376824880276e-111,
+        "mean_delta_atd": 4.583071755064975
+      },
+      {
+        "layer": 1,
+        "family": "pink_noise",
+        "n": 660,
+        "rho": 0.8320611394771317,
+        "p": 1.4262912105813262e-170,
+        "mean_delta_atd": 11.831687944281683
+      },
+      {
+        "layer": 1,
+        "family": "pitch_shift",
+        "n": 660,
+        "rho": 0.688475405161389,
+        "p": 7.224294254447208e-94,
+        "mean_delta_atd": 5.861780671753685
+      },
+      {
+        "layer": 1,
+        "family": "reverberate",
+        "n": 550,
+        "rho": 0.38327897399934396,
+        "p": 1.0913480718289369e-20,
+        "mean_delta_atd": 8.61794921208852
+      },
+      {
+        "layer": 1,
+        "family": "time_stretch",
+        "n": 660,
+        "rho": 0.31258636412048024,
+        "p": 1.9982895566449316e-16,
+        "mean_delta_atd": 1.5532036007822985
+      },
+      {
+        "layer": 9,
+        "family": "formant_shift",
+        "n": 660,
+        "rho": 0.1697011157000062,
+        "p": 1.1691240962035322e-05,
+        "mean_delta_atd": 2.7235045635754953
+      },
+      {
+        "layer": 9,
+        "family": "partial_mute",
+        "n": 550,
+        "rho": 0.40220513759102083,
+        "p": 8.424941942645758e-23,
+        "mean_delta_atd": 15.886214947365971
+      },
+      {
+        "layer": 9,
+        "family": "pink_noise",
+        "n": 660,
+        "rho": 0.7664137655944502,
+        "p": 1.3191510269059978e-128,
+        "mean_delta_atd": 19.261588827000505
+      },
+      {
+        "layer": 9,
+        "family": "reverberate",
+        "n": 550,
+        "rho": 0.6726107514056051,
+        "p": 1.100233082773779e-73,
+        "mean_delta_atd": 9.060954656664912
+      },
+      {
+        "layer": 9,
+        "family": "time_stretch",
+        "n": 660,
+        "rho": 0.24408921063670622,
+        "p": 2.0808646729399337e-10,
+        "mean_delta_atd": 3.1853790769512487
+      }
+    ]
   },
-  "anomalies": {
-    "F04_mean_atd": 72.9,
-    "F04_severity": 2,
-    "M05_mean_atd": 98.0,
-    "M05_severity": 1
-  }
+  "ssl_backbone_comparison": {
+    "task": "ipvs_sustained_vowel_a",
+    "layer": 1,
+    "by_backbone": [
+      {
+        "backbone": "wavlm_large",
+        "status": "ok",
+        "n_utts": 99,
+        "n_speakers": 46,
+        "n_controls": 22,
+        "n_pd": 24,
+        "rho": 0.4622081388685876,
+        "p_value": 0.0012213869191219251,
+        "elapsed_min": 1.8884288867314656
+      },
+      {
+        "backbone": "xlsr_300m",
+        "status": "ok",
+        "n_utts": 99,
+        "n_speakers": 46,
+        "n_controls": 22,
+        "n_pd": 24,
+        "rho": 0.07867372576486599,
+        "p_value": 0.603263492448917,
+        "elapsed_min": 1.6768760879834492
+      },
+      {
+        "backbone": "hubert_large",
+        "status": "ok",
+        "n_utts": 99,
+        "n_speakers": 46,
+        "n_controls": 22,
+        "n_pd": 24,
+        "rho": 0.31797297496633337,
+        "p_value": 0.031280708479481674,
+        "elapsed_min": 6.262005678812662
+      }
+    ]
+  },
+  "torgo_mixed_effects_per_utterance": {
+    "n_observations": 7826,
+    "n_speakers": 15,
+    "n_words": 794,
+    "formula": "atd_score ~ severity_score + (1|speaker) + (1|word)",
+    "fixed_effect_severity": {
+      "beta": 13.682281120300162,
+      "se": 0.550580886589147,
+      "ci_low": 12.603162412009302,
+      "ci_high": 14.761399828591022,
+      "p_value": 2.545723386501186e-136,
+      "z": 24.85062858803909
+    },
+    "random_effects_variance": {
+      "speaker": null,
+      "word": 1105.933750298004,
+      "residual": 69.12085939362522,
+      "icc_speaker": null
+    },
+    "aic": NaN,
+    "log_likelihood": -36791.487821162555,
+    "interpretation": "beta is the per-unit change in ATD when severity_score moves from 0->1->2. CI is the journal-grade precision estimate; compare to the speaker-mean bootstrap CI on Spearman rho (width 0.54). The fixed-effect CI here is much tighter because n_obs = 7826, not 15."
+  },
+  "torgo_bayesian_rho_posterior": {
+    "observed_rho": 0.7560864148142503,
+    "observed_p": 0.0011089540064018154,
+    "n_speakers": 15,
+    "fisher_se": 0.2886751345948129,
+    "prior": {
+      "family": "Beta(a,b) on (rho+1)/2",
+      "a": 8.0,
+      "b": 2.0,
+      "implied_prior_mean_rho": 0.6000000000000001
+    },
+    "posterior": {
+      "mean": 0.69823694367013,
+      "median": 0.7163090086253187,
+      "ci_95_low": 0.41305842736301346,
+      "ci_95_high": 0.8833124536153244,
+      "ci_width": 0.47025402625231094,
+      "mode_kde": 0.7513827655310622,
+      "n_samples": 100000
+    },
+    "comparison_to_frequentist": {
+      "frequentist_ci_low": 0.382,
+      "frequentist_ci_high": 0.921,
+      "frequentist_ci_width": 0.539,
+      "bayesian_ci_width_reduction": 0.12754355055229888
+    }
+  },
+  "uaspeech_intelligibility_anchor": {
+    "corpus": "UASpeech",
+    "n_speakers_with_intelligibility": 15,
+    "speaker_level": {
+      "spearman_rho_raw": -0.22023356064917626,
+      "spearman_p_raw": 0.43027536650165854,
+      "pearson_r": -0.2513990921898934,
+      "pearson_p": 0.36608340110865517,
+      "partial_spearman_controlling_for_n_utts": {
+        "rho": -0.16114650779208017,
+        "p": 0.5661408649548558
+      }
+    },
+    "utterance_level_mixed_effects": null,
+    "interpretation": "Negative rho expected: lower ATD = higher intelligibility. Significant rho (any sign) is the construct-validity evidence that ATD tracks a perceptual instrument."
+  },
+  "torgo_power_analysis": {
+    "alpha": 0.05,
+    "n_observed": 15,
+    "rho_observed": 0.756,
+    "achieved_power_monte_carlo_10k": 0.8967,
+    "achieved_power_fisher_closed_form": 0.9276425546050868,
+    "min_detectable_rho_at_n15_power80": 0.6699999999999999,
+    "n_required_for_power80_two_sided": {
+      "rho_0.4": 47,
+      "rho_0.5": 30,
+      "rho_0.6": 20,
+      "rho_0.7": 14,
+      "rho_0.8": 10
+    },
+    "notes": "Fisher z-transform closed-form assumes Pearson; Spearman is rank-based but converges to Pearson under Gaussian copula. Monte Carlo confirms within 0.02 of Fisher estimate."
+  },
+  "l2arctic_accent_specificity": {
+    "n_l2_speakers": 24,
+    "test_1_corr_atd_vs_per": {
+      "spearman_rho": 0.040869565217391296,
+      "spearman_p": 0.8496151500324182,
+      "pearson_r": 0.02642664918054194,
+      "pearson_p": 0.9024449466627966,
+      "interpretation": "H0: ATD independent of per-speaker phone-error-rate (accent strength). Significant rho => ATD is generic deviation detector. NS rho => specific to dysarthric temporal disruption (desired)."
+    },
+    "test_2_kruskal_wallis_across_l1": {
+      "H": 12.290000000000006,
+      "p": 0.031023083283616307,
+      "n_groups": 6,
+      "group_means": {
+        "Arabic": {
+          "mean": 7.160883207876578,
+          "std": 0.10533024701579327,
+          "count": 4.0
+        },
+        "Chinese": {
+          "mean": 6.98714529826086,
+          "std": 0.17861887377571106,
+          "count": 4.0
+        },
+        "Hindi": {
+          "mean": 7.349285761885874,
+          "std": 0.062575861867966,
+          "count": 4.0
+        },
+        "Korean": {
+          "mean": 6.9749783540676455,
+          "std": 0.1764822763026309,
+          "count": 4.0
+        },
+        "Spanish": {
+          "mean": 6.974301405337058,
+          "std": 0.2487017006420003,
+          "count": 4.0
+        },
+        "Vietnamese": {
+          "mean": 7.028696312396667,
+          "std": 0.08146026249703774,
+          "count": 4.0
+        }
+      },
+      "interpretation": "H0: mean ATD same across 6 L1 groups (Arabic, Chinese, Hindi, Korean, Spanish, Vietnamese). NS => ATD does not distinguish accents (desired)."
+    },
+    "test_3_cross_corpus_effect_sizes": {
+      "torgo_control_n": 7,
+      "torgo_control_mean": 69.84997560512393,
+      "torgo_dys_n": 8,
+      "torgo_dys_mean": 92.87537122712737,
+      "l2_arctic_n": 24,
+      "l2_arctic_mean": 7.079215056637447,
+      "cohen_d_l2_vs_torgo_ctrl": -15.996213596974709,
+      "cohen_d_l2_vs_torgo_dys": -12.813993413512321,
+      "cohen_d_torgo_ctrl_vs_dys": -1.9624200114873682,
+      "mw_l2_vs_torgo_ctrl_p": 7.605791810463668e-07,
+      "mw_l2_vs_torgo_dys_p": 1.901447952615917e-07
+    },
+    "summary_table": [
+      {
+        "speaker_id": "HJK",
+        "l1": "Korean",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.937806606319241,
+        "per": 0.0692104729044043
+      },
+      {
+        "speaker_id": "YBAA",
+        "l1": "Arabic",
+        "gender": "M",
+        "n_utts": 149,
+        "mean_atd": 7.1306086770601365,
+        "per": 0.0789685737308622
+      },
+      {
+        "speaker_id": "HKK",
+        "l1": "Korean",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.1769096762361295,
+        "per": 0.0936933306467862
+      },
+      {
+        "speaker_id": "ABA",
+        "l1": "Arabic",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.028326043448904,
+        "per": 0.1019349690803909
+      },
+      {
+        "speaker_id": "YDCK",
+        "l1": "Korean",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.755290291138426,
+        "per": 0.1074096507167373
+      },
+      {
+        "speaker_id": "ZHAA",
+        "l1": "Arabic",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.270033089319256,
+        "per": 0.1108883096049729
+      },
+      {
+        "speaker_id": "RRBI",
+        "l1": "Hindi",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.365121703936316,
+        "per": 0.1127804487179487
+      },
+      {
+        "speaker_id": "TNI",
+        "l1": "Hindi",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.422838036477659,
+        "per": 0.1146149181322013
+      },
+      {
+        "speaker_id": "MBMPS",
+        "l1": "Spanish",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.6364722869938815,
+        "per": 0.1227200634417129
+      },
+      {
+        "speaker_id": "NCC",
+        "l1": "Chinese",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.999378155152177,
+        "per": 0.1249497790277219
+      },
+      {
+        "speaker_id": "YKWK",
+        "l1": "Korean",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.029906842576785,
+        "per": 0.1255052546483427
+      },
+      {
+        "speaker_id": "NJS",
+        "l1": "Spanish",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.081713171038558,
+        "per": 0.1344820756585462
+      },
+      {
+        "speaker_id": "TXHC",
+        "l1": "Chinese",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 6.944618750261449,
+        "per": 0.1381028298126743
+      },
+      {
+        "speaker_id": "SKA",
+        "l1": "Arabic",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.214565021678018,
+        "per": 0.1470240441466298
+      },
+      {
+        "speaker_id": "SVBI",
+        "l1": "Hindi",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.272254564409526,
+        "per": 0.1685529506871463
+      },
+      {
+        "speaker_id": "PNV",
+        "l1": "Vietnamese",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 6.958905581705694,
+        "per": 0.1769367941351297
+      },
+      {
+        "speaker_id": "ASI",
+        "l1": "Hindi",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.336928742719995,
+        "per": 0.1828629032258064
+      },
+      {
+        "speaker_id": "ERMS",
+        "l1": "Spanish",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 6.960386635111909,
+        "per": 0.1886867088607595
+      },
+      {
+        "speaker_id": "BWC",
+        "l1": "Chinese",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 6.786309387241884,
+        "per": 0.1895411741134041
+      },
+      {
+        "speaker_id": "LXC",
+        "l1": "Chinese",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.218274900387931,
+        "per": 0.1966786714685874
+      },
+      {
+        "speaker_id": "EBVS",
+        "l1": "Spanish",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.218633528203882,
+        "per": 0.2279498235985887
+      },
+      {
+        "speaker_id": "TLV",
+        "l1": "Vietnamese",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 6.964367940057044,
+        "per": 0.2498031496062992
+      },
+      {
+        "speaker_id": "HQTV",
+        "l1": "Vietnamese",
+        "gender": "M",
+        "n_utts": 150,
+        "mean_atd": 7.1266141741472,
+        "per": 0.2657534246575342
+      },
+      {
+        "speaker_id": "THV",
+        "l1": "Vietnamese",
+        "gender": "F",
+        "n_utts": 150,
+        "mean_atd": 7.064897553676731,
+        "per": 0.2744751814793015
+      }
+    ]
+  },
+  "l2arctic_per_per_speaker": [
+    {
+      "speaker_id": "ABA",
+      "l1": "Arabic",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 402,
+      "n_dels": 31,
+      "n_adds": 78,
+      "n_phones_total": 5013,
+      "per": 0.1019349690803909
+    },
+    {
+      "speaker_id": "SKA",
+      "l1": "Arabic",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 571,
+      "n_dels": 59,
+      "n_adds": 116,
+      "n_phones_total": 5074,
+      "per": 0.1470240441466298
+    },
+    {
+      "speaker_id": "YBAA",
+      "l1": "Arabic",
+      "gender": "M",
+      "n_annotated_utterances": 149,
+      "n_subs": 331,
+      "n_dels": 31,
+      "n_adds": 30,
+      "n_phones_total": 4964,
+      "per": 0.0789685737308622
+    },
+    {
+      "speaker_id": "ZHAA",
+      "l1": "Arabic",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 404,
+      "n_dels": 99,
+      "n_adds": 50,
+      "n_phones_total": 4987,
+      "per": 0.1108883096049729
+    },
+    {
+      "speaker_id": "BWC",
+      "l1": "Chinese",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 696,
+      "n_dels": 206,
+      "n_adds": 44,
+      "n_phones_total": 4991,
+      "per": 0.1895411741134041
+    },
+    {
+      "speaker_id": "LXC",
+      "l1": "Chinese",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 709,
+      "n_dels": 216,
+      "n_adds": 58,
+      "n_phones_total": 4998,
+      "per": 0.1966786714685874
+    },
+    {
+      "speaker_id": "NCC",
+      "l1": "Chinese",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 536,
+      "n_dels": 55,
+      "n_adds": 31,
+      "n_phones_total": 4978,
+      "per": 0.1249497790277219
+    },
+    {
+      "speaker_id": "TXHC",
+      "l1": "Chinese",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 492,
+      "n_dels": 128,
+      "n_adds": 73,
+      "n_phones_total": 5018,
+      "per": 0.1381028298126743
+    },
+    {
+      "speaker_id": "ASI",
+      "l1": "Hindi",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 761,
+      "n_dels": 120,
+      "n_adds": 26,
+      "n_phones_total": 4960,
+      "per": 0.1828629032258064
+    },
+    {
+      "speaker_id": "RRBI",
+      "l1": "Hindi",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 451,
+      "n_dels": 65,
+      "n_adds": 47,
+      "n_phones_total": 4992,
+      "per": 0.1127804487179487
+    },
+    {
+      "speaker_id": "SVBI",
+      "l1": "Hindi",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 717,
+      "n_dels": 89,
+      "n_adds": 28,
+      "n_phones_total": 4948,
+      "per": 0.1685529506871463
+    },
+    {
+      "speaker_id": "TNI",
+      "l1": "Hindi",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 491,
+      "n_dels": 68,
+      "n_adds": 8,
+      "n_phones_total": 4947,
+      "per": 0.1146149181322013
+    },
+    {
+      "speaker_id": "HJK",
+      "l1": "Korean",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 330,
+      "n_dels": 4,
+      "n_adds": 7,
+      "n_phones_total": 4927,
+      "per": 0.0692104729044043
+    },
+    {
+      "speaker_id": "HKK",
+      "l1": "Korean",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 318,
+      "n_dels": 103,
+      "n_adds": 44,
+      "n_phones_total": 4963,
+      "per": 0.0936933306467862
+    },
+    {
+      "speaker_id": "YDCK",
+      "l1": "Korean",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 450,
+      "n_dels": 58,
+      "n_adds": 24,
+      "n_phones_total": 4953,
+      "per": 0.1074096507167373
+    },
+    {
+      "speaker_id": "YKWK",
+      "l1": "Korean",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 462,
+      "n_dels": 129,
+      "n_adds": 30,
+      "n_phones_total": 4948,
+      "per": 0.1255052546483427
+    },
+    {
+      "speaker_id": "EBVS",
+      "l1": "Spanish",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 876,
+      "n_dels": 194,
+      "n_adds": 93,
+      "n_phones_total": 5102,
+      "per": 0.2279498235985887
+    },
+    {
+      "speaker_id": "ERMS",
+      "l1": "Spanish",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 855,
+      "n_dels": 56,
+      "n_adds": 43,
+      "n_phones_total": 5056,
+      "per": 0.1886867088607595
+    },
+    {
+      "speaker_id": "MBMPS",
+      "l1": "Spanish",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 530,
+      "n_dels": 63,
+      "n_adds": 26,
+      "n_phones_total": 5044,
+      "per": 0.1227200634417129
+    },
+    {
+      "speaker_id": "NJS",
+      "l1": "Spanish",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 561,
+      "n_dels": 80,
+      "n_adds": 38,
+      "n_phones_total": 5049,
+      "per": 0.1344820756585462
+    },
+    {
+      "speaker_id": "HQTV",
+      "l1": "Vietnamese",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 809,
+      "n_dels": 477,
+      "n_adds": 72,
+      "n_phones_total": 5110,
+      "per": 0.2657534246575342
+    },
+    {
+      "speaker_id": "PNV",
+      "l1": "Vietnamese",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 631,
+      "n_dels": 246,
+      "n_adds": 16,
+      "n_phones_total": 5047,
+      "per": 0.1769367941351297
+    },
+    {
+      "speaker_id": "THV",
+      "l1": "Vietnamese",
+      "gender": "F",
+      "n_annotated_utterances": 150,
+      "n_subs": 926,
+      "n_dels": 406,
+      "n_adds": 67,
+      "n_phones_total": 5097,
+      "per": 0.2744751814793015
+    },
+    {
+      "speaker_id": "TLV",
+      "l1": "Vietnamese",
+      "gender": "M",
+      "n_annotated_utterances": 150,
+      "n_subs": 789,
+      "n_dels": 437,
+      "n_adds": 43,
+      "n_phones_total": 5080,
+      "per": 0.2498031496062992
+    }
+  ],
+  "vctk_native_accent_specificity": {
+    "n_speakers": 110,
+    "n_accents_total": 13,
+    "n_accents_retained_n_ge_4": 7,
+    "kruskal_wallis_across_accents": {
+      "H": 11.473842121054247,
+      "p": 0.07479021038234804,
+      "n_groups": 7,
+      "groups": [
+        "English",
+        "American",
+        "Scottish",
+        "Irish",
+        "Canadian",
+        "NorthernIrish",
+        "SouthAfrican"
+      ],
+      "per_accent_stats": {
+        "American": {
+          "mean": 7.7176,
+          "median": 7.8113,
+          "std": 0.3488,
+          "count": 22
+        },
+        "Canadian": {
+          "mean": 7.727,
+          "median": 7.9199,
+          "std": 0.406,
+          "count": 8
+        },
+        "English": {
+          "mean": 7.9607,
+          "median": 7.9992,
+          "std": 0.1701,
+          "count": 33
+        },
+        "Irish": {
+          "mean": 7.792,
+          "median": 7.8359,
+          "std": 0.2541,
+          "count": 9
+        },
+        "NorthernIrish": {
+          "mean": 7.7045,
+          "median": 7.831,
+          "std": 0.4266,
+          "count": 6
+        },
+        "Scottish": {
+          "mean": 7.9399,
+          "median": 7.9157,
+          "std": 0.1645,
+          "count": 19
+        },
+        "SouthAfrican": {
+          "mean": 7.811,
+          "median": 7.7989,
+          "std": 0.2085,
+          "count": 4
+        }
+      },
+      "interpretation": "H0: ATD distribution identical across native-English accents. NS p => ATD does not distinguish accents (specificity desired)."
+    },
+    "spearman_atd_vs_age": {
+      "rho": -0.12428918034585346,
+      "p": 0.19577343262933694
+    },
+    "gender_effect": {
+      "n_male": 47,
+      "n_female": 63,
+      "male_mean": 7.936734653111103,
+      "female_mean": 7.776590196555699,
+      "mw_p": 0.01005113546796562
+    }
+  },
+  "four_corpus_pooled": {
+    "n_observations": 28082,
+    "n_speakers": 164,
+    "corpus_counts": {
+      "UASpeech": 11220,
+      "TORGO": 7826,
+      "VCTK": 5437,
+      "L2ARCTIC": 3599
+    },
+    "per_population_atd_z": {
+      "L2ARCTIC": {
+        "mean": 0.0,
+        "std": 1.0001,
+        "count": 3599
+      },
+      "TORGO_sev0": {
+        "mean": -0.3694,
+        "std": 0.8471,
+        "count": 4999
+      },
+      "TORGO_sev1": {
+        "mean": 0.3989,
+        "std": 0.8413,
+        "count": 1425
+      },
+      "TORGO_sev2": {
+        "mean": 0.9116,
+        "std": 0.909,
+        "count": 1402
+      },
+      "UASpeech_sev0": {
+        "mean": -0.3858,
+        "std": 0.6615,
+        "count": 2295
+      },
+      "UASpeech_sev1": {
+        "mean": 0.2553,
+        "std": 0.6495,
+        "count": 1530
+      },
+      "UASpeech_sev2": {
+        "mean": -0.2588,
+        "std": 0.8332,
+        "count": 2295
+      },
+      "UASpeech_sev3": {
+        "mean": 0.2135,
+        "std": 1.1842,
+        "count": 5100
+      },
+      "VCTK": {
+        "mean": 0.0,
+        "std": 1.0001,
+        "count": 5437
+      }
+    },
+    "model_a_severity_grading_torgo_ua": {
+      "formula": "atd_z ~ severity + C(corpus); cluster-robust SE on speaker",
+      "n_obs": 19046,
+      "n_speakers": 30,
+      "n_clusters": 30,
+      "beta_severity": 0.27332157917266975,
+      "se_severity": 0.10375556803314803,
+      "ci_severity_low": 0.06996440263220427,
+      "ci_severity_high": 0.4766787557131352,
+      "p_severity": 0.008431505959905425,
+      "r_squared": 0.08027052285681213
+    },
+    "model_b_dysarthric_binary_all_corpora": {
+      "formula": "atd_z ~ is_dysarthric + C(corpus); cluster-robust SE on speaker",
+      "n_obs": 28082,
+      "n_speakers": 164,
+      "n_clusters": 164,
+      "beta_is_dysarthric": 0.7522966404379542,
+      "se": 0.19203231148561922,
+      "ci_low": 0.37592022605816316,
+      "ci_high": 1.1286730548177453,
+      "p_value": 8.945260966770741e-05,
+      "r_squared": 0.07318468732327799
+    },
+    "pairwise_cohens_d_on_z_atd": {
+      "L2ARCTIC vs TORGO_sev0": 0.4040137266523647,
+      "L2ARCTIC vs TORGO_sev1": -0.41648521741613614,
+      "L2ARCTIC vs TORGO_sev2": -0.9345510272403628,
+      "L2ARCTIC vs UASpeech_sev0": 0.436454767302697,
+      "L2ARCTIC vs UASpeech_sev1": -0.2805472620296072,
+      "L2ARCTIC vs UASpeech_sev2": 0.27571555413712684,
+      "L2ARCTIC vs UASpeech_sev3": -0.19202102785514458,
+      "L2ARCTIC vs VCTK": 7.160002141980038e-16,
+      "TORGO_sev0 vs TORGO_sev1": -0.9083317508062969,
+      "TORGO_sev0 vs TORGO_sev2": -1.4877476016551252,
+      "TORGO_sev0 vs UASpeech_sev0": 0.020654076666756224,
+      "TORGO_sev0 vs UASpeech_sev1": -0.7757715347151627,
+      "TORGO_sev0 vs UASpeech_sev2": -0.1311990214537383,
+      "TORGO_sev0 vs UASpeech_sev3": -0.5652174820432213,
+      "TORGO_sev0 vs VCTK": -0.3972040228848633,
+      "TORGO_sev1 vs TORGO_sev2": -0.5855853413438583,
+      "TORGO_sev1 vs UASpeech_sev0": 1.0666923539071926,
+      "TORGO_sev1 vs UASpeech_sev1": 0.19200204228274015,
+      "TORGO_sev1 vs UASpeech_sev2": 0.7864183870546347,
+      "TORGO_sev1 vs UASpeech_sev3": 0.16579183596983538,
+      "TORGO_sev1 vs VCTK": 0.41154809176015644,
+      "TORGO_sev2 vs UASpeech_sev0": 1.6962421979862263,
+      "TORGO_sev2 vs UASpeech_sev1": 0.8367811399191164,
+      "TORGO_sev2 vs UASpeech_sev2": 1.3566250134993088,
+      "TORGO_sev2 vs UASpeech_sev3": 0.6174913629950884,
+      "TORGO_sev2 vs VCTK": 0.928216666958313,
+      "UASpeech_sev0 vs UASpeech_sev1": -0.9760222391888198,
+      "UASpeech_sev0 vs UASpeech_sev2": -0.16875755486282162,
+      "UASpeech_sev0 vs UASpeech_sev3": -0.5705727204923161,
+      "UASpeech_sev0 vs VCTK": -0.42261070047334126,
+      "UASpeech_sev1 vs UASpeech_sev2": 0.6719117344165163,
+      "UASpeech_sev1 vs UASpeech_sev3": 0.03850983400187422,
+      "UASpeech_sev1 vs VCTK": 0.2731497130124756,
+      "UASpeech_sev2 vs UASpeech_sev3": -0.434289524444453,
+      "UASpeech_sev2 vs VCTK": -0.27139732257656796,
+      "UASpeech_sev3 vs VCTK": 0.19530215854667338
+    },
+    "interpretation": "Model A: severity beta on z-ATD pooled across TORGO + UASpeech. Model B: dysarthric-vs-healthy contrast across 4 corpora. If L2ARCTIC + VCTK z-ATD means hug TORGO/UA control z-ATD (NOT dysarthric), ATD is specific to dysarthric pathology rather than to pronunciation deviation generally."
+  },
+  "differential_dx_zrank_classifier": {
+    "n_speakers": 91,
+    "feature": "atd_zrank (per-corpus rank z-normalised mean ATD)",
+    "loso_macro_f1": 0.16296296296296298,
+    "labels_in_order": [
+      "Control",
+      "Mild-Mod",
+      "Parkinson",
+      "Severe"
+    ],
+    "confusion_matrix": [
+      [
+        44,
+        0,
+        0,
+        0
+      ],
+      [
+        18,
+        0,
+        0,
+        0
+      ],
+      [
+        24,
+        0,
+        0,
+        0
+      ],
+      [
+        5,
+        0,
+        0,
+        0
+      ]
+    ],
+    "per_class": {
+      "Control": {
+        "precision": 0.4835164835164835,
+        "recall": 1.0,
+        "f1-score": 0.6518518518518519,
+        "support": 44.0
+      },
+      "Mild-Mod": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 18.0
+      },
+      "Parkinson": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 24.0
+      },
+      "Severe": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 5.0
+      },
+      "accuracy": 0.4835164835164835,
+      "macro avg": {
+        "precision": 0.12087912087912088,
+        "recall": 0.25,
+        "f1-score": 0.16296296296296298,
+        "support": 91.0
+      },
+      "weighted avg": {
+        "precision": 0.23378818983214586,
+        "recall": 0.4835164835164835,
+        "f1-score": 0.3151811151811152,
+        "support": 91.0
+      }
+    },
+    "by_corpus": {
+      "IPVS": "61",
+      "TORGO": "15",
+      "UASpeech": "15"
+    },
+    "class_distribution": {
+      "Control": "44",
+      "Parkinson": "24",
+      "Mild-Mod": "18",
+      "Severe": "5"
+    }
+  },
+  "atd_confidence_by_severity": [
+    {
+      "severity_score": 0,
+      "atd_score": 66.7617,
+      "path_entropy": 0.9761,
+      "coverage_pct": 1.0,
+      "confidence_combined": 0.7239
+    },
+    {
+      "severity_score": 1,
+      "atd_score": 85.0205,
+      "path_entropy": 0.9433,
+      "coverage_pct": 1.0,
+      "confidence_combined": 0.7515
+    },
+    {
+      "severity_score": 2,
+      "atd_score": 96.4854,
+      "path_entropy": 0.9292,
+      "coverage_pct": 1.0,
+      "confidence_combined": 0.7698
+    }
+  ]
 }

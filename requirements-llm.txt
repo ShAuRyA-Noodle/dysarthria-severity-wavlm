@@ -1,0 +1,6 @@
+# LLM clinical-report path (experiments/29_clinical_reports.py,
+# src/clinical_reporter.py). Reads API keys from .env via python-dotenv.
+# Optional: only needed to regenerate the natural-language clinical reports.
+python-dotenv==1.0.1
+groq==0.11.0
+google-generativeai==0.8.3

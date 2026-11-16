@@ -1,0 +1,144 @@
+% ============================================================================
+% refs.bib -- VERITAS pitfalls paper. Every entry below is cited in
+% veritas_pitfalls.tex; no uncited padding. Well-known entries carry full
+% metadata; the two 2026 frozen-SSL preprints carry the arXiv identifiers
+% supplied for this submission and are flagged for author/title completion
+% before camera-ready (see SUBMISSION_CHECKLIST.md).
+% ============================================================================
+
+@article{chen2022wavlm,
+  author  = {Chen, Sanyuan and Wang, Chengyi and Chen, Zhengyang and Wu, Yu and
+             Liu, Shujie and Chen, Zhuo and Li, Jinyu and Kanda, Naoyuki and
+             Yoshioka, Takuya and Xiao, Xiong and Wu, Jian and Zhou, Long and
+             Ren, Shuo and Qian, Yanmin and Qian, Yao and Zeng, Michael and
+             Yu, Xiangzhan and Wei, Furu},
+  title   = {{WavLM}: Large-Scale Self-Supervised Pre-Training for Full Stack
+             Speech Processing},
+  journal = {IEEE Journal of Selected Topics in Signal Processing},
+  volume  = {16},
+  number  = {6},
+  pages   = {1505--1518},
+  year    = {2022},
+  doi     = {10.1109/JSTSP.2022.3188113}
+}
+
+@article{hsu2021hubert,
+  author  = {Hsu, Wei-Ning and Bolte, Benjamin and Tsai, Yao-Hung Hubert and
+             Lakhotia, Kushal and Salakhutdinov, Ruslan and Mohamed, Abdelrahman},
+  title   = {{HuBERT}: Self-Supervised Speech Representation Learning by Masked
+             Prediction of Hidden Units},
+  journal = {IEEE/ACM Transactions on Audio, Speech, and Language Processing},
+  volume  = {29},
+  pages   = {3451--3460},
+  year    = {2021},
+  doi     = {10.1109/TASLP.2021.3122291}
+}
+
+@article{cho2024sparc,
+  author  = {Cho, Cheol Jun and Lee, Peter and Mohamed, Abdelrahman and
+             Anumanchipalli, Gopala K.},
+  title   = {Coding Speech Through Vocal Tract Kinematics ({SPARC})},
+  journal = {arXiv preprint arXiv:2406.12998},
+  year    = {2024},
+  eprint  = {2406.12998},
+  archivePrefix = {arXiv},
+  primaryClass  = {eess.AS}
+}
+
+@article{rudzicz2012torgo,
+  author  = {Rudzicz, Frank and Namasivayam, Aravind Kumar and Wolff, Talya},
+  title   = {The {TORGO} Database of Acoustic and Articulatory Speech from
+             Speakers with Dysarthria},
+  journal = {Language Resources and Evaluation},
+  volume  = {46},
+  number  = {4},
+  pages   = {523--541},
+  year    = {2012},
+  doi     = {10.1007/s10579-011-9145-0}
+}
+
+@inproceedings{turrisi2021easycall,
+  author    = {Turrisi, Rosanna and Braccia, Arianna and Emanuele, Marco and
+               Giulietti, Simona and Pugliatti, Maura and Sensi, Mariachiara and
+               Fadiga, Luciano and Badino, Leonardo},
+  title     = {{EasyCall} Corpus: a Dysarthric Speech Dataset},
+  booktitle = {Proc. Interspeech},
+  pages     = {41--45},
+  year      = {2021},
+  doi       = {10.21437/Interspeech.2021-1673}
+}
+
+@article{dimauro2017ipvs,
+  author  = {Dimauro, Giovanni and Di Nicola, Vincenzo and Bevilacqua, Vitoantonio
+             and Caivano, Danilo and Girardi, Francesco},
+  title   = {Assessment of Speech Intelligibility in {Parkinson's} Disease Using
+             a Speech-to-Text System},
+  journal = {IEEE Access},
+  volume  = {5},
+  pages   = {22199--22208},
+  year    = {2017},
+  doi     = {10.1109/ACCESS.2017.2762475},
+  note    = {Italian Parkinson's Voice and Speech (IPVS) database}
+}
+
+@article{zhu2024wavrx,
+  author  = {Zhu, Yi and Falk, Tiago H.},
+  title   = {{WavRx}: a Disease-Agnostic, Generalizable, and Privacy-Preserving
+             Speech Health Diagnostic Model},
+  journal = {arXiv preprint arXiv:2406.18731},
+  year    = {2024},
+  eprint  = {2406.18731},
+  archivePrefix = {arXiv},
+  primaryClass  = {eess.AS}
+}
+
+@inproceedings{mcauliffe2017mfa,
+  author    = {McAuliffe, Michael and Socolof, Michaela and Mihuc, Sarah and
+               Wagner, Michael and Sonderegger, Morgan},
+  title     = {{Montreal Forced Aligner}: Trainable Text-Speech Alignment Using
+               {Kaldi}},
+  booktitle = {Proc. Interspeech},
+  pages     = {498--502},
+  year      = {2017},
+  doi       = {10.21437/Interspeech.2017-1386}
+}
+
+% --- Companion audit (Paper A). Used ONLY by veritas_bench_paper.tex (Paper B).
+% --- POST PAPER A TO arXiv FIRST, then replace XXXX.XXXXX with its real ID.
+% --- This citation is what makes the parallel submission transparent and legal.
+@misc{companion,
+  author       = {{[Your Name]}},
+  title        = {When Frozen {SSL} Speech Metrics Don't Measure What They Claim:
+                  A Validity Audit and Test-Suite for Dysarthric-Speech Severity},
+  year         = {2026},
+  howpublished = {arXiv preprint arXiv:XXXX.XXXXX},
+  note         = {Companion empirical audit}
+}
+
+% --- Two training-free frozen-SSL dysarthria preprints (Muller et al., 2026),
+% --- metadata verified against the arXiv API (IDs 2604.10123 / 2604.21706).
+% --- Closest positive-result prior work; engaged in Related Work / repositioning.
+@article{frozenssl2026a,
+  author  = {Muller, Bernard and Ortiz Barra{\~n}{\'o}n, Antonio Armando and
+             Roberts, LaVonne},
+  title   = {Training-Free Cross-Lingual Dysarthria Severity Assessment via
+             Phonological Subspace Analysis in Self-Supervised Speech
+             Representations},
+  journal = {arXiv preprint arXiv:2604.10123},
+  year    = {2026},
+  eprint  = {2604.10123},
+  archivePrefix = {arXiv},
+  primaryClass  = {eess.AS}
+}
+
+@article{frozenssl2026b,
+  author  = {Muller, Bernard and Ortiz Barra{\~n}{\'o}n, Antonio Armando and
+             Roberts, LaVonne},
+  title   = {Phonological Subspace Collapse Is Aetiology-Specific and
+             Cross-Lingually Stable: Evidence from 3,374 Speakers},
+  journal = {arXiv preprint arXiv:2604.21706},
+  year    = {2026},
+  eprint  = {2604.21706},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL}
+}

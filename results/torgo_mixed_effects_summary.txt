@@ -1,0 +1,15 @@
+           Mixed Linear Model Regression Results
+============================================================
+Model:             MixedLM  Dependent Variable:  atd_score  
+No. Observations:  7826     Method:              REML       
+No. Groups:        15       Scale:               69.1209    
+Min. group size:   114      Log-Likelihood:      -36791.4878
+Max. group size:   1086     Converged:           Yes        
+Mean group size:   521.7                                    
+------------------------------------------------------------
+                Coef.   Std.Err.    z    P>|z| [0.025 0.975]
+------------------------------------------------------------
+Intercept        70.254    0.540 130.190 0.000 69.196 71.311
+severity_score   13.682    0.551  24.851 0.000 12.603 14.761
+word Var       1105.934                                     
+============================================================

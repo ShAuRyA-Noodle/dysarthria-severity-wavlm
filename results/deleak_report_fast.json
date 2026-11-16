@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "radius": 1,
+    "n_bootstrap": 10000,
+    "seed": 42,
+    "severity_map": {
+      "F01": 2,
+      "F03": 1,
+      "F04": 2,
+      "M01": 2,
+      "M02": 2,
+      "M03": 1,
+      "M04": 2,
+      "M05": 1,
+      "FC01": 0,
+      "FC02": 0,
+      "FC03": 0,
+      "MC01": 0,
+      "MC02": 0,
+      "MC03": 0,
+      "MC04": 0
+    }
+  },
+  "by_layer": {
+    "layer9": {
+      "layer": 9,
+      "n_speakers": 15,
+      "n_control_utts": 4817,
+      "n_dys_utts": 2827,
+      "n_skipped": 574,
+      "leaked_rho": 0.7560864148142503,
+      "leaked_p": 0.0011089540064018154,
+      "leaked_bootstrap_ci": [
+        0.3822763244267563,
+        0.9212138348773308
+      ],
+      "deleaked_rho": 0.7560864148142503,
+      "deleaked_p": 0.0011089540064018154,
+      "deleaked_bootstrap_ci": [
+        0.3822763244267563,
+        0.9212138348773308
+      ],
+      "delta_rho_leaked_minus_deleaked": 0.0,
+      "dysarthric_only_deleaked_rho": 0.3944053188733078,
+      "dysarthric_only_deleaked_p": 0.33360108714813674,
+      "cohens_d_leaked_ctrl_vs_severe": 2.4157629878002806,
+      "cohens_d_deleaked_ctrl_vs_severe": 2.6333603490687336,
+      "control_mean_leaked": 70.26699038797653,
+      "control_mean_deleaked": 70.11986918902339,
+      "severe_mean": 97.19111384823307
+    },
+    "layer1": {
+      "layer": 1,
+      "n_speakers": 15,
+      "n_control_utts": 4817,
+      "n_dys_utts": 2827,
+      "n_skipped": 574,
+      "leaked_rho": 0.7753743335595117,
+      "leaked_p": 0.0006828894411368989,
+      "leaked_bootstrap_ci": [
+        0.42639576608067425,
+        0.9341987329938276
+      ],
+      "deleaked_rho": 0.6866499073313089,
+      "deleaked_p": 0.0046925609336158705,
+      "deleaked_bootstrap_ci": [
+        0.23880209987490722,
+        0.9211546809574224
+      ],
+      "delta_rho_leaked_minus_deleaked": 0.08872442622820276,
+      "dysarthric_only_deleaked_rho": 0.3944053188733078,
+      "dysarthric_only_deleaked_p": 0.33360108714813674,
+      "cohens_d_leaked_ctrl_vs_severe": 2.4813450244417656,
+      "cohens_d_deleaked_ctrl_vs_severe": 2.0870231261893113,
+      "control_mean_leaked": 33.49152239192002,
+      "control_mean_deleaked": 36.246584798872405,
+      "severe_mean": 49.17690731288697
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "n_observations": 28082,
+  "n_speakers": 164,
+  "corpus_counts": {
+    "UASpeech": 11220,
+    "TORGO": 7826,
+    "VCTK": 5437,
+    "L2ARCTIC": 3599
+  },
+  "per_population_atd_z": {
+    "L2ARCTIC": {
+      "mean": 0.0,
+      "std": 1.0001,
+      "count": 3599
+    },
+    "TORGO_sev0": {
+      "mean": -0.3694,
+      "std": 0.8471,
+      "count": 4999
+    },
+    "TORGO_sev1": {
+      "mean": 0.3989,
+      "std": 0.8413,
+      "count": 1425
+    },
+    "TORGO_sev2": {
+      "mean": 0.9116,
+      "std": 0.909,
+      "count": 1402
+    },
+    "UASpeech_sev0": {
+      "mean": -0.3858,
+      "std": 0.6615,
+      "count": 2295
+    },
+    "UASpeech_sev1": {
+      "mean": 0.2553,
+      "std": 0.6495,
+      "count": 1530
+    },
+    "UASpeech_sev2": {
+      "mean": -0.2588,
+      "std": 0.8332,
+      "count": 2295
+    },
+    "UASpeech_sev3": {
+      "mean": 0.2135,
+      "std": 1.1842,
+      "count": 5100
+    },
+    "VCTK": {
+      "mean": 0.0,
+      "std": 1.0001,
+      "count": 5437
+    }
+  },
+  "model_a_severity_grading_torgo_ua": {
+    "formula": "atd_z ~ severity + C(corpus); cluster-robust SE on speaker",
+    "n_obs": 19046,
+    "n_speakers": 30,
+    "n_clusters": 30,
+    "beta_severity": 0.27332157917266975,
+    "se_severity": 0.10375556803314803,
+    "ci_severity_low": 0.06996440263220427,
+    "ci_severity_high": 0.4766787557131352,
+    "p_severity": 0.008431505959905425,
+    "r_squared": 0.08027052285681213
+  },
+  "model_b_dysarthric_binary_all_corpora": {
+    "formula": "atd_z ~ is_dysarthric + C(corpus); cluster-robust SE on speaker",
+    "n_obs": 28082,
+    "n_speakers": 164,
+    "n_clusters": 164,
+    "beta_is_dysarthric": 0.7522966404379542,
+    "se": 0.19203231148561922,
+    "ci_low": 0.37592022605816316,
+    "ci_high": 1.1286730548177453,
+    "p_value": 8.945260966770741e-05,
+    "r_squared": 0.07318468732327799
+  },
+  "pairwise_cohens_d_on_z_atd": {
+    "L2ARCTIC vs TORGO_sev0": 0.4040137266523647,
+    "L2ARCTIC vs TORGO_sev1": -0.41648521741613614,
+    "L2ARCTIC vs TORGO_sev2": -0.9345510272403628,
+    "L2ARCTIC vs UASpeech_sev0": 0.436454767302697,
+    "L2ARCTIC vs UASpeech_sev1": -0.2805472620296072,
+    "L2ARCTIC vs UASpeech_sev2": 0.27571555413712684,
+    "L2ARCTIC vs UASpeech_sev3": -0.19202102785514458,
+    "L2ARCTIC vs VCTK": 7.160002141980038e-16,
+    "TORGO_sev0 vs TORGO_sev1": -0.9083317508062969,
+    "TORGO_sev0 vs TORGO_sev2": -1.4877476016551252,
+    "TORGO_sev0 vs UASpeech_sev0": 0.020654076666756224,
+    "TORGO_sev0 vs UASpeech_sev1": -0.7757715347151627,
+    "TORGO_sev0 vs UASpeech_sev2": -0.1311990214537383,
+    "TORGO_sev0 vs UASpeech_sev3": -0.5652174820432213,
+    "TORGO_sev0 vs VCTK": -0.3972040228848633,
+    "TORGO_sev1 vs TORGO_sev2": -0.5855853413438583,
+    "TORGO_sev1 vs UASpeech_sev0": 1.0666923539071926,
+    "TORGO_sev1 vs UASpeech_sev1": 0.19200204228274015,
+    "TORGO_sev1 vs UASpeech_sev2": 0.7864183870546347,
+    "TORGO_sev1 vs UASpeech_sev3": 0.16579183596983538,
+    "TORGO_sev1 vs VCTK": 0.41154809176015644,
+    "TORGO_sev2 vs UASpeech_sev0": 1.6962421979862263,
+    "TORGO_sev2 vs UASpeech_sev1": 0.8367811399191164,
+    "TORGO_sev2 vs UASpeech_sev2": 1.3566250134993088,
+    "TORGO_sev2 vs UASpeech_sev3": 0.6174913629950884,
+    "TORGO_sev2 vs VCTK": 0.928216666958313,
+    "UASpeech_sev0 vs UASpeech_sev1": -0.9760222391888198,
+    "UASpeech_sev0 vs UASpeech_sev2": -0.16875755486282162,
+    "UASpeech_sev0 vs UASpeech_sev3": -0.5705727204923161,
+    "UASpeech_sev0 vs VCTK": -0.42261070047334126,
+    "UASpeech_sev1 vs UASpeech_sev2": 0.6719117344165163,
+    "UASpeech_sev1 vs UASpeech_sev3": 0.03850983400187422,
+    "UASpeech_sev1 vs VCTK": 0.2731497130124756,
+    "UASpeech_sev2 vs UASpeech_sev3": -0.434289524444453,
+    "UASpeech_sev2 vs VCTK": -0.27139732257656796,
+    "UASpeech_sev3 vs VCTK": 0.19530215854667338
+  },
+  "interpretation": "Model A: severity beta on z-ATD pooled across TORGO + UASpeech. Model B: dysarthric-vs-healthy contrast across 4 corpora. If L2ARCTIC + VCTK z-ATD means hug TORGO/UA control z-ATD (NOT dysarthric), ATD is specific to dysarthric pathology rather than to pronunciation deviation generally."
+}

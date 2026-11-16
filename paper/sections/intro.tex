@@ -1,0 +1,83 @@
+% Target ~450 words. Updated 2026-05-11 per audit reframe:
+% drop "zero-shot cross-corpus" framing; the only genuine cross-corpus
+% zero-shot test (TORGO -> IPVS) failed and the IPVS within-corpus
+% result required a corpus-internal PCA refit. Reframe as "frozen-SSL
+% articulatory probe with within-corpus calibration".
+
+Dysarthria is a motor speech disorder caused by neurological injury or
+disease --- cerebral palsy, stroke, traumatic brain injury, amyotrophic
+lateral sclerosis (ALS), Parkinson's disease --- that affects an estimated
+six million people in the United States alone~\cite{Enderby1980Frenchay}.
+Severity assessment is the core clinical task: it gates therapy
+prescription, tracks progression, and predicts intelligibility outcomes.
+Yet assessment today depends on trained Speech-Language Pathologists (SLPs)
+applying perceptual instruments such as the Frenchay Dysarthria Assessment
+or the Sentence-Intelligibility Test. SLP time is scarce, the rating is
+subjective with non-trivial inter-rater variance, and patients in
+under-resourced settings often have no access at all.
+
+Automatic severity estimation has therefore been an active research target
+for two decades. The dominant paradigm has been to fine-tune a learned
+classifier on top of pre-extracted acoustic features --- MFCCs, x-vectors,
+or, more recently, the latent codes of self-supervised speech models such
+as wav2vec~2.0~\cite{Baevski2020wav2vec2} or
+WavLM~\cite{Chen2022WavLM,Hernandez2020SSLDysarthria,Joshi2021IndianDysarthria}.
+This paradigm has two structural problems. First, fine-tuning destroys the
+pre-trained representation: the very geometry that encodes the regularity
+of typical speech is overwritten by the small, noisy supervision signal of
+a clinical dataset. Second, it requires labels --- labelled severity ratings
+on every patient --- which contradicts the shortage that motivated automation
+in the first place.
+
+We propose a complementary approach. WavLM-Large, trained on 94{,}000
+hours of neurotypical speech with a denoising objective, has implicitly
+learned a manifold of how typical articulators move through phonetic
+trajectories. We hypothesise that dysarthric motor impairment manifests
+\emph{geometrically} in this manifold: control speakers trace tight,
+consistent paths through it, while dysarthric speakers trace erratic,
+deviated paths. The geometry \emph{is} the severity signal. Under this
+view, severity estimation reduces to measuring the deviation of a
+speaker's trajectory from a reference of typical trajectories, and the
+SSL backbone is used \emph{frozen} --- never fine-tuned, never even
+gradient-adapted. The reference trajectories themselves are built
+\emph{within} the target corpus from a small set of control speakers; we
+therefore characterise the method as a frozen-SSL articulatory probe
+with within-corpus calibration. A genuine zero-shot cross-corpus test
+(TORGO-fit references applied unmodified to Italian Parkinsonian voice)
+is reported in Section~\ref{sec:cross-corpus} and yielded
+$\rho = 0.18$ ($p = 0.17$, NS); we treat this as the operating
+boundary of the method, not a positive result, and accordingly the
+multilingual IPVS analysis uses a corpus-internal PCA refit.
+
+We instantiate this idea with Articulatory Trajectory Deviation (ATD), a
+length-normalised dynamic-time-warping distance between a speaker's
+PCA-64 WavLM trajectory and a control-built reference. Three
+contributions follow. First, on TORGO~\cite{Rudzicz2012TORGO}, ATD
+attains speaker-level Spearman $\rho = 0.756$ ($p = 0.0011$, $n = 15$),
+with a Beta(8,\,2) Bayesian credible interval of $[0.41,\,0.88]$ and a
+leave-one-speaker-out percentile bracket of $[0.724,\,0.855]$ that
+addresses single-speaker leverage. We benchmark against fairly-tuned
+baselines whose regression head and hyperparameters are refit per
+leave-one-speaker-out fold, and report the comparison honestly
+(Table~\ref{tab:main}): a mean-pooled frozen-WavLM Layer-9 probe
+\emph{matches} ATD's accuracy (Ridge $\rho = 0.760$, LinearSVR
+$\rho = 0.775$ vs.\ ATD $0.756$; Ridge RMSE $0.581$ vs.\ ATD $0.671$),
+so ATD is not more accurate than a trained probe --- its contribution is
+that it reaches comparable accuracy \emph{zero-shot}, with no training
+data and no labels, while still beating a fairly-tuned MFCC baseline
+($\rho = 0.609$).
+Second, we run a pre-registered controlled-perturbation study on
+neurotypical speech (analysis plan locked at
+\texttt{paper/appendix/track\_c\_preregistration.md}) and report its
+outcome honestly: the pre-registered articulatory-specificity hypothesis
+is \emph{falsified} --- additive pink noise perturbs ATD more than formant
+shift does, triggering a locked falsification criterion --- so we do not
+claim that ATD selectively tracks articulatory rather than acoustic
+distortion. What the study does support is that the trajectory metric
+detects frame dropout (partial muting) better than pooled MFCC, evidence
+that it uses temporal structure MFCC discards. We instead establish
+\emph{pathology-vs-accent} specificity through a separate 4-corpus
+analysis (\S\ref{sec:specificity}). Third, an exact path-decomposition
+(into per-phoneme contributions plus a silence/unattributed residual)
+localises a minority of the deviation to specific phonemes, providing
+per-token actionability that scalar metrics lack.

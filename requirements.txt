@@ -1,19 +1,12 @@
-torch==2.14.0
-transformers>=5.17.0,<6.0
-librosa>=0.10.2,<0.12
-soundfile>=0.14.0,<0.15
-numpy>=1.26.4,<2.0
-pandas>=2.2.2,<3.0
-scikit-learn>=1.9.0,<2.0
-scipy>=1.17.1,<1.18
-fastdtw>=0.3.4,<0.4
-umap-learn>=0.5.6,<0.6
-matplotlib>=3.11.2,<4.0
-seaborn>=0.13.2,<0.14
-plotly>=5.22.0,<6.0
-tqdm>=4.70.1,<5.0
-h5py>=3.11.0,<4.0
-pyarrow>=16.0.0,<17.0
-pytest>=9.1.1,<10.0
-praat-parselmouth>=0.4.3,<0.5
-statsmodels>=0.14.2,<0.15
+# Umbrella requirements — installs the full stack (core + LLM + demo).
+#
+# For a minimal analysis-only install (reproduce_all.py, the numeric
+# pipeline, pytest) use just:   pip install -r requirements-core.txt
+#
+# Split files:
+#   requirements-core.txt  — ATD pipeline, baselines, stats, figures (required)
+#   requirements-llm.txt   — clinical-report LLM path (optional)
+#   requirements-demo.txt  — Gradio demo, Praat alignment, streaming (optional)
+-r requirements-core.txt
+-r requirements-llm.txt
+-r requirements-demo.txt

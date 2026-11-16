@@ -1,0 +1,6 @@
+{
+  "backend": "groq",
+  "model": "llama-3.3-70b-versatile",
+  "text": "OVERALL: The speaker's articulation patterns are mildly to moderately affected, with an ATD z-score of -0.12.\n\nARTICULATORY PATTERNS:\n* The phonemes /EY0/, /UH2/, and /IH2/ exhibit significant deviation, with z-scores of +8.39, +3.35, and +2.49, respectively.\n* Vowel sounds are particularly affected, with a mean z-score of +0.64.\n* Fricative and glide manner classes also show notable deviation, with mean z-scores of +0.65 and +0.55.\n\nSLP RECOMMENDATIONS:\n* Target vowel sounds, particularly /EY0/, /UH2/, and /IH2/, in therapy to improve articulation accuracy.\n* Focus on fricative and glide manner classes to address deviations in these sound categories.\n\nCAVEAT: The ATD metric is a research-grade tool and should not be used as a sole basis for diagnosis.",
+  "elapsed_s": 0.8975103999982821
+}

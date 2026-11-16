@@ -54,7 +54,7 @@ class SSLExtractor:
     def __init__(
         self,
         model_name: str = "wavlm_large",
-        device: str = "cuda",
+        device: str = "auto",
         use_fp16: bool = True,
     ) -> None:
         """
@@ -64,14 +64,17 @@ class SSLExtractor:
 
         Args:
             model_name: Key into MODELS_CONFIG.
-            device: 'cuda' or 'cpu'.
-            use_fp16: Whether to use half-precision for inference.
+            device: 'cuda', 'cpu', or 'auto' (auto-detect; default).
+            use_fp16: Whether to use half-precision (CUDA only). Ignored on CPU.
         """
         if model_name not in MODELS_CONFIG:
             raise ValueError(
                 f"Unknown model '{model_name}'. "
                 f"Available: {list(MODELS_CONFIG.keys())}"
             )
+
+        if device == "auto":
+            device = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.model_name = model_name
         self.config = MODELS_CONFIG[model_name]
@@ -382,13 +385,15 @@ def extract_dataset_embeddings(
         _save_extraction_log(log, log_path)
         return str(log_path)
 
-    # Initialize extractor
-    # Enable cudnn benchmark for consistent input sizes
+    # Initialize extractor.
+    # cudnn.benchmark intentionally NOT enabled — anti-deterministic.
+    # Use src.seed_utils.set_global_seed() at the entry script for repro.
     if torch.cuda.is_available():
-        torch.backends.cudnn.benchmark = True
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
 
     extractor = SSLExtractor(
-        model_name=model_name, device="cuda", use_fp16=True
+        model_name=model_name, device="auto", use_fp16=True
     )
 
     # Build lookup: utterance_id → row

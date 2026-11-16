@@ -1,0 +1,152 @@
+{
+  "schema": "veritas-bench/1.0",
+  "config": {
+    "seed": 42,
+    "device": "cuda:0",
+    "primary_corpus": "torgo",
+    "reference_corpora": [
+      "ipvs",
+      "easycall"
+    ],
+    "metric": "phono_subspace_l9",
+    "metric_provenance": "REIMPLEMENTATION of Muller et al. 2026 (arXiv:2604.10123 / 2604.21706) from the published description; not the authors' code.",
+    "contrasts": "nasality, voicing, stridency, sonorance, continuancy",
+    "feature": "frozen WavLM-Large L9 phone-level embeddings via MFA alignment",
+    "min_tokens_per_class": 5
+  },
+  "thresholds": {
+    "alpha": 0.05,
+    "predictive_validity": {
+      "PASS": "rho >= 0.5 and p < 0.05",
+      "WARN": "rho >= 0.3",
+      "FAIL": "rho < 0.3",
+      "stat": "within-corpus leave-one-speaker-out Spearman rho (metric vs severity)"
+    },
+    "leakage_loco": {
+      "PASS": "naive-minus-LOCO delta <= 0.05",
+      "WARN": "delta <= 0.15",
+      "FAIL": "delta > 0.15",
+      "NA": "metric is not reference-based",
+      "stat": "rho(naive reference) - rho(leave-one-control-out reference)"
+    },
+    "silence_confound": {
+      "PASS": "speech-only retains >= 0.7 of full rho AND silence_fraction < 0.5",
+      "WARN": "retains >= 0.4, or majority-silence representation",
+      "FAIL": "speech-only retains < 0.4 of full rho",
+      "stat": "retention = rho(speech-only) / rho(full); plus mean silence frame fraction"
+    },
+    "energy_confound": {
+      "PASS": "partial rho retains >= 0.7 of raw rho",
+      "WARN": "retains >= 0.4",
+      "FAIL": "retains < 0.4",
+      "stat": "partial Spearman(metric, severity | mean speech energy) vs raw Spearman"
+    },
+    "cross_corpus_transfer": {
+      "PASS": "transfer rho >= 0.5 and p < 0.05",
+      "WARN": "rho >= 0.3 and p < 0.05",
+      "FAIL": "rho < 0.3 or not significant",
+      "NA": "fewer than 2 corpora available, or metric exposes no representation",
+      "stat": "train probe on other corpora -> test held-out corpus; speaker Spearman"
+    },
+    "leakage_by_layer": {
+      "PASS": "speaker-identity AUC <= 0.7",
+      "WARN": "AUC <= 0.85",
+      "FAIL": "AUC > 0.85 (representation strongly encodes identity)",
+      "stat": "macro one-vs-rest speaker-classification AUC of the metric's representation"
+    }
+  },
+  "report_cards": [
+    {
+      "metric_name": "phono_subspace_l9",
+      "metric_kind": "reference",
+      "corpus": "torgo",
+      "n_speakers": 15,
+      "overall": "FAIL",
+      "tests": {
+        "predictive_validity": {
+          "name": "predictive_validity",
+          "outcome": "PASS",
+          "headline": "within-corpus LOSO Spearman rho=+0.741 (p=0.00159, n=15)",
+          "stats": {
+            "rho": 0.7406560798180412,
+            "p": 0.0015861921301558123,
+            "n_speakers": 15,
+            "eval": "leave-one-speaker-out"
+          }
+        },
+        "leakage_loco": {
+          "name": "leakage_loco",
+          "outcome": "PASS",
+          "headline": "naive rho=+0.741 -> LOCO rho=+0.741; leakage inflation delta=+0.000",
+          "stats": {
+            "naive_rho": 0.7406560798180412,
+            "naive_p": 0.0015861921301558123,
+            "loco_rho": 0.7406560798180412,
+            "loco_p": 0.0015861921301558123,
+            "delta_rho": 0.0,
+            "n_speakers": 15
+          }
+        },
+        "silence_confound": {
+          "name": "silence_confound",
+          "outcome": "WARN",
+          "headline": "full rho=+0.741 -> speech-only rho=+0.741 (retains 100%); silence mass=63%",
+          "stats": {
+            "full_rho": 0.7406560798180412,
+            "full_p": 0.0015861921301558123,
+            "speech_only_rho": 0.7406560798180412,
+            "speech_only_p": 0.0015861921301558123,
+            "retention": 1.0,
+            "silence_fraction": 0.6308046862989578,
+            "n_speakers": 15,
+            "protocol": "metric-as-published (naive) on full vs MFA speech-span frames"
+          }
+        },
+        "energy_confound": {
+          "name": "energy_confound",
+          "outcome": "PASS",
+          "headline": "raw rho=+0.741 -> energy-partial rho=+0.654 (retains 88%)",
+          "stats": {
+            "raw_rho": 0.7406560798180412,
+            "raw_p": 0.0015861921301558123,
+            "partial_rho": 0.6543755757576772,
+            "partial_p": 0.011112635358424224,
+            "retention": 0.8835080053868448,
+            "control": "mean speech log-RMS energy",
+            "n_speakers": 15
+          }
+        },
+        "cross_corpus_transfer": {
+          "name": "cross_corpus_transfer",
+          "outcome": "FAIL",
+          "headline": "train on ['ipvs', 'easycall'] -> test torgo: transfer rho=+0.467 (p=0.0794, n=15)",
+          "stats": {
+            "transfer_rho": 0.46676763363532797,
+            "p": 0.07942323074713495,
+            "n_speakers": 15,
+            "train_corpora": [
+              "ipvs",
+              "easycall"
+            ],
+            "representation": "frozen WavLM-Large layer-9 phone-level embeddings; d' along control-estimated phonological-contrast directions"
+          }
+        },
+        "leakage_by_layer": {
+          "name": "leakage_by_layer",
+          "outcome": "FAIL",
+          "headline": "speaker-identity AUC=0.999 over 15 speakers (chance 0.5)",
+          "stats": {
+            "speaker_identity_auc": 0.9994865132336562,
+            "n_speakers": 15,
+            "representation": "frozen WavLM-Large layer-9 phone-level embeddings; d' along control-estimated phonological-contrast directions",
+            "interpretation": "higher AUC = representation encodes identity -> leakage risk for reference metrics"
+          }
+        }
+      },
+      "notes": [
+        "Independent reimplementation from the published description, NOT the authors' code. Contrast directions estimated on healthy controls only; d' per speaker along those directions; score = -mean(d').",
+        "Leakage test is meaningful here because the contrast directions are fitted on the control pool: the naive (as-published) form scores a control speaker against directions containing that speaker's own data."
+      ]
+    }
+  ]
+}
