@@ -38,7 +38,6 @@ This repository also holds the code and results for **"When Frozen Self-Supervis
 | Inversion kinematics and the clarifier evaluation | `experiments/veritas/M2_articulatory_kinematics.py`, `experiments/veritas/P2_clarify_eval.py` |
 | Running the bench | `experiments/veritas/B3_run_bench.py`, docs in `docs/veritas/VERITAS_BENCH.md` |
 | Committed result files behind every number in the paper | `results/veritas/*.json` |
-| Paper source and figures | `paper/veritas/` |
 
 All results use frozen weights, seed 42 and speaker-disjoint splits.
 
