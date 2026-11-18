@@ -4,7 +4,7 @@ API is intentionally small: every consumer imports `normalize_for_corpus`,
 `zscore_atd`, and `SharedPCABasis`. All state is keyed by `corpus_name`
 strings drawn from `cross_corpus.corpus_registry` (TBD).
 
-Design rationale and validation hypotheses live in WORLD_CLASS_ROADMAP.md
+Design rationale and validation hypotheses are described in docs/veritas/
 (Track D). Current UASpeech failure (ρ = -0.22 within-corpus, ρ = -0.07
 pooled) is attributed to short-frame DTW + per-corpus PCA basis mismatch;
 fix = shared TORGO PCA basis applied to all corpora after per-corpus CMVN.

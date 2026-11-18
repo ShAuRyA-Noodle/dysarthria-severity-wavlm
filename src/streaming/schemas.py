@@ -1,7 +1,6 @@
 """WebSocket message schemas for streaming ATD (Track A).
 
-Pydantic models — FastAPI auto-validates on receipt. See WORLD_CLASS_ROADMAP.md
-section "Track A — WebSocket Schema".
+Pydantic models — FastAPI auto-validates on receipt.
 """
 from __future__ import annotations
 

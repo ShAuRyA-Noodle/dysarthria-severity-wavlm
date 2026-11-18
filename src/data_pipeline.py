@@ -14,7 +14,7 @@ import pandas as pd
 import soundfile as sf
 
 # ---------------------------------------------------------------------------
-# Speaker metadata (authoritative — mirrors .claude_context.md)
+# Speaker metadata (authoritative, from the TORGO documentation)
 # ---------------------------------------------------------------------------
 
 TORGO_SEVERITY: dict[str, int] = {

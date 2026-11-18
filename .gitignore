@@ -65,3 +65,7 @@ Thumbs.db
 
 # ===== Staging area for deletion (freed by user) =====
 dump/
+
+# ===== Local assistant / planning notes =====
+.claude/
+.claude_context.md

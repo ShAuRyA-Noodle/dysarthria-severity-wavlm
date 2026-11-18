@@ -17,7 +17,7 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 META_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
-# Speaker metadata (authoritative — from .claude_context.md)
+# Speaker metadata (authoritative, from the TORGO documentation)
 # ---------------------------------------------------------------------------
 TORGO_SEVERITY = {
     "F01": 2, "F03": 1, "F04": 2,
